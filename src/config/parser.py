@@ -1,10 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError, model_validator
 import json
 import os
 
 
 class GameConfig(BaseModel):
-    highscore_filename: str = "highscore_filename:"
+    highscore_filename: str = "highscore.json:"
     lives: int = Field(default=3, gt=0)
     pacgum: int = Field(default=42, gt=0)
     pointperpacgum: int = Field(default=10, gt=0)
@@ -17,8 +17,12 @@ class GameConfig(BaseModel):
     levelsmaxtime: int = Field(default=90, gt=0)
     seed: int = 42
 
+    @model_validator(mode="after")
+    def validate_data(self) -> GameConfig:
+        pass
 
-def load_json(filepath: str):
+
+def load_json(filepath: str) -> dict:
     """ a remplir
     """
     if not os.path.exists(filepath):
@@ -31,7 +35,7 @@ def load_json(filepath: str):
                        if not line.strip().startswith("#")])
 
     try:
-        return load_json(cleaned)
+        return json.loads(cleaned)
     except json.JSONDecodeError as e:
         print(f"WARNING, json syntax error :{e}")
         return {}
@@ -51,6 +55,6 @@ class Parser:
 
         try:
             return GameConfig(**raw_data)
-        except Exception as e:
+        except ValidationError as e:
             print(f"WARNING, invalid data :{e}")
-            return {}
+            return GameConfig()
