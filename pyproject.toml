@@ -1,0 +1,18 @@
+[build-system]
+requires = ['setuptools>=82', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "pacman"
+version = "0.0.1"
+authors = [
+    {name="achevali"},
+    {name="egouy"}
+]
+description = "a remplir"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+
+dependencies = [
+]
