@@ -15,4 +15,6 @@ requires-python = ">=3.10"
 license = "MIT"
 
 dependencies = [
+"pygame>=2.5.0",
+"pydantic>=2.0.0"
 ]
