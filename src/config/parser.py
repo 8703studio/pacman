@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field, ValidationError, model_validator
+from typing import Any
 import json
 import os
 
 
 class GameConfig(BaseModel):
-    highscore_filename: str = "highscore.json:"
+    highscore_filename: str = "highscore.json"
     lives: int = Field(default=3, gt=0)
     pacgum: int = Field(default=42, gt=0)
     pointperpacgum: int = Field(default=10, gt=0)
@@ -18,8 +19,54 @@ class GameConfig(BaseModel):
     seed: int = 42
 
     @model_validator(mode="after")
-    def validate_data(self) -> GameConfig:
-        pass
+    @classmethod
+    def validate_data(cls, data: Any) -> dict[str, Any]:
+        if not isinstance(data, dict):
+            print("")
+            return {}
+
+        default = {
+            "highscore_filename": "highscore.json",
+            "lives": 3,
+            "pacgum": 42,
+            "pointperpacgum": 10,
+            "pointpersuperpacgum": 50,
+            "pointperghost": 200,
+            "levels": [
+                {"width": 21, "height": 21}
+                for _ in range(10)
+            ],
+            "levelsmaxtime": 90,
+            "seed": 42,
+        }
+
+        cleaned: dict[str, Any] = {}
+
+        for key, value_default in default.items():
+            if key not in data:
+                print(f"WARNING, invalid {key}, using {default}")
+                cleaned[key] = value_default
+                continue
+
+            value = data[key]
+
+            for key, value_default in default.items():
+                if key not in data:
+                    print(f"WARNING, invalid {key}, using {value_default}")
+                    cleaned[key] = value_default
+                    continue
+
+                value = data[key]
+
+                if key in ("lives", "pacgum", "pointperpacgum",
+                           "pointpersuperpacgum", "pointperghost",
+                           "evelsmaxtime"):
+
+                    if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+                        print(f"WARNING, invalid value for {key}, using {value_default}")
+                        cleaned[key] = value_default
+                    else:
+                        cleaned[key] = value
 
 
 def load_json(filepath: str) -> dict:
