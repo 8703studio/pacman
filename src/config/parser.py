@@ -18,14 +18,10 @@ class GameConfig(BaseModel):
     levelsmaxtime: int = Field(default=90, gt=0)
     seed: int = 42
 
-    @model_validator(mode="after")
+    @model_validator(mode="before")
     @classmethod
     def validate_data(cls, data: Any) -> dict[str, Any]:
-        if not isinstance(data, dict):
-            print("")
-            return {}
-
-        default = {
+        defaults = {
             "highscore_filename": "highscore.json",
             "lives": 3,
             "pacgum": 42,
@@ -40,33 +36,84 @@ class GameConfig(BaseModel):
             "seed": 42,
         }
 
+        if not isinstance(data, dict):
+            print("WARNING: configuration is not a JSON object,"
+                  "using defaults")
+            return defaults
+
         cleaned: dict[str, Any] = {}
 
-        for key, value_default in default.items():
+        for key, default in defaults.items():
+
             if key not in data:
-                print(f"WARNING, invalid {key}, using {default}")
-                cleaned[key] = value_default
+                print(f"WARNING: missing '{key}', using default: {default}")
+                cleaned[key] = default
                 continue
 
             value = data[key]
 
-            for key, value_default in default.items():
-                if key not in data:
-                    print(f"WARNING, invalid {key}, using {value_default}")
-                    cleaned[key] = value_default
-                    continue
+            if key == "highscore_filename":
+                if not isinstance(value, str):
+                    print(f"WARNING: invalid '{key}',"
+                          f"using default: {default}")
+                    cleaned[key] = default
+                else:
+                    cleaned[key] = value
 
-                value = data[key]
+            elif key in {
+                "lives",
+                "pacgum",
+                "pointperpacgum",
+                "pointpersuperpacgum",
+                "pointperghost",
+                "levelsmaxtime",
+            }:
+                if (
+                    not isinstance(value, int)
+                    or isinstance(value, bool)
+                    or value <= 0
+                ):
 
-                if key in ("lives", "pacgum", "pointperpacgum",
-                           "pointpersuperpacgum", "pointperghost",
-                           "evelsmaxtime"):
+                    print(f"WARNING: invalid '{key}',"
+                          f"using default: {default}")
+                    cleaned[key] = default
+                else:
+                    cleaned[key] = value
 
-                    if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
-                        print(f"WARNING, invalid value for {key}, using {value_default}")
-                        cleaned[key] = value_default
+            elif key == "seed":
+                if not isinstance(value, int) or isinstance(value, bool):
+                    print(f"WARNING: invalid '{key}',"
+                          f"using default: {default}")
+                    cleaned[key] = default
+                else:
+                    cleaned[key] = value
+
+            elif key == "levels":
+                if not isinstance(value, list):
+                    print(f"WARNING: invalid '{key}',"
+                          f"using default: {default}")
+                    cleaned[key] = default
+                else:
+                    valid_levels = True
+                    for level in value:
+                        if (
+                            not isinstance(level, dict)
+                            or not isinstance(level.get("width"), int)
+                            or not isinstance(level.get("height"), int)
+                            or level["width"] <= 0
+                            or level["height"] <= 0
+                        ):
+                            valid_levels = False
+                            break
+
+                    if not valid_levels:
+                        print(f"WARNING: invalid '{key}',"
+                              f"using default: {default}")
+                        cleaned[key] = default
                     else:
                         cleaned[key] = value
+
+        return cleaned
 
 
 def load_json(filepath: str) -> dict:
