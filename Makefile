@@ -22,6 +22,9 @@ clean:
 	find . -name ".mypy_cache" -exec rm -rf {} \;
 	find . -name "${FILENAME}" -exec rm -rf {} \;
 
+test:
+	PYTHONPATH=src python3 -m pytest tests
+
 lint:
 	flake8 . && mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 

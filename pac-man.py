@@ -1,5 +1,7 @@
+# import pygame
 from mazegenerator import MazeGenerator
 # from src import Parser, load_json
+# from src.interface.hud import HUD
 
 
 def main():
