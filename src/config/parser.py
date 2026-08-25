@@ -119,17 +119,19 @@ class GameConfig(BaseModel):
 class Parser:
     """ a remplir
     """
-    def build_config(self, filepath: str) -> GameConfig:
+    @staticmethod
+    def build_config(filepath: str) -> dict[str, Any]:
         """Charge et valide la configuration du jeu."""
-        raw_data = self.load_json(filepath)
+        raw_data = Parser.load_json(filepath)
 
         try:
-            return GameConfig(**raw_data)
+            return GameConfig(**raw_data).model_dump()
         except ValidationError as e:
             print(f"WARNING, invalid data :{e}")
-            return GameConfig()
+            return GameConfig().model_dump()
 
-    def load_json(self, filepath: str) -> dict:
+    @staticmethod
+    def load_json(filepath: str) -> dict:
         """ a remplir
         """
         if not os.path.exists(filepath):
