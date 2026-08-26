@@ -1,6 +1,6 @@
 import json
 import pytest
-from src.config.parser import Parser, GameConfig
+from src.config.parser import Parser
 
 
 @pytest.fixture
@@ -19,16 +19,17 @@ def test_load_valid_config(parser, tmp_path):
     """)
 
     config = parser.build_config(str(p))
-    assert isinstance(config, GameConfig)
-    assert config.lives == 5
-    assert config.seed == 123
-    assert config.pacgum == 42
+    assert isinstance(config, dict)
+    assert config["lives"] == 5
+    assert config["seed"] == 123
+    assert config["pacgum"] == 42
 
 
 def test_file_not_found(parser):
     config = parser.build_config("inexistant.json")
-    assert config.lives == 3
-    assert config.seed == 42
+    assert isinstance(config, dict)
+    assert config["lives"] == 3
+    assert config["seed"] == 42
 
 
 def test_invalid_json_syntax(parser, tmp_path):
@@ -36,7 +37,8 @@ def test_invalid_json_syntax(parser, tmp_path):
     p.write_text("{ mauvais json : sans guillemets }")
 
     config = parser.build_config(str(p))
-    assert config.lives == 3
+    assert isinstance(config, dict)
+    assert config["lives"] == 3
 
 
 def test_invalid_values_fallback(parser, tmp_path):
@@ -48,5 +50,6 @@ def test_invalid_values_fallback(parser, tmp_path):
     p.write_text(json.dumps(config_data))
 
     config = parser.build_config(str(p))
-    assert config.lives == 3
-    assert config.pacgum == 42
+    assert isinstance(config, dict)
+    assert config["lives"] == 3
+    assert config["pacgum"] == 42

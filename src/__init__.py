@@ -1,4 +1,4 @@
-from config import Parser
+from .config import Parser
 
 __all__ = [
     "Parser"
