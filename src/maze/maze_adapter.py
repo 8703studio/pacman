@@ -24,6 +24,7 @@ class MazeAdapter:
         seed_base: int,
         width: int,
         height: int,
+        max_retries=3
     ) -> list[list[int]]:
         """Generate a maze for the requested level."""
         if level == 1:
@@ -31,17 +32,22 @@ class MazeAdapter:
         else:
             current_seed = random.randint(0, 1000000)
 
-        try:
-            raw_maze = MazeGenerator(
-                size=(width, height),
-                seed=current_seed,
-                perfect=False,
-                entry_cell=(width // 2, height // 2),
-            )
-            return raw_maze.maze
-        except Exception as e:
-            print(f"WARNING, maze generation failed: {e}")
-            return []
+        for attempt in range(max_retries):
+            try:
+                raw_maze = MazeGenerator(
+                    size=(width, height),
+                    seed=current_seed,
+                    perfect=False,
+                    entry_cell=(width // 2, height // 2),
+                )
+                return raw_maze.maze
+            except Exception as e:
+                print(f"WARNING, maze generation failed "
+                      f"(attempt {attempt+1}): {e}")
+                current_seed = random.randint(0, 1000000)
+
+        raise RuntimeError(f"Maze generation failed "
+                           f"after {max_retries} attempts")
 
     def is_wall(
         self,
