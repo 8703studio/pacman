@@ -136,10 +136,21 @@ class MazeAdapter:
         return True
 
     def get_pacgum_positions(self, maze):
-        pass
+        spawns = self.get_spawn_positions(maze)
+        exclued_positions = set(spawns["ghosts"])
+        exclued_positions.add(spawns["pacman"])
+        cases = self.get_walkable_cells(maze)
+        return [cell for cell in cases if cell not in exclued_positions]
 
     def get_super_pacgum_positions(self, maze):
-        pass
+        return self.get_corners(maze)
 
     def get_spawn_positions(self, maze):
-        pass
+        height = len(maze)
+        width = len(maze[0])
+        pacman_pos = (width // 2, height // 2)
+        ghost_positions = self.get_corners(maze)
+        return {
+            "pacman": pacman_pos,
+            "ghosts": ghost_positions
+        }
