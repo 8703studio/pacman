@@ -19,7 +19,6 @@ class HUD:
         top_y = 70
 
         score_text = self.font.render(f"Score: {score}", True, self.color)
-        score_text = self.font.render(f"Score: {score}", True, self.color)
         score_rect = score_text.get_rect(topleft=(20, top_y))
         screen.blit(score_text, score_rect)
 
