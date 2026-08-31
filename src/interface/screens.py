@@ -1,4 +1,4 @@
-class MainMenuScreen:
+class StartScreen:
     def draw(self, screen):
         pass
 
