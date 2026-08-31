@@ -1,4 +1,4 @@
-from interface.theme import Theme
+from src.interface.theme.theme import Theme
 
 
 class ThemeManager:
