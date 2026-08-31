@@ -21,14 +21,20 @@ class Engine():
     def y_len(self) -> int:
         return len(self.grid)
 
-    def is_wall(self, case: tuple[int, int]) -> bool:
-        if self.is_in_grid(case):
-            return False
-        return True
-
-    def is_valid_position(self, direction: tuple[int, int],
+    def is_valid_position(self, next_case: tuple[int, int],
                           case: tuple[int, int]) -> bool:
         pass
+
+    # this method verify if the entity faced a wall
+    # direction contain dx, dy, bits
+    def is_wall(self, case: tuple[int, int],
+                direction: tuple[int, int, int]) -> bool:
+        x, y = case
+        x_dir, y_dir, bits = direction
+
+        if self.is_in_grid(case) and self.grid[x][y] & bits:
+            return True
+        return False
 
     # this method verified if the entity is in the grid
     def is_in_grid(self, case: tuple[int, int]) -> bool:

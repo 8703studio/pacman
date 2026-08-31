@@ -6,10 +6,10 @@ from collections import deque
 
 
 class EntityDirection(Enum):
-    UP = (-1, 0)
-    LEFT = (0, -1)
-    DOWN = (1, 0)
-    RIGHT = (0, 1)
+    UP = (-1, 0, 8)
+    LEFT = (0, -1, 1)
+    DOWN = (1, 0, 2)
+    RIGHT = (0, 1, 4)
 
 
 class EntityState(Enum):
