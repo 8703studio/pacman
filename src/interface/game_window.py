@@ -1,7 +1,10 @@
 import pygame
-
+from typing import Optional
 from src.interface.theme.theme import CLASSIC_THEME
+from src.interface.hud import HUD
 from src.interface.theme.theme_manager import ThemeManager
+from src.maze.maze_adapter import MazeAdapter
+from src.interface import colors
 
 
 class GameWindow:
@@ -13,6 +16,8 @@ class GameWindow:
         self.width = width
         self.height = height
         self.clock = pygame.time.Clock()
+        self.hud = HUD()
+        self.maze: Optional[list[list[int]]] = None
 
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Pac-idol")
@@ -35,10 +40,65 @@ class GameWindow:
         pass
 
     def draw(self):
-        pass
+        self.screen.fill(
+            self.theme_manager.get_theme().background_color
+        )
+
+        if self.maze is not None:
+            self.draw_maze(self.maze)
+
+        self.hud.render(
+            self.screen,
+            score=0,
+            lives=3,
+            level=1,
+            time_left=120
+            )
 
     def draw_maze(self, maze):
-        pass
+        height = len(maze)
+        width = len(maze[0])
+        hud_height = 130
+        cell_width = self.width / width
+        cell_height = (self.height - hud_height) / height
+
+        for y, line in enumerate(maze):
+            for x, _ in enumerate(line):
+                cell = maze[y][x]
+                pixel_x = x * cell_width
+                pixel_y = hud_height + y * cell_height
+
+                if cell & MazeAdapter.NORTH:
+                    pygame.draw.line(
+                        self.screen,
+                        colors.orange,
+                        (pixel_x, pixel_y),
+                        (pixel_x + cell_width, pixel_y)
+                        )
+
+                if cell & MazeAdapter.EAST:
+                    pygame.draw.line(
+                        self.screen,
+                        colors.orange,
+                        (pixel_x + cell_width, pixel_y),
+                        (pixel_x + cell_width, pixel_y + cell_height)
+                        )
+
+                if cell & MazeAdapter.SOUTH:
+                    pygame.draw.line(
+                        self.screen,
+                        colors.orange,
+                        (pixel_x, pixel_y + cell_height),
+                        (pixel_x + cell_width, pixel_y + cell_height)
+                        )
+
+                if cell & MazeAdapter.WEST:
+                    pygame.draw.line(
+                        self.screen,
+                        colors.orange,
+                        (pixel_x, pixel_y),
+                        (pixel_x, pixel_y + cell_height)
+                        )
 
     def draw_entities(self, player, ghosts, pellets):
         pass
@@ -50,3 +110,4 @@ class GameWindow:
             self.update(delta_time)
             self.draw()
             pygame.display.flip()
+        pygame.quit()

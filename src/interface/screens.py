@@ -1,3 +1,28 @@
+class MainMenuScreen:
+    def draw(self, screen):
+        pass
+
+
+class OptionsScreen:
+    def draw(self, screen):
+        pass
+
+
+class InstructionsScreen:
+    def draw(self, screen):
+        pass
+
+
+class PauseScreen:
+    def draw(self, screen):
+        pass
+
+
+class HighscoresScreen:
+    def draw(self, screen):
+        pass
+
+
 class GameOverScreen:
     def draw(self, screen, final_score):
         pass
