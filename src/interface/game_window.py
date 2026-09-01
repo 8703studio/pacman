@@ -55,50 +55,81 @@ class GameWindow:
             time_left=120
             )
 
-    def draw_maze(self, maze):
-        height = len(maze)
-        width = len(maze[0])
+    def get_cell_size(self, maze):
         hud_height = 130
-        cell_width = self.width / width
-        cell_height = (self.height - hud_height) / height
+
+        rows = len(maze)
+        cols = len(maze[0])
+
+        cell_width = self.width / cols
+        cell_height = (self.height - hud_height) / rows
+
+        return cell_width, cell_height, hud_height
+
+    def draw_maze(self, maze):
+        hud_height = 130
+
+        rows = len(maze)
+        cols = len(maze[0])
+
+        margin = 5
+
+        available_width = self.width - 2 * margin
+        available_height = self.height - hud_height - 2 * margin
+
+        cell_size = min(
+            available_width / cols,
+            available_height / rows
+        )
+
+        total_width = cell_size * cols
+        total_height = cell_size * rows
+
+        offset_x = (self.width - total_width) / 2 + margin
+        offset_y = hud_height + (available_height - total_height) / 2 + margin
 
         for y, line in enumerate(maze):
-            for x, _ in enumerate(line):
-                cell = maze[y][x]
-                pixel_x = x * cell_width
-                pixel_y = hud_height + y * cell_height
+            for x, cell in enumerate(line):
+
+                pixel_x = int(offset_x + x * cell_size)
+                pixel_y = int(offset_y + y * cell_size)
+                size = int(cell_size)
 
                 if cell & MazeAdapter.NORTH:
                     pygame.draw.line(
                         self.screen,
                         colors.orange,
                         (pixel_x, pixel_y),
-                        (pixel_x + cell_width, pixel_y)
-                        )
+                        (pixel_x + size, pixel_y),
+                        2
+                    )
 
                 if cell & MazeAdapter.EAST:
                     pygame.draw.line(
                         self.screen,
                         colors.orange,
-                        (pixel_x + cell_width, pixel_y),
-                        (pixel_x + cell_width, pixel_y + cell_height)
-                        )
+                        (pixel_x + size, pixel_y),
+                        (pixel_x + size, pixel_y + size),
+                        2
+                    )
 
                 if cell & MazeAdapter.SOUTH:
                     pygame.draw.line(
                         self.screen,
                         colors.orange,
-                        (pixel_x, pixel_y + cell_height),
-                        (pixel_x + cell_width, pixel_y + cell_height)
-                        )
+                        (pixel_x, pixel_y + size),
+                        (pixel_x + size, pixel_y + size),
+                        2
+                    )
 
                 if cell & MazeAdapter.WEST:
                     pygame.draw.line(
                         self.screen,
                         colors.orange,
                         (pixel_x, pixel_y),
-                        (pixel_x, pixel_y + cell_height)
-                        )
+                        (pixel_x, pixel_y + size),
+                        2
+                    )
 
     def draw_entities(self, player, ghosts, pellets):
         pass

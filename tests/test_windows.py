@@ -11,6 +11,6 @@ maze = adapter.generate_level(
     height=21,
 )
 
-window = GameWindow(800, 800)
+window = GameWindow(1024, 1080)
 window.maze = maze
 window.run()
