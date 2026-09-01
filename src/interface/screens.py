@@ -6,14 +6,18 @@ class StartScreen:
         self.background = pygame.image.load("background-start.png").convert()
         self.background = pygame.transform.scale(self.background, (1024, 1080))
         self.banner = pygame.image.load("pac-idol.png")
-        self.banner_pos = (300, 100)
 
     def events(self, events):
         pass
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
-        screen.blit(self.banner, self.banner_pos)
+
+        banner_rect = self.banner.get_rect()
+        banner_rect.centerx = screen.get_rect().centerx
+        banner_rect.top = 100
+
+        screen.blit(self.banner, banner_rect)
 
 
 class OptionsScreen:
