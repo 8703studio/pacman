@@ -1,4 +1,3 @@
-# import pygame
 from mazegenerator import MazeGenerator
 # from src import Parser, load_json
 # from src.interface.hud import HUD
@@ -7,7 +6,8 @@ from mazegenerator import MazeGenerator
 def main():
     mazegen = MazeGenerator((5, 5))
     mazegen.generate()
-    print(mazegen._maze)
+    for line in mazegen.maze:
+        print(line)
 
 
 if __name__ == "__main__":
