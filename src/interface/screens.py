@@ -5,7 +5,7 @@ class StartScreen:
     def __init__(self):
         self.background = pygame.image.load("background-start.png").convert()
         self.background = pygame.transform.scale(self.background, (1024, 1080))
-        self.banner = pygame.image.load("pac-idol.png")
+        self.banner = pygame.image.load("pac-idol.png").convert_alpha()
 
     def events(self, events):
         pass
@@ -18,6 +18,10 @@ class StartScreen:
         banner_rect.top = 100
 
         screen.blit(self.banner, banner_rect)
+
+
+class LoadScreem:
+    pass
 
 
 class OptionsScreen:
