@@ -1,4 +1,5 @@
 import pygame
+from src.interface.menu import MenuStartScreen
 
 
 class StartScreen:
@@ -6,9 +7,10 @@ class StartScreen:
         self.background = pygame.image.load("background-start.png").convert()
         self.background = pygame.transform.scale(self.background, (1024, 1080))
         self.banner = pygame.image.load("pac-idol.png").convert_alpha()
+        self.menu = MenuStartScreen()
 
     def events(self, events):
-        pass
+        return self.menu.handle_events(events)
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
@@ -18,6 +20,7 @@ class StartScreen:
         banner_rect.top = 100
 
         screen.blit(self.banner, banner_rect)
+        self.menu.draw(screen)
 
 
 class LoadScreem:
