@@ -18,6 +18,8 @@ class GameWindow:
         self.clock = pygame.time.Clock()
         self.hud = HUD()
         self.maze: Optional[list[list[int]]] = None
+        self.hud_height = 130
+        self.margin = 5
 
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Pac-idol")
@@ -56,41 +58,31 @@ class GameWindow:
             )
 
     def get_cell_size(self, maze):
-        hud_height = 130
-
         rows = len(maze)
         cols = len(maze[0])
 
-        cell_width = self.width / cols
-        cell_height = (self.height - hud_height) / rows
+        available_width = self.width - 2 * self.margin
+        available_height = self.height - self.hud_height - 2 * self.margin
 
-        return cell_width, cell_height, hud_height
+        cell_size = min(available_width / cols, available_height / rows)
+        return cell_size
 
     def draw_maze(self, maze):
-        hud_height = 130
-
         rows = len(maze)
         cols = len(maze[0])
 
-        margin = 5
-
-        available_width = self.width - 2 * margin
-        available_height = self.height - hud_height - 2 * margin
-
-        cell_size = min(
-            available_width / cols,
-            available_height / rows
-        )
+        cell_size = self.get_cell_size(maze)
 
         total_width = cell_size * cols
         total_height = cell_size * rows
 
-        offset_x = (self.width - total_width) / 2 + margin
-        offset_y = hud_height + (available_height - total_height) / 2 + margin
+        offset_x = (self.width - total_width) / 2 + self.margin
+        offset_y = self.hud_height + (self.height -
+                                      self.hud_height -
+                                      total_height) / 2 + self.margin
 
         for y, line in enumerate(maze):
             for x, cell in enumerate(line):
-
                 pixel_x = int(offset_x + x * cell_size)
                 pixel_y = int(offset_y + y * cell_size)
                 size = int(cell_size)
