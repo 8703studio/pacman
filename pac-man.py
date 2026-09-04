@@ -1,5 +1,5 @@
 import mazegenerator as maze
-from physics import Engine
+from src.engine.physics import Engine
 # from src import Parser,
 
 

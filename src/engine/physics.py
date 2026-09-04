@@ -32,9 +32,7 @@ class Engine():
         x, y = case
         x_dir, y_dir, bits = direction
 
-        if self.is_in_grid(case) and self.grid[x][y] & bits:
-            return True
-        return False
+        return self.is_in_grid(case) and self.grid[y][x] & bits
 
     # this method verified if the entity is in the grid
     def is_in_grid(self, case: tuple[int, int]) -> bool:
