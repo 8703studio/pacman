@@ -25,12 +25,11 @@ class EntityType(Enum):
 
 
 class Entity(ABC):
-    def __init__(self, position, vitesse) -> None:
+    def __init__(self, position) -> None:
         self.start_pos = position
         self.current_pos = self.start_pos
-        self.vitesse = vitesse
+        self.vitesse = 0
         self.direction = EntityDirection.DOWN
-        self.next_direction: deque[tuple[int, int]] = deque()
         self.state = EntityState.NORMAL
         self.entity_type = EntityType.NULL
 
@@ -44,15 +43,18 @@ class Entity(ABC):
 
 
 class Pacman(Entity):
-    def __init__(self, position, vitesse):
-        super().__init__(position, vitesse)
+    def __init__(self, position):
+        super().__init__(position)
         self.entity_type = EntityType.PACMAN
+        self.vitesse = 0.5
+        self.input_buffer: deque[tuple[int, int]] = deque()
 
-    def move(self) -> None:
-        pass
+    def move(self, direction) -> None:
+        d_x, d_y = direction
+        x_pos, y_pos = self.current_pos
+        self.current_pos = (x_pos + d_x, y_pos + d_y)
+        self.input_buffer.popleft()
 
     def reset(self) -> None:
+        self.input_buffer.clear()
         self.current_pos = self.start_pos
-
-    def eat(self) -> None:
-        pass
