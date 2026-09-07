@@ -1,7 +1,7 @@
 import pygame
 import time
-from src.interface.menu import MenuStartScreen
-from src.interface import colors
+from src.interface.menu import MenuStartScreen, MenuOptions
+# from src.interface import colors
 
 
 class StartScreen:
@@ -23,8 +23,6 @@ class StartScreen:
 
         screen.blit(self.banner, banner_rect)
         self.menu.draw(screen)
-
-        self.title_text = self.font.render("", True, colors.white)
 
 
 class LoadScreen:
@@ -56,15 +54,24 @@ class LoadScreen:
 
 
 class OptionsScreen:
-    def __init__(self, screen):
-        self.background = pygame.image.load("background-start.png").convert()
-        self.background = pygame.transform.scale(self.background, (1024, 1080))
+
+    def __init__(self):
+        self.background = pygame.image.load(
+            "background-start.png"
+        ).convert()
+
+        self.background = pygame.transform.scale(
+            self.background, (1024, 1080)
+        )
+
+        self.menu = MenuOptions()
 
     def events(self, events):
-        pass
+        return self.menu.handle_events(events)
 
     def draw(self, screen):
-        pass
+        screen.blit(self.background, (0, 0))
+        self.menu.draw(screen)
 
 
 class InstructionsScreen:
