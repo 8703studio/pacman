@@ -7,3 +7,6 @@ class grid_object(Enum):
     SUPERGUM = 2
 
     # matrice contenant les objets creer a partir du maze
+
+def eat(self, ) -> None:
+        pass

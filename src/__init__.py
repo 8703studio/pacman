@@ -1,5 +1,9 @@
-from .config import Parser
+from config import Parser, load_json
+from entities import Pacman, EntityDirection
 
 __all__ = [
-    "Parser"
+    "Parser",
+    "load_json",
+    "Pacman",
+    "EntityDirection"
 ]
