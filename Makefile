@@ -8,7 +8,6 @@ install:
 	python3 -m venv ${ENV_NAME}
 	${PIP_VENV} install mypy
 	${PIP_VENV} install -r ${DEPENDENCIES}
-	${PIP_VENV} install vendor/mazegenerator-2.1.0-py3-none-any.whl
 
 run:
 	python3 ${PJ_MAIN} ${CONFIG}
