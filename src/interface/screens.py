@@ -1,18 +1,44 @@
 import pygame
 import time
+
 from src.interface.menu import MenuStartScreen, MenuOptions
-# from src.interface import colors
 
 
 class StartScreen:
-    def __init__(self):
-        self.background = pygame.image.load("background-start.png").convert()
-        self.background = pygame.transform.scale(self.background, (1024, 1080))
-        self.banner = pygame.image.load("pac-idol.png").convert_alpha()
+    def __init__(self, game):
+        self.game = game
+
+        self.background = pygame.image.load(
+            "background-start.png"
+        ).convert()
+
+        self.background = pygame.transform.scale(
+            self.background, (1024, 1080)
+        )
+
+        self.banner = pygame.image.load(
+            "pac-idol.png"
+        ).convert_alpha()
+
         self.menu = MenuStartScreen()
 
     def events(self, events):
-        return self.menu.handle_events(events)
+        action = self.menu.handle_events(events)
+
+        if action == "Start Game":
+            self.game.change_screen(LoadScreen())
+
+        elif action == "View Highscores":
+            self.game.change_screen(HighscoresScreen())
+
+        elif action == "Instructions":
+            self.game.change_screen(InstructionsScreen())
+
+        elif action == "Options":
+            self.game.change_screen(OptionsScreen(self.game))
+
+    def update(self, delta_time):
+        pass
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
@@ -22,18 +48,31 @@ class StartScreen:
         banner_rect.top = 100
 
         screen.blit(self.banner, banner_rect)
+
         self.menu.draw(screen)
 
 
 class LoadScreen:
     def __init__(self, min_duration=1.0):
-        self.background = pygame.image.load("background-start.png").convert()
-        self.background = pygame.transform.scale(self.background, (1024, 1080))
-        self.loading_bar = pygame.image.load("loading.png").convert_alpha()
+        self.background = pygame.image.load(
+            "background-start.png"
+        ).convert()
+
+        self.background = pygame.transform.scale(
+            self.background, (1024, 1080)
+        )
+
+        self.loading_bar = pygame.image.load(
+            "loading.png"
+        ).convert_alpha()
+
         self.min_duration = min_duration
         self.start_time = time.time()
 
     def events(self, events):
+        pass
+
+    def update(self, delta_time):
         pass
 
     def is_finished(self):
@@ -45,17 +84,34 @@ class LoadScreen:
 
         screen.blit(self.background, (0, 0))
 
-        bar_width = int(self.loading_bar.get_width() * progress)
-        bar_rect = pygame.Rect(0, 0, bar_width, self.loading_bar.get_height())
-        loading_bar_pos = (screen.get_width() // 2 -
-                           self.loading_bar.get_width() // 2, 500)
+        bar_width = int(
+            self.loading_bar.get_width() * progress
+        )
 
-        screen.blit(self.loading_bar, loading_bar_pos, area=bar_rect)
+        bar_rect = pygame.Rect(
+            0,
+            0,
+            bar_width,
+            self.loading_bar.get_height()
+        )
+
+        loading_bar_pos = (
+            screen.get_width() // 2
+            - self.loading_bar.get_width() // 2,
+            500
+        )
+
+        screen.blit(
+            self.loading_bar,
+            loading_bar_pos,
+            area=bar_rect
+        )
 
 
 class OptionsScreen:
+    def __init__(self, game):
+        self.game = game
 
-    def __init__(self):
         self.background = pygame.image.load(
             "background-start.png"
         ).convert()
@@ -67,7 +123,13 @@ class OptionsScreen:
         self.menu = MenuOptions()
 
     def events(self, events):
-        return self.menu.handle_events(events)
+        action = self.menu.handle_events(events)
+
+        if action == "Back":
+            self.game.change_screen(StartScreen(self.game))
+
+    def update(self, delta_time):
+        pass
 
     def draw(self, screen):
         screen.blit(self.background, (0, 0))
@@ -75,33 +137,90 @@ class OptionsScreen:
 
 
 class InstructionsScreen:
-    def draw(self, screen):
+    def __init__(self, game):
+        self.game = game
+
+        self.background = pygame.image.load(
+            "background-instructions.png"
+        ).convert()
+
+        self.background = pygame.transform.scale(
+            self.background, (1024, 1080)
+        )
+
+    def events(self, events):
+        action = self.menu.handle_events(events)
+
+        if action == "Back":
+            self.game.change_screen(StartScreen(self.game))
+
+    def update(self, delta_time):
         pass
+
+    def draw(self, screen):
+        screen.blit(self.background, (0, 0))
+        self.menu.draw(screen)
 
 
 class PauseScreen:
-    def draw(self, screen):
+    def __init__(self):
+        self.background = pygame.image.load(
+            "background-pause.png"
+        ).convert()
+
+        self.background = pygame.transform.scale(
+            self.background, (1024, 1080)
+        )
+
+    def events(self, events):
         pass
+
+    def update(self, delta_time):
+        pass
+
+    def draw(self, screen):
+        screen.blit(self.background, (0, 0))
 
 
 class HighscoresScreen:
+    def events(self, events):
+        pass
+
+    def update(self, delta_time):
+        pass
+
     def draw(self, screen):
         pass
 
 
 class GameOverScreen:
-    def draw(self, screen, final_score):
+    def events(self, events):
+        pass
+
+    def update(self, delta_time):
+        pass
+
+    def draw(self, screen):
         pass
 
 
 class VictoryScreen:
-    def draw(self, screen, final_score):
+    def events(self, events):
+        pass
+
+    def update(self, delta_time):
+        pass
+
+    def draw(self, screen):
         pass
 
 
 class NameInputScreen:
-    def handle_key(self, key, current_text):
+    def events(self, events):
         pass
 
-    def draw(self, screen, current_text):
+    def update(self, delta_time):
+        pass
+
+    def draw(self, screen):
         pass
