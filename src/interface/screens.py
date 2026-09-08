@@ -2,23 +2,24 @@ import pygame
 import time
 
 from src.interface.menu import MenuStartScreen, MenuOptions
+from src.interface import colors
 
 
 class StartScreen:
     def __init__(self, game):
         self.game = game
 
-        self.background = pygame.image.load(
-            "background-start.png"
-        ).convert()
+        # self.background = pygame.image.load(
+        #     "background-start.png"
+        # ).convert()
 
-        self.background = pygame.transform.scale(
-            self.background, (1024, 1080)
-        )
+        # self.background = pygame.transform.scale(
+        #     self.background, (1024, 1080)
+        # )
 
-        self.banner = pygame.image.load(
-            "pac-idol.png"
-        ).convert_alpha()
+        # self.banner = pygame.image.load(
+        #     "pac-idol.png"
+        # ).convert_alpha()
 
         self.menu = MenuStartScreen()
 
@@ -41,13 +42,14 @@ class StartScreen:
         pass
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
+        # screen.blit(self.background, (0, 0))
+        screen.fill(colors.black)
 
-        banner_rect = self.banner.get_rect()
-        banner_rect.centerx = screen.get_rect().centerx
-        banner_rect.top = 100
+        # banner_rect = self.banner.get_rect()
+        # banner_rect.centerx = screen.get_rect().centerx
+        # banner_rect.top = 100
 
-        screen.blit(self.banner, banner_rect)
+        # screen.blit(self.banner, banner_rect)
 
         self.menu.draw(screen)
 
@@ -112,13 +114,13 @@ class OptionsScreen:
     def __init__(self, game):
         self.game = game
 
-        self.background = pygame.image.load(
-            "background-start.png"
-        ).convert()
+        # self.background = pygame.image.load(
+        #     "background-start.png"
+        # ).convert()
 
-        self.background = pygame.transform.scale(
-            self.background, (1024, 1080)
-        )
+        # self.background = pygame.transform.scale(
+        #     self.background, (1024, 1080)
+        # )
 
         self.menu = MenuOptions()
 
@@ -132,7 +134,8 @@ class OptionsScreen:
         pass
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
+        # screen.blit(self.background, (0, 0))
+        screen.fill(colors.black)
         self.menu.draw(screen)
 
 
@@ -140,13 +143,13 @@ class InstructionsScreen:
     def __init__(self, game):
         self.game = game
 
-        self.background = pygame.image.load(
-            "background-instructions.png"
-        ).convert()
+        # self.background = pygame.image.load(
+        #     "background-instructions.png"
+        # ).convert()
 
-        self.background = pygame.transform.scale(
-            self.background, (1024, 1080)
-        )
+        # self.background = pygame.transform.scale(
+        #     self.background, (1024, 1080)
+        # )
 
     def events(self, events):
         action = self.menu.handle_events(events)
@@ -158,19 +161,22 @@ class InstructionsScreen:
         pass
 
     def draw(self, screen):
-        screen.blit(self.background, (0, 0))
+        # screen.blit(self.background, (0, 0))
+        screen.fill(colors.black)
         self.menu.draw(screen)
 
 
 class PauseScreen:
     def __init__(self):
-        self.background = pygame.image.load(
-            "background-pause.png"
-        ).convert()
+        # self.background = pygame.image.load(
+        #     "background-pause.png"
+        # ).convert()
 
-        self.background = pygame.transform.scale(
-            self.background, (1024, 1080)
-        )
+        # self.background = pygame.transform.scale(
+        #     self.background, (1024, 1080)
+        # )
+
+        pass
 
     def events(self, events):
         pass
