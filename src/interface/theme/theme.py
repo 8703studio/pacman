@@ -6,15 +6,12 @@ from src.interface import colors
 @dataclass
 class Theme:
     name: str
-
     background_color: pygame.Color
     wall_color: pygame.Color
     text_color: pygame.Color
     player_color: pygame.Color
-
     ghost_colors: list[pygame.Color]
     ghost_edible_color: pygame.Color
-
     player_name: str
     ghost_names: list[str]
     pellet_name: str
@@ -23,6 +20,9 @@ class Theme:
     player_sprite: str | None = None
     ghost_sprites: list[str] | None = None
     wall_texture: str | None = None
+    background_image: str | None = None
+    pellet_sprite: str | None = None
+    super_pellet_sprite: str | None = None
 
 
 CLASSIC_THEME = Theme(

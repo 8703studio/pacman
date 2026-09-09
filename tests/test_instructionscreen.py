@@ -1,6 +1,6 @@
 import pygame
 
-from src.interface.screens import OptionsScreen
+from src.interface.screens import InstructionsScreen
 
 
 class TestGame:
@@ -14,11 +14,10 @@ class TestGame:
 pygame.init()
 
 screen = pygame.display.set_mode((1024, 1080))
-pygame.display.set_caption("Test Options Screen")
+pygame.display.set_caption("Test Instructions Screen")
 
 game = TestGame()
-options_screen = OptionsScreen(game)
-
+game.current_screen = InstructionsScreen(game)
 
 clock = pygame.time.Clock()
 
@@ -31,11 +30,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    options_screen.events(events)
-    options_screen.update(0)
+    game.current_screen.events(events)
+    game.current_screen.update(0)
 
     screen.fill((0, 0, 0))
-    options_screen.draw(screen)
+    game.current_screen.draw(screen)
 
     pygame.display.flip()
     clock.tick(60)

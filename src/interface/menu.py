@@ -12,6 +12,7 @@ class MenuStartScreen:
             "View Highscores",
             "Instructions",
             "Options",
+            "Exit"
             ]
         self.selected = 0
 
@@ -28,7 +29,7 @@ class MenuStartScreen:
         return None
 
     def draw(self, screen):
-        start_x = 260
+        start_x = 220
 
         for i, option in enumerate(self.options):
             color = colors.yellow if i == self.selected else colors.white
@@ -36,7 +37,7 @@ class MenuStartScreen:
             option_text = self.small_font.render(option, True, color)
 
             option_rect = option_text.get_rect(
-                midtop=(start_x + i * 180, 800)
+                midtop=(start_x + i * 200, 800)
             )
 
             screen.blit(option_text, option_rect)
