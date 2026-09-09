@@ -5,13 +5,22 @@ from src.interface import colors
 
 
 class MazeRenderer:
-    def __init__(self, width, height, hud_height=130, margin=5):
+    """Renders the maze and its game entities."""
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        hud_height: int = 130,
+        margin: int = 5
+    ) -> None:
+        """Initialize the maze renderer dimensions."""
         self.width = width
         self.height = height
         self.hud_height = hud_height
         self.margin = margin
 
-    def get_cell_size(self, maze):
+    def get_cell_size(self, maze: list[list[int]]) -> float:
+        """Calculate the cell size to fit the maze in the game window."""
         rows = len(maze)
         cols = len(maze[0])
 
@@ -29,7 +38,12 @@ class MazeRenderer:
 
         return cell_size
 
-    def draw(self, screen, maze):
+    def draw(
+        self,
+        screen: pygame.Surface,
+        maze: list[list[int]]
+    ) -> None:
+        """Draw the maze walls on the screen."""
         rows = len(maze)
         cols = len(maze[0])
 
@@ -95,5 +109,12 @@ class MazeRenderer:
                         2
                     )
 
-    def draw_entities(self, screen, player, ghosts, pellets):
-        pass
+    # def draw_entities(
+    #     self,
+    #     screen: pygame.Surface,
+    #     player,
+    #     ghosts,
+    #     pellets
+    # ) -> None:
+    #     """Draw the player, ghosts and pellets on the screen."""
+    #     pass

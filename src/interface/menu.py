@@ -3,7 +3,9 @@ from src.interface import colors
 
 
 class MenuStartScreen:
-    def __init__(self):
+    """Displays the main menu."""
+    def __init__(self) -> None:
+        """Initialize the menu."""
         self.font = pygame.font.Font(None, 48)
         self.small_font = pygame.font.Font(None, 32)
 
@@ -15,9 +17,12 @@ class MenuStartScreen:
             "Exit"
             ]
         self.selected = 0
-        self.option_rects = []
+        self.option_rects: list[pygame.Rect] = []
 
-    def handle_events(self, events):
+    def handle_events(
+        self, events: list[pygame.event.Event]
+    ) -> str | None:
+        """Handle events of main menu."""
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
@@ -38,8 +43,8 @@ class MenuStartScreen:
 
         return None
 
-    def draw(self, screen):
-
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the main menu."""
         self.option_rects = []
 
         x = 80
@@ -67,7 +72,9 @@ class MenuStartScreen:
 
 
 class MenuOptions:
-    def __init__(self):
+    """Displays the options menu."""
+    def __init__(self) -> None:
+        """Initialize the menu."""
         self.font = pygame.font.Font(None, 48)
         self.options = [
             "Sound",
@@ -76,9 +83,11 @@ class MenuOptions:
             "Back",
         ]
         self.selected = 0
-        self.option_rects = []
+        self.option_rects: list[pygame.Rect] = []
 
-    def handle_events(self, events):
+    def handle_events(
+        self, events: list[pygame.event.Event]
+    ) -> str | None:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
@@ -99,7 +108,7 @@ class MenuOptions:
 
         return None
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
         start_x = 260
         self.option_rects = []
 
@@ -114,16 +123,19 @@ class MenuOptions:
 
 
 class MenuPause:
-    def __init__(self):
+    """Displays the pause menu."""
+    def __init__(self) -> None:
         self.font = pygame.font.Font(None, 48)
         self.options = [
             "Resume game",
             "Return to main menu",
         ]
         self.selected = 0
-        self.option_rects = []
+        self.option_rects: list[pygame.Rect] = []
 
-    def handle_events(self, events):
+    def handle_events(
+        self, events: list[pygame.event.Event]
+    ) -> str | None:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
@@ -144,7 +156,7 @@ class MenuPause:
 
         return None
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
         start_x = 260
         self.option_rects = []
 

@@ -1,3 +1,5 @@
+"""Defines the colors used throughout the game interface."""
+
 import pygame
 
 blue = pygame.Color("#7ec0ee")

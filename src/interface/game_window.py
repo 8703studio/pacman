@@ -1,5 +1,5 @@
 import pygame
-from typing import Optional
+from typing import Optional, Any
 
 from src.interface.theme.theme import CLASSIC_THEME
 from src.interface.hud import HUD
@@ -9,7 +9,9 @@ from src.interface.screens import StartScreen
 
 
 class GameWindow:
-    def __init__(self, width, height):
+    """Manages the main game window and its interface screens."""
+    def __init__(self, width: int, height: int) -> None:
+        """Initialize the game window and its interface components."""
         pygame.init()
 
         self.theme_manager = ThemeManager(CLASSIC_THEME)
@@ -38,7 +40,8 @@ class GameWindow:
             margin=self.margin
         )
 
-    def handle_events(self):
+    def handle_events(self) -> None:
+        """Handle Pygame events and pass them to the current screen."""
         events = pygame.event.get()
 
         for event in events:
@@ -47,16 +50,20 @@ class GameWindow:
 
         self.current_screen.events(events)
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the current screen."""
         self.current_screen.update(delta_time)
 
-    def change_screen(self, screen):
+    def change_screen(self, screen: Any) -> None:
+        """Change the current interface screen."""
         self.current_screen = screen
 
-    def draw(self):
+    def draw(self) -> None:
+        """Draw the current screen on the game window."""
         self.current_screen.draw(self.screen)
 
-    def run(self):
+    def run(self) -> None:
+        """Run the main game loop."""
         while self.running:
             self.handle_events()
 

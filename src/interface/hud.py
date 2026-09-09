@@ -4,7 +4,9 @@ from src.interface import colors
 
 
 class HUD:
+    """Displays the game's heads-up display."""
     def __init__(self, font_size: int = 32) -> None:
+        """Initialize the HUD and load its icons."""
         self.font = pygame.font.Font(None, font_size)
         self.color = colors.white
 
@@ -26,7 +28,7 @@ class HUD:
 
     def render(
         self,
-        screen,
+        screen: pygame.Surface,
         score: int,
         lives: int,
         level: int,

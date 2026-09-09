@@ -1,11 +1,17 @@
 import pygame
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.interface.game_window import GameWindow
+
 from src.interface.menu import MenuStartScreen, MenuOptions, MenuPause
 from src.interface import colors
 
 
 class StartScreen:
-    def __init__(self, game):
+    """Displays the main menu screen."""
+    def __init__(self, game: "GameWindow") -> None:
         self.game = game
 
         # self.background = pygame.image.load(
@@ -24,7 +30,8 @@ class StartScreen:
         self.subtitle_font = pygame.font.Font(None, 36)
         self.menu = MenuStartScreen()
 
-    def events(self, events):
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle events from the main menu."""
         action = self.menu.handle_events(events)
 
         if action == "Start Game":
@@ -42,14 +49,24 @@ class StartScreen:
         elif action == "Exit":
             self.game.running = False
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the main menu screen."""
         pass
 
-    def draw_text(self, screen, text, x, y, font):
-        text = font.render(text, True, colors.white)
-        screen.blit(text, (x, y))
+    def draw_text(
+        self,
+        screen: pygame.Surface,
+        text: str,
+        x: int,
+        y: int,
+        font: pygame.font.Font
+    ) -> None:
+        """Draw text on the screen."""
+        text_surface = font.render(text, True, colors.white)
+        screen.blit(text_surface, (x, y))
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the main menu screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
         highscore = self.highscore_font.render("HIGH SCORE : 12500", True,
@@ -79,7 +96,9 @@ class StartScreen:
 
 
 class OptionsScreen:
-    def __init__(self, game):
+    """Displays the game options screen."""
+    def __init__(self, game: "GameWindow") -> None:
+        """Initialize the options screen."""
         self.game = game
 
         # self.background = pygame.image.load(
@@ -92,27 +111,40 @@ class OptionsScreen:
 
         self.menu = MenuOptions()
 
-    def events(self, events):
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle events from the options menu."""
         action = self.menu.handle_events(events)
 
         if action == "Back":
             self.game.change_screen(StartScreen(self.game))
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the options screen."""
         pass
 
-    def draw_text(self, screen, text, x, y, font):
-        text = font.render(text, True, colors.white)
-        screen.blit(text, (x, y))
+    def draw_text(
+        self,
+        screen: pygame.Surface,
+        text: str,
+        x: int,
+        y: int,
+        font: pygame.font.Font
+    ) -> None:
+        """Draw text on the screen."""
+        text_surface = font.render(text, True, colors.white)
+        screen.blit(text_surface, (x, y))
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the options screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
         self.menu.draw(screen)
 
 
 class InstructionsScreen:
-    def __init__(self, game):
+    """Displays the game instructions."""
+    def __init__(self, game: "GameWindow") -> None:
+        """Initialize the instructions screen."""
         self.game = game
 
         # self.background = pygame.image.load(
@@ -127,7 +159,8 @@ class InstructionsScreen:
         self.title = pygame.font.Font(None, 60)
         self.back_button = pygame.Rect(100, 900, 100, 60)
 
-    def events(self, events):
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle events from the instructions screen."""
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -137,14 +170,24 @@ class InstructionsScreen:
                 if self.back_button.collidepoint(event.pos):
                     self.game.change_screen(StartScreen(self.game))
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the instructions screen."""
         pass
 
-    def draw_text(self, screen, text, x, y, font):
-        text = font.render(text, True, colors.white)
-        screen.blit(text, (x, y))
+    def draw_text(
+        self,
+        screen: pygame.Surface,
+        text: str,
+        x: int,
+        y: int,
+        font: pygame.font.Font
+    ) -> None:
+        """Draw text on the screen."""
+        text_surface = font.render(text, True, colors.white)
+        screen.blit(text_surface, (x, y))
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the instructions screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
@@ -166,7 +209,9 @@ class InstructionsScreen:
 
 
 class PauseScreen:
-    def __init__(self, game):
+    """Displays the pause menu."""
+    def __init__(self, game: "GameWindow") -> None:
+        """Initialize the pause screen."""
         self.game = game
 
         # self.background = pygame.image.load(
@@ -182,7 +227,8 @@ class PauseScreen:
 
         self.menu = MenuPause()
 
-    def events(self, events):
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle events from the pause menu."""
         action = self.menu.handle_events(events)
 
         if action == "Resume":
@@ -190,14 +236,24 @@ class PauseScreen:
         elif action == "Return to main menu":
             self.game.change_screen(StartScreen(self.game))
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the pause screen."""
         pass
 
-    def draw_text(self, screen, text, x, y, font):
-        text = font.render(text, True, colors.white)
-        screen.blit(text, (x, y))
+    def draw_text(
+        self,
+        screen: pygame.Surface,
+        text: str,
+        x: int,
+        y: int,
+        font: pygame.font.Font
+    ) -> None:
+        """Draw text on the screen."""
+        text_surface = font.render(text, True, colors.white)
+        screen.blit(text_surface, (x, y))
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the pause screen."""
         screen.fill(colors.black)
         # screen.blit(self.background, (0, 0))
 
@@ -205,7 +261,9 @@ class PauseScreen:
 
 
 class HighscoresScreen:
-    def __init__(self, game):
+    """Displays the game's high scores."""
+    def __init__(self, game: "GameWindow") -> None:
+        """Initialize the high scores screen."""
         self.game = game
 
         # self.background = pygame.image.load(
@@ -240,7 +298,8 @@ class HighscoresScreen:
             ("PLAYER10", 1000),
         ]
 
-    def events(self, events):
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle events from the high scores screen."""
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -250,14 +309,24 @@ class HighscoresScreen:
                 if self.back_button.collidepoint(event.pos):
                     self.game.change_screen(StartScreen(self.game))
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the high scores screen."""
         pass
 
-    def draw_text(self, screen, text, x, y, font):
-        text = font.render(text, True, colors.white)
-        screen.blit(text, (x, y))
+    def draw_text(
+        self,
+        screen: pygame.Surface,
+        text: str,
+        x: int,
+        y: int,
+        font: pygame.font.Font
+    ) -> None:
+        """Draw text on the screen."""
+        text_surface = font.render(text, True, colors.white)
+        screen.blit(text_surface, (x, y))
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the high scores screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
@@ -289,7 +358,9 @@ class HighscoresScreen:
 
 
 class GameOverScreen:
-    def __init__(self, game):
+    """Displays the game over screen."""
+    def __init__(self, game: "GameWindow") -> None:
+        """Initialize the game over screen."""
         self.game = game
         # donnee de test
         self.score = 12500
@@ -305,7 +376,8 @@ class GameOverScreen:
         #     self.background, (1024, 1080)
         # )
 
-    def events(self, events):
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle events from the game over screen."""
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
@@ -313,14 +385,24 @@ class GameOverScreen:
                         NameInputScreen(self.game)
                     )
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the game over screen."""
         pass
 
-    def draw_text(self, screen, text, x, y, font):
-        text = font.render(text, True, colors.white)
-        screen.blit(text, (x, y))
+    def draw_text(
+        self,
+        screen: pygame.Surface,
+        text: str,
+        x: int,
+        y: int,
+        font: pygame.font.Font
+    ) -> None:
+        """Draw text on the screen."""
+        text_surface = font.render(text, True, colors.white)
+        screen.blit(text_surface, (x, y))
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the game over screen."""
         screen.fill(colors.black)
 
         game_over = self.title.render("GAME OVER", True, colors.white)
@@ -351,7 +433,9 @@ class GameOverScreen:
 
 
 class VictoryScreen:
-    def __init__(self, game):
+    """Displays the victory screen."""
+    def __init__(self, game: "GameWindow") -> None:
+        """Initialize the victory screen."""
         self.game = game
         # donnee de test
         self.score = 12500
@@ -367,7 +451,8 @@ class VictoryScreen:
         #     self.background, (1024, 1080)
         # )
 
-    def events(self, events):
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle events from the victory screen."""
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
@@ -375,14 +460,24 @@ class VictoryScreen:
                         NameInputScreen(self.game)
                     )
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the victory screen."""
         pass
 
-    def draw_text(self, screen, text, x, y, font):
-        text = font.render(text, True, colors.white)
-        screen.blit(text, (x, y))
+    def draw_text(
+        self,
+        screen: pygame.Surface,
+        text: str,
+        x: int,
+        y: int,
+        font: pygame.font.Font
+    ) -> None:
+        """Draw text on the screen."""
+        text_surface = font.render(text, True, colors.white)
+        screen.blit(text_surface, (x, y))
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the victory screen."""
         screen.fill(colors.black)
 
         victory = self.title.render("Victory!", True, colors.white)
@@ -413,7 +508,10 @@ class VictoryScreen:
 
 
 class NameInputScreen:
-    def __init__(self, game):
+    """Handles player name input for the high score."""
+
+    def __init__(self, game: "GameWindow") -> None:
+        """Initialize the name input screen."""
         self.game = game
 
         # self.background = pygame.image.load(
@@ -426,7 +524,8 @@ class NameInputScreen:
 
         self.name = ""
 
-    def events(self, events):
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle player name input events."""
         for event in events:
 
             if event.type == pygame.KEYDOWN:
@@ -453,10 +552,24 @@ class NameInputScreen:
                     ):
                         self.name += event.unicode
 
-    def update(self, delta_time):
+    def update(self, delta_time: float) -> None:
+        """Update the name input screen."""
         pass
 
-    def draw(self, screen):
+    def draw_text(
+        self,
+        screen: pygame.Surface,
+        text: str,
+        x: int,
+        y: int,
+        font: pygame.font.Font
+    ) -> None:
+        """Draw text on the screen."""
+        text_surface = font.render(text, True, colors.white)
+        screen.blit(text_surface, (x, y))
+
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the name input screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
