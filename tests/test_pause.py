@@ -12,7 +12,7 @@ class TestGame:
 
 pygame.init()
 
-screen = pygame.display.set_mode((1024, 1080))
+screen = pygame.display.set_mode((1024, 950))
 pygame.display.set_caption("Test Pause Screen")
 
 game = TestGame()

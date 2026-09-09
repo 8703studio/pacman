@@ -39,19 +39,31 @@ class MenuStartScreen:
         return None
 
     def draw(self, screen):
-        start_x = 220
+
         self.option_rects = []
 
+        x = 80
+        spacing = 35
+
+        total_width = sum(
+            self.small_font.size(option)[0]
+            for option in self.options
+        ) + spacing * (len(self.options) - 1)
+
+        x = (screen.get_width() - total_width) // 2
+
         for i, option in enumerate(self.options):
+
             color = colors.yellow if i == self.selected else colors.white
 
             option_text = self.small_font.render(option, True, color)
 
-            option_rect = option_text.get_rect(
-                midtop=(start_x + i * 200, 800)
-            )
+            option_rect = option_text.get_rect(left=x, top=750)
+
             self.option_rects.append(option_rect)
             screen.blit(option_text, option_rect)
+
+            x = option_rect.right + spacing
 
 
 class MenuOptions:
@@ -96,9 +108,7 @@ class MenuOptions:
 
             option_text = self.font.render(option, True, color)
 
-            option_rect = option_text.get_rect(
-                midtop=(start_x + i * 180, 800)
-            )
+            option_rect = option_text.get_rect(midtop=(start_x + i * 180, 800))
             self.option_rects.append(option_rect)
             screen.blit(option_text, option_rect)
 
@@ -143,8 +153,6 @@ class MenuPause:
 
             option_text = self.font.render(option, True, color)
 
-            option_rect = option_text.get_rect(
-                midtop=(start_x + i * 180, 800)
-            )
+            option_rect = option_text.get_rect(midtop=(start_x + i * 180, 800))
             self.option_rects.append(option_rect)
             screen.blit(option_text, option_rect)

@@ -19,7 +19,9 @@ class StartScreen:
         # self.banner = pygame.image.load(
         #     "pac-idol.png"
         # ).convert_alpha()
-
+        self.highscore_font = pygame.font.Font(None, 32)
+        self.banner_rect = pygame.Rect(100, 150, 824, 450)
+        self.subtitle_font = pygame.font.Font(None, 36)
         self.menu = MenuStartScreen()
 
     def events(self, events):
@@ -50,7 +52,23 @@ class StartScreen:
     def draw(self, screen):
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
+        highscore = self.highscore_font.render("HIGH SCORE : 12500", True,
+                                               colors.white)
+        highscore_rect = highscore.get_rect(centerx=screen.get_width() // 2,
+                                            top=20
+                                            )
 
+        screen.blit(highscore, highscore_rect)
+        pygame.draw.rect(screen, colors.white, self.banner_rect, 3)
+        subtitle = self.subtitle_font.render("K-POP ARCADE", True,
+                                             colors.white)
+
+        subtitle_rect = subtitle.get_rect(
+            centerx=screen.get_width() // 2,
+            top=self.banner_rect.bottom + 20
+        )
+
+        screen.blit(subtitle, subtitle_rect)
         # banner_rect = self.banner.get_rect()
         # banner_rect.centerx = screen.get_rect().centerx
         # banner_rect.top = 100
