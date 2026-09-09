@@ -1,6 +1,6 @@
 import pygame
 
-from src.interface.menu import MenuStartScreen, MenuOptions
+from src.interface.menu import MenuStartScreen, MenuOptions, MenuPause
 from src.interface import colors
 
 
@@ -43,6 +43,10 @@ class StartScreen:
     def update(self, delta_time):
         pass
 
+    def draw_text(self, screen, text, x, y, font):
+        text = font.render(text, True, colors.white)
+        screen.blit(text, (x, y))
+
     def draw(self, screen):
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
@@ -78,6 +82,10 @@ class OptionsScreen:
 
     def update(self, delta_time):
         pass
+
+    def draw_text(self, screen, text, x, y, font):
+        text = font.render(text, True, colors.white)
+        screen.blit(text, (x, y))
 
     def draw(self, screen):
         # screen.blit(self.background, (0, 0))
@@ -141,8 +149,8 @@ class InstructionsScreen:
 
 class PauseScreen:
     def __init__(self, game):
-        self.font = pygame.font.Font(None, 32)
-        self.title = pygame.font.Font(None, 60)
+        self.game = game
+
         # self.background = pygame.image.load(
         #     "background-pause.png"
         # ).convert()
@@ -151,17 +159,31 @@ class PauseScreen:
         #     self.background, (1024, 1080)
         # )
 
-        pass
+        self.font = pygame.font.Font(None, 32)
+        self.title = pygame.font.Font(None, 60)
+
+        self.menu = MenuPause()
 
     def events(self, events):
-        pass
+        action = self.menu.handle_events(events)
+
+        if action == "Resume":
+            pass
+        elif action == "Return to main menu":
+            self.game.change_screen(StartScreen(self.game))
 
     def update(self, delta_time):
         pass
 
+    def draw_text(self, screen, text, x, y, font):
+        text = font.render(text, True, colors.white)
+        screen.blit(text, (x, y))
+
     def draw(self, screen):
         screen.fill(colors.black)
         # screen.blit(self.background, (0, 0))
+
+        self.menu.draw(screen)
 
 
 class HighscoresScreen:
@@ -228,34 +250,11 @@ class HighscoresScreen:
         self.draw_text(screen, "SCORE", self.score_x, 200, self.font)
 
         for i, (name, score) in enumerate(self.scores):
+            # mettre entry a la place de name, score
             y = 250 + i * 50
 
             # name = entry["name"]
             # score = entry["score"]
-
-            # self.draw_text(
-            #     screen,
-            #     str(i + 1),
-            #     self.rank_x,
-            #     y,
-            #     self.font
-            # )
-
-            # self.draw_text(
-            #     screen,
-            #     name,
-            #     self.name_x,
-            #     y,
-            #     self.font
-            # )
-
-            # self.draw_text(
-            #     screen,
-            #     str(score),
-            #     self.score_x,
-            #     y,
-            #     self.font
-            # )
 
             self.draw_text(screen, str(i + 1), self.rank_x, y, self.font)
             self.draw_text(screen, name, self.name_x, y, self.font)
@@ -272,9 +271,13 @@ class HighscoresScreen:
 
 
 class GameOverScreen:
-
     def __init__(self, game):
         self.game = game
+        # donnee de test
+        self.score = 12500
+        self.font = pygame.font.Font(None, 48)
+        self.title = pygame.font.Font(None, 80)
+        self.font_message = pygame.font.Font(None, 32)
 
         # self.background = pygame.image.load(
         #     "background-start.png"
@@ -295,29 +298,48 @@ class GameOverScreen:
     def update(self, delta_time):
         pass
 
+    def draw_text(self, screen, text, x, y, font):
+        text = font.render(text, True, colors.white)
+        screen.blit(text, (x, y))
+
     def draw(self, screen):
-        # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
-        font = pygame.font.Font(None, 80)
+        game_over = self.title.render("GAME OVER", True, colors.white)
+        game_over_rect = game_over.get_rect(
+            center=(screen.get_width() // 2, 300)
+        )
+        screen.blit(game_over, game_over_rect)
 
-        text = font.render(
-            "GAME OVER",
+        score = self.font.render(
+            f"Final score: {self.score}",
             True,
             colors.white
         )
-
-        rect = text.get_rect(
-            center=screen.get_rect().center
+        score_rect = score.get_rect(
+            center=(screen.get_width() // 2, 450)
         )
+        screen.blit(score, score_rect)
 
-        screen.blit(text, rect)
+        message = self.font_message.render(
+            "Press ENTER to continue",
+            True,
+            colors.white
+        )
+        message_rect = message.get_rect(
+            center=(screen.get_width() // 2, 550)
+        )
+        screen.blit(message, message_rect)
 
 
 class VictoryScreen:
-
     def __init__(self, game):
         self.game = game
+        # donnee de test
+        self.score = 12500
+        self.font = pygame.font.Font(None, 48)
+        self.title = pygame.font.Font(None, 80)
+        self.font_message = pygame.font.Font(None, 32)
 
         # self.background = pygame.image.load(
         #     "background-start.png"
@@ -338,23 +360,38 @@ class VictoryScreen:
     def update(self, delta_time):
         pass
 
+    def draw_text(self, screen, text, x, y, font):
+        text = font.render(text, True, colors.white)
+        screen.blit(text, (x, y))
+
     def draw(self, screen):
-        # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
-        font = pygame.font.Font(None, 80)
+        victory = self.title.render("Victory!", True, colors.white)
+        victory_rect = victory.get_rect(
+            center=(screen.get_width() // 2, 300)
+        )
+        screen.blit(victory, victory_rect)
 
-        text = font.render(
-            "VICTORY!",
+        score = self.font.render(
+            f"Final score: {self.score}",
             True,
             colors.white
         )
-
-        rect = text.get_rect(
-            center=screen.get_rect().center
+        score_rect = score.get_rect(
+            center=(screen.get_width() // 2, 450)
         )
+        screen.blit(score, score_rect)
 
-        screen.blit(text, rect)
+        message = self.font_message.render(
+            "Press ENTER to continue",
+            True,
+            colors.white
+        )
+        message_rect = message.get_rect(
+            center=(screen.get_width() // 2, 550)
+        )
+        screen.blit(message, message_rect)
 
 
 class NameInputScreen:
