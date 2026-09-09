@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from src.interface.game_window import GameWindow
 
 from src.interface.menu import MenuStartScreen, MenuOptions, MenuPause
+from src.interface.text_renderer import draw_text
 from src.interface import colors
 
 
@@ -52,18 +53,6 @@ class StartScreen:
     def update(self, delta_time: float) -> None:
         """Update the main menu screen."""
         pass
-
-    def draw_text(
-        self,
-        screen: pygame.Surface,
-        text: str,
-        x: int,
-        y: int,
-        font: pygame.font.Font
-    ) -> None:
-        """Draw text on the screen."""
-        text_surface = font.render(text, True, colors.white)
-        screen.blit(text_surface, (x, y))
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the main menu screen."""
@@ -122,18 +111,6 @@ class OptionsScreen:
         """Update the options screen."""
         pass
 
-    def draw_text(
-        self,
-        screen: pygame.Surface,
-        text: str,
-        x: int,
-        y: int,
-        font: pygame.font.Font
-    ) -> None:
-        """Draw text on the screen."""
-        text_surface = font.render(text, True, colors.white)
-        screen.blit(text_surface, (x, y))
-
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the options screen."""
         # screen.blit(self.background, (0, 0))
@@ -174,29 +151,22 @@ class InstructionsScreen:
         """Update the instructions screen."""
         pass
 
-    def draw_text(
-        self,
-        screen: pygame.Surface,
-        text: str,
-        x: int,
-        y: int,
-        font: pygame.font.Font
-    ) -> None:
-        """Draw text on the screen."""
-        text_surface = font.render(text, True, colors.white)
-        screen.blit(text_surface, (x, y))
-
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the instructions screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
-        self.draw_text(screen, "INSTRUCTIONS", 100, 100, self.title)
+        draw_text(screen, "INSTRUCTIONS", 100, 100, self.title,
+                  colors.white)
 
-        self.draw_text(screen, "Move with the arrow keys", 100, 200, self.font)
-        self.draw_text(screen, "Eat the Pac-gums", 100, 240, self.font)
-        self.draw_text(screen, "Avoid the ghosts", 100, 280, self.font)
-        self.draw_text(screen, "Eat Super Pac-gums", 100, 320, self.font)
+        draw_text(screen, "Move with the arrow keys", 100, 200, self.font,
+                  colors.white)
+        draw_text(screen, "Eat the Pac-gums", 100, 240, self.font,
+                  colors.white)
+        draw_text(screen, "Avoid the ghosts", 100, 280, self.font,
+                  colors.white)
+        draw_text(screen, "Eat Super Pac-gums", 100, 320, self.font,
+                  colors.white)
 
         pygame.draw.rect(screen, colors.yellow, self.back_button)
 
@@ -239,18 +209,6 @@ class PauseScreen:
     def update(self, delta_time: float) -> None:
         """Update the pause screen."""
         pass
-
-    def draw_text(
-        self,
-        screen: pygame.Surface,
-        text: str,
-        x: int,
-        y: int,
-        font: pygame.font.Font
-    ) -> None:
-        """Draw text on the screen."""
-        text_surface = font.render(text, True, colors.white)
-        screen.blit(text_surface, (x, y))
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the pause screen."""
@@ -313,28 +271,16 @@ class HighscoresScreen:
         """Update the high scores screen."""
         pass
 
-    def draw_text(
-        self,
-        screen: pygame.Surface,
-        text: str,
-        x: int,
-        y: int,
-        font: pygame.font.Font
-    ) -> None:
-        """Draw text on the screen."""
-        text_surface = font.render(text, True, colors.white)
-        screen.blit(text_surface, (x, y))
-
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the high scores screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
-        self.draw_text(screen, "HIGHSCORES", 100, 100, self.title)
+        draw_text(screen, "HIGHSCORES", 100, 100, self.title, colors.white)
 
-        self.draw_text(screen, "RANK", self.rank_x, 200, self.font)
-        self.draw_text(screen, "PLAYER", self.name_x, 200, self.font)
-        self.draw_text(screen, "SCORE", self.score_x, 200, self.font)
+        draw_text(screen, "RANK", self.rank_x, 200, self.font, colors.white)
+        draw_text(screen, "PLAYER", self.name_x, 200, self.font, colors.white)
+        draw_text(screen, "SCORE", self.score_x, 200, self.font, colors.white)
 
         for i, (name, score) in enumerate(self.scores):
             # mettre entry a la place de name, score
@@ -343,9 +289,12 @@ class HighscoresScreen:
             # name = entry["name"]
             # score = entry["score"]
 
-            self.draw_text(screen, str(i + 1), self.rank_x, y, self.font)
-            self.draw_text(screen, name, self.name_x, y, self.font)
-            self.draw_text(screen, str(score), self.score_x, y, self.font)
+            draw_text(screen, str(i + 1), self.rank_x, y, self.font,
+                      colors.white)
+            draw_text(screen, name, self.name_x, y, self.font,
+                      colors.white)
+            draw_text(screen, str(score), self.score_x, y, self.font,
+                      colors.white)
 
         pygame.draw.rect(screen, colors.yellow, self.back_button)
 
@@ -388,18 +337,6 @@ class GameOverScreen:
     def update(self, delta_time: float) -> None:
         """Update the game over screen."""
         pass
-
-    def draw_text(
-        self,
-        screen: pygame.Surface,
-        text: str,
-        x: int,
-        y: int,
-        font: pygame.font.Font
-    ) -> None:
-        """Draw text on the screen."""
-        text_surface = font.render(text, True, colors.white)
-        screen.blit(text_surface, (x, y))
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the game over screen."""
@@ -463,18 +400,6 @@ class VictoryScreen:
     def update(self, delta_time: float) -> None:
         """Update the victory screen."""
         pass
-
-    def draw_text(
-        self,
-        screen: pygame.Surface,
-        text: str,
-        x: int,
-        y: int,
-        font: pygame.font.Font
-    ) -> None:
-        """Draw text on the screen."""
-        text_surface = font.render(text, True, colors.white)
-        screen.blit(text_surface, (x, y))
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the victory screen."""
@@ -555,18 +480,6 @@ class NameInputScreen:
     def update(self, delta_time: float) -> None:
         """Update the name input screen."""
         pass
-
-    def draw_text(
-        self,
-        screen: pygame.Surface,
-        text: str,
-        x: int,
-        y: int,
-        font: pygame.font.Font
-    ) -> None:
-        """Draw text on the screen."""
-        text_surface = font.render(text, True, colors.white)
-        screen.blit(text_surface, (x, y))
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the name input screen."""
