@@ -6,8 +6,8 @@ class MenuStartScreen:
     """Displays the main menu."""
     def __init__(self) -> None:
         """Initialize the menu."""
-        self.font = pygame.font.Font(None, 48)
-        self.small_font = pygame.font.Font(None, 32)
+        self.font = pygame.font.Font('src/interface/assets/fonts/aldotheapache.ttf', 48)
+        self.small_font = pygame.font.Font('src/interface/assets/fonts/aldotheapache.ttf', 32)
 
         self.options = [
             "Start Game",

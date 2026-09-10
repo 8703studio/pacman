@@ -26,7 +26,9 @@ class StartScreen:
         # self.banner = pygame.image.load(
         #     "pac-idol.png"
         # ).convert_alpha()
-        self.highscore_font = pygame.font.Font(None, 32)
+
+        self.font = pygame.font.Font('src/interface/assets/fonts/aldotheapache.ttf', 30)
+        self.highscore_font = pygame.font.Font('src/interface/assets/fonts/aldotheapache.ttf', 32)
         self.banner_rect = pygame.Rect(100, 150, 824, 450)
         self.subtitle_font = pygame.font.Font(None, 36)
         self.menu = MenuStartScreen()
