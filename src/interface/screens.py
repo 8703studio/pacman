@@ -36,7 +36,7 @@ class StartScreen:
         action = self.menu.handle_events(events)
 
         if action == "Start Game":
-            pass
+            self.game.change_screen(GameScreen(self.game))
 
         elif action == "View Highscores":
             self.game.change_screen(HighscoresScreen(self.game))
@@ -82,6 +82,41 @@ class StartScreen:
         # screen.blit(self.banner, banner_rect)
 
         self.menu.draw(screen)
+
+
+class GameScreen:
+    """Displays the game screen."""
+    def __init__(self, game: "GameWindow") -> None:
+        """Initialize the game screen."""
+        self.game = game
+
+        # self.background = pygame.image.load(
+        #     "background-start.png"
+        # ).convert()
+
+        # self.background = pygame.transform.scale(
+        #     self.background, (1024, 1080)
+        # )
+
+    def events(self, events: list[pygame.event.Event]) -> None:
+        """Handle events from the game"""
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.game.change_screen(PauseScreen(self.game))
+
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     if self.back_button.collidepoint(event.pos):
+            #         self.game.change_screen(StartScreen(self.game))
+
+    def update(self, delta_time: float) -> None:
+        """Update the game screen."""
+        pass
+
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the game screen."""
+        # screen.blit(self.background, (0, 0))
+        screen.fill(colors.black)
 
 
 class OptionsScreen:
@@ -134,7 +169,9 @@ class InstructionsScreen:
 
         self.font = pygame.font.Font(None, 32)
         self.title = pygame.font.Font(None, 60)
-        self.back_button = pygame.Rect(100, 900, 100, 60)
+        self.back_button = pygame.Rect(100, 800, 100, 60)
+        self.icon_left_rect = pygame.Rect(380, 30, 30, 30)
+        self.icon_right_rect = pygame.Rect(750, 30, 30, 30)
 
     def events(self, events: list[pygame.event.Event]) -> None:
         """Handle events from the instructions screen."""
@@ -156,8 +193,40 @@ class InstructionsScreen:
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
-        draw_text(screen, "INSTRUCTIONS", 100, 100, self.title,
-                  colors.white)
+        title_surface = self.title.render("INSTRUCTIONS", True, colors.white)
+
+        square_size = 30
+        space = 20
+        title_y = 50
+
+        total_width = square_size + space + title_surface.get_width() + space + square_size
+
+        start_x = (1024 - total_width) // 2
+
+        left_rect = pygame.Rect(start_x, title_y + (title_surface.get_height() - square_size) // 2,
+                                square_size, square_size)
+
+        title_x = start_x + square_size + space
+
+        right_rect = pygame.Rect(
+            title_x + title_surface.get_width() + space,
+            title_y + (title_surface.get_height() - square_size) // 2,
+            square_size,
+            square_size
+        )
+
+        pygame.draw.rect(screen, colors.white, left_rect, 3)
+
+        draw_text(
+            screen,
+            "INSTRUCTIONS",
+            title_x,
+            title_y,
+            self.title,
+            colors.white
+        )
+
+        pygame.draw.rect(screen, colors.white, right_rect, 3)
 
         draw_text(screen, "Move with the arrow keys", 100, 200, self.font,
                   colors.white)
@@ -234,7 +303,7 @@ class HighscoresScreen:
 
         self.font = pygame.font.Font(None, 32)
         self.title = pygame.font.Font(None, 60)
-        self.back_button = pygame.Rect(100, 900, 100, 60)
+        self.back_button = pygame.Rect(100, 800, 100, 60)
 
         self.rank_x = 150
         self.name_x = 350
