@@ -7,7 +7,7 @@ def draw_text(
     x: int,
     y: int,
     font: pygame.font.Font,
-    color: pygame.Color
+    color: pygame.Color,
 ) -> None:
     """Draw text on the screen."""
     text_surface = font.render(text, True, color)

@@ -1,3 +1,4 @@
 /divers/
 /pacman/
 **/__pycache__/
+.vscode

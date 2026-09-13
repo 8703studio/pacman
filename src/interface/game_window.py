@@ -10,6 +10,7 @@ from src.interface.screens import StartScreen
 
 class GameWindow:
     """Manages the main game window and its interface screens."""
+
     def __init__(self, width: int, height: int) -> None:
         """Initialize the game window and its interface components."""
         pygame.init()
@@ -37,7 +38,7 @@ class GameWindow:
             width=self.width,
             height=self.height,
             hud_height=self.hud_height,
-            margin=self.margin
+            margin=self.margin,
         )
 
     def handle_events(self) -> None:

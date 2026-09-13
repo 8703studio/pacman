@@ -5,6 +5,7 @@ from src.interface import colors
 
 class HUD:
     """Displays the game's heads-up display."""
+
     def __init__(self, font_size: int = 32) -> None:
         """Initialize the HUD and load its icons."""
         self.font = pygame.font.Font(None, font_size)
@@ -32,21 +33,15 @@ class HUD:
         score: int,
         lives: int,
         level: int,
-        time_left: int
+        time_left: int,
     ) -> None:
         """Render the HUD on the screen."""
 
         width = screen.get_width()
 
-        level_text = self.font.render(
-            f"Level: {level}",
-            True,
-            self.color
-        )
+        level_text = self.font.render(f"Level: {level}", True, self.color)
 
-        level_rect = level_text.get_rect(
-            midtop=(width // 2, 10)
-        )
+        level_rect = level_text.get_rect(midtop=(width // 2, 10))
 
         level_icon_rect = self.level_icon.get_rect(
             midright=(level_rect.left - 5, level_rect.centery)
@@ -57,32 +52,20 @@ class HUD:
 
         top_y = 70
 
-        score_text = self.font.render(
-            f"Score: {score}",
-            True,
-            self.color
-        )
+        score_text = self.font.render(f"Score: {score}", True, self.color)
 
-        score_rect = score_text.get_rect(
-            topleft=(20, top_y)
-        )
+        score_rect = score_text.get_rect(topleft=(20, top_y))
 
         score_icon_rect = self.score_icon.get_rect(
             midleft=(score_rect.right + 5, score_rect.centery)
-            )
+        )
 
         screen.blit(score_text, score_rect)
         screen.blit(self.score_icon, score_icon_rect)
 
-        lives_text = self.font.render(
-            f"Lives: {lives}",
-            True,
-            self.color
-        )
+        lives_text = self.font.render(f"Lives: {lives}", True, self.color)
 
-        lives_rect = lives_text.get_rect(
-            midtop=(width // 2, top_y)
-        )
+        lives_rect = lives_text.get_rect(midtop=(width // 2, top_y))
 
         lives_icon_rect = self.heart_icon.get_rect(
             midright=(lives_rect.left - 5, lives_rect.centery)
@@ -92,14 +75,10 @@ class HUD:
         screen.blit(lives_text, lives_rect)
 
         time_text = self.font.render(
-            f"Time Left: {time_left}",
-            True,
-            self.color
+            f"Time Left: {time_left}", True, self.color
         )
 
-        time_rect = time_text.get_rect(
-            topright=(width - 20, top_y)
-        )
+        time_rect = time_text.get_rect(topright=(width - 20, top_y))
 
         time_icon_rect = self.clock_icon.get_rect(
             midright=(time_rect.left - 5, time_rect.centery)

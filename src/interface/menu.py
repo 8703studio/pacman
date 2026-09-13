@@ -4,24 +4,27 @@ from src.interface import colors
 
 class MenuStartScreen:
     """Displays the main menu."""
+
     def __init__(self) -> None:
         """Initialize the menu."""
-        self.font = pygame.font.Font('src/interface/assets/fonts/aldotheapache.ttf', 48)
-        self.small_font = pygame.font.Font('src/interface/assets/fonts/aldotheapache.ttf', 32)
+        self.font = pygame.font.Font(
+            "src/interface/assets/fonts/aldotheapache.ttf", 48
+        )
+        self.small_font = pygame.font.Font(
+            "src/interface/assets/fonts/aldotheapache.ttf", 32
+        )
 
         self.options = [
             "Start Game",
             "View Highscores",
             "Instructions",
             "Options",
-            "Exit"
-            ]
+            "Exit",
+        ]
         self.selected = 0
         self.option_rects: list[pygame.Rect] = []
 
-    def handle_events(
-        self, events: list[pygame.event.Event]
-    ) -> str | None:
+    def handle_events(self, events: list[pygame.event.Event]) -> str | None:
         """Handle events of main menu."""
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -51,8 +54,7 @@ class MenuStartScreen:
         spacing = 35
 
         total_width = sum(
-            self.small_font.size(option)[0]
-            for option in self.options
+            self.small_font.size(option)[0] for option in self.options
         ) + spacing * (len(self.options) - 1)
 
         x = (screen.get_width() - total_width) // 2
@@ -73,69 +75,127 @@ class MenuStartScreen:
 
 class MenuOptions:
     """Displays the options menu."""
+
     def __init__(self) -> None:
         """Initialize the menu."""
         self.font = pygame.font.Font(None, 48)
+
         self.options = [
             "Sound",
             "Music",
             "Theme",
             "Back",
         ]
+
+        self.values = {
+            "Sound": True,
+            "Music": True,
+            "Theme": "Classic",
+        }
+
         self.selected = 0
         self.option_rects: list[pygame.Rect] = []
 
-    def handle_events(
-        self, events: list[pygame.event.Event]
-    ) -> str | None:
+    def handle_events(self, events: list[pygame.event.Event]) -> str | None:
+        """Handle keyboard and mouse events."""
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_DOWN:
                     self.selected = (self.selected + 1) % len(self.options)
-                elif event.key == pygame.K_LEFT:
+
+                elif event.key == pygame.K_UP:
                     self.selected = (self.selected - 1) % len(self.options)
+
+                elif event.key == pygame.K_LEFT:
+                    self._change_value(-1)
+
+                elif event.key == pygame.K_RIGHT:
+                    self._change_value(1)
+
                 elif event.key == pygame.K_RETURN:
-                    return self.options[self.selected]
+                    if self.options[self.selected] == "Back":
+                        return "Back"
+
             elif event.type == pygame.MOUSEMOTION:
                 for i, rect in enumerate(self.option_rects):
                     if rect.collidepoint(event.pos):
                         self.selected = i
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     for i, rect in enumerate(self.option_rects):
                         if rect.collidepoint(event.pos):
-                            return self.options[i]
+                            self.selected = i
+
+                            if self.options[i] == "Back":
+                                return "Back"
+
+                            self._change_value(1)
 
         return None
 
+    def _change_value(self, direction: int) -> None:
+        """Change the value of the selected option."""
+        option = self.options[self.selected]
+
+        if option == "Sound":
+            self.values["Sound"] = not self.values["Sound"]
+
+        elif option == "Music":
+            self.values["Music"] = not self.values["Music"]
+
+        elif option == "Theme":
+            if self.values["Theme"] == "Classic K-POP":
+                self.values["Theme"] = "Monichrome K-pop"
+            else:
+                self.values["Theme"] = "Classic"
+
     def draw(self, screen: pygame.Surface) -> None:
-        start_x = 260
+        """Draw the options menu."""
+        start_y = 300
+
         self.option_rects = []
 
         for i, option in enumerate(self.options):
             color = colors.yellow if i == self.selected else colors.white
 
-            option_text = self.font.render(option, True, color)
+            if option == "Sound":
+                value = "ON" if self.values["Sound"] else "OFF"
+                text = f"Sound : {value}"
 
-            option_rect = option_text.get_rect(midtop=(start_x + i * 180, 800))
+            elif option == "Music":
+                value = "ON" if self.values["Music"] else "OFF"
+                text = f"Music : {value}"
+
+            elif option == "Theme":
+                text = f"Theme : {self.values['Theme']}"
+
+            else:
+                text = option
+
+            option_text = self.font.render(text, True, color)
+
+            option_rect = option_text.get_rect(
+                center=(screen.get_width() // 2, start_y + i * 80)
+            )
+
             self.option_rects.append(option_rect)
             screen.blit(option_text, option_rect)
 
 
 class MenuPause:
     """Displays the pause menu."""
+
     def __init__(self) -> None:
         self.font = pygame.font.Font(None, 48)
         self.options = [
-            "Resume game",
+            "Resume",
             "Return to main menu",
         ]
         self.selected = 0
         self.option_rects: list[pygame.Rect] = []
 
-    def handle_events(
-        self, events: list[pygame.event.Event]
-    ) -> str | None:
+    def handle_events(self, events: list[pygame.event.Event]) -> str | None:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:

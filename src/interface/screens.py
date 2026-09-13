@@ -6,12 +6,14 @@ if TYPE_CHECKING:
     from src.interface.game_window import GameWindow
 
 from src.interface.menu import MenuStartScreen, MenuOptions, MenuPause
+from src.interface.hud import HUD
 from src.interface.text_renderer import draw_text
 from src.interface import colors
 
 
 class StartScreen:
     """Displays the main menu screen."""
+
     def __init__(self, game: "GameWindow") -> None:
         self.game = game
 
@@ -27,8 +29,12 @@ class StartScreen:
         #     "pac-idol.png"
         # ).convert_alpha()
 
-        self.font = pygame.font.Font('src/interface/assets/fonts/aldotheapache.ttf', 30)
-        self.highscore_font = pygame.font.Font('src/interface/assets/fonts/aldotheapache.ttf', 32)
+        self.font = pygame.font.Font(
+            "src/interface/assets/fonts/aldotheapache.ttf", 30
+        )
+        self.highscore_font = pygame.font.Font(
+            "src/interface/assets/fonts/aldotheapache.ttf", 32
+        )
         self.banner_rect = pygame.Rect(100, 150, 824, 450)
         self.subtitle_font = pygame.font.Font(None, 36)
         self.menu = MenuStartScreen()
@@ -60,23 +66,29 @@ class StartScreen:
         """Draw the main menu screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
-        highscore = self.highscore_font.render("HIGH SCORE : 12500", True,
-                                               colors.white)
-        highscore_rect = highscore.get_rect(centerx=screen.get_width() // 2,
-                                            top=20
-                                            )
+
+        highscore = self.highscore_font.render(
+            "HIGH SCORE : 12500", True, colors.white
+        )
+
+        highscore_rect = highscore.get_rect(
+            centerx=screen.get_width() // 2, top=20
+        )
 
         screen.blit(highscore, highscore_rect)
+
         pygame.draw.rect(screen, colors.white, self.banner_rect, 3)
-        subtitle = self.subtitle_font.render("K-POP ARCADE", True,
-                                             colors.white)
+
+        subtitle = self.subtitle_font.render(
+            "K-POP ARCADE", True, colors.white
+        )
 
         subtitle_rect = subtitle.get_rect(
-            centerx=screen.get_width() // 2,
-            top=self.banner_rect.bottom + 20
+            centerx=screen.get_width() // 2, top=self.banner_rect.bottom + 20
         )
 
         screen.blit(subtitle, subtitle_rect)
+
         # banner_rect = self.banner.get_rect()
         # banner_rect.centerx = screen.get_rect().centerx
         # banner_rect.top = 100
@@ -88,6 +100,7 @@ class StartScreen:
 
 class GameScreen:
     """Displays the game screen."""
+
     def __init__(self, game: "GameWindow") -> None:
         """Initialize the game screen."""
         self.game = game
@@ -119,10 +132,12 @@ class GameScreen:
         """Draw the game screen."""
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
+        self.hud = HUD()
 
 
 class OptionsScreen:
     """Displays the game options screen."""
+
     def __init__(self, game: "GameWindow") -> None:
         """Initialize the options screen."""
         self.game = game
@@ -157,6 +172,7 @@ class OptionsScreen:
 
 class InstructionsScreen:
     """Displays the game instructions."""
+
     def __init__(self, game: "GameWindow") -> None:
         """Initialize the instructions screen."""
         self.game = game
@@ -164,10 +180,25 @@ class InstructionsScreen:
         # self.background = pygame.image.load(
         #     "background-start.png"
         # ).convert()
-
         # self.background = pygame.transform.scale(
         #     self.background, (1024, 1080)
         # )
+
+        # self.move_icon = pygame.image.load(
+        #     "assets/icons/move.png"
+        # ).convert_alpha()
+
+        # self.pacgum_icon = pygame.image.load(
+        #     "assets/icons/pacgum.png"
+        # ).convert_alpha()
+
+        # self.ghost_icon = pygame.image.load(
+        #     "assets/icons/ghost.png"
+        # ).convert_alpha()
+
+        # self.super_pacgum_icon = pygame.image.load(
+        #     "assets/icons/super_pacgum.png"
+        # ).convert_alpha()
 
         self.font = pygame.font.Font(None, 32)
         self.title = pygame.font.Font(None, 60)
@@ -201,12 +232,22 @@ class InstructionsScreen:
         space = 20
         title_y = 50
 
-        total_width = square_size + space + title_surface.get_width() + space + square_size
+        total_width = (
+            square_size
+            + space
+            + title_surface.get_width()
+            + space
+            + square_size
+        )
 
         start_x = (1024 - total_width) // 2
 
-        left_rect = pygame.Rect(start_x, title_y + (title_surface.get_height() - square_size) // 2,
-                                square_size, square_size)
+        left_rect = pygame.Rect(
+            start_x,
+            title_y + (title_surface.get_height() - square_size) // 2,
+            square_size,
+            square_size,
+        )
 
         title_x = start_x + square_size + space
 
@@ -214,43 +255,86 @@ class InstructionsScreen:
             title_x + title_surface.get_width() + space,
             title_y + (title_surface.get_height() - square_size) // 2,
             square_size,
-            square_size
+            square_size,
         )
 
         pygame.draw.rect(screen, colors.white, left_rect, 3)
 
         draw_text(
-            screen,
-            "INSTRUCTIONS",
-            title_x,
-            title_y,
-            self.title,
-            colors.white
+            screen, "INSTRUCTIONS", title_x, title_y, self.title, colors.white
         )
 
         pygame.draw.rect(screen, colors.white, right_rect, 3)
 
-        draw_text(screen, "Move with the arrow keys", 100, 200, self.font,
-                  colors.white)
-        draw_text(screen, "Eat the Pac-gums", 100, 240, self.font,
-                  colors.white)
-        draw_text(screen, "Avoid the ghosts", 100, 280, self.font,
-                  colors.white)
-        draw_text(screen, "Eat Super Pac-gums", 100, 320, self.font,
-                  colors.white)
+        # placeholders
+        icon_size = 30
+
+        icon_positions = [
+            (50, 200),
+            (50, 240),
+            (50, 280),
+            (50, 320),
+        ]
+
+        for x, y in icon_positions:
+            pygame.draw.rect(
+                screen,
+                colors.white,
+                pygame.Rect(x, y, icon_size, icon_size),
+                3,
+            )
+
+        # Real icons - uncomment when the assets are ready
+        #
+        # icons = [
+        #     self.move_icon,
+        #     self.pacgum_icon,
+        #     self.ghost_icon,
+        #     self.super_pacgum_icon,
+        # ]
+        #
+        # for icon, (x, y) in zip(icons, icon_positions):
+        #
+        #     screen.blit(icon, (x, y))
+
+        draw_text(
+            screen,
+            "Move Pac-idol with the arrow keys",
+            100,
+            200,
+            self.font,
+            colors.white,
+        )
+
+        draw_text(
+            screen, "Eat the Pac-gums", 100, 240, self.font, colors.white
+        )
+
+        draw_text(
+            screen,
+            "Avoid the rival ghosts idols",
+            100,
+            280,
+            self.font,
+            colors.white,
+        )
+
+        draw_text(
+            screen, "Eat Super Pac-gums", 100, 320, self.font, colors.white
+        )
 
         pygame.draw.rect(screen, colors.yellow, self.back_button)
 
         button_text = self.font.render("Retour", True, colors.black)
-        button_text_rect = button_text.get_rect(
-            center=self.back_button.center
-        )
+
+        button_text_rect = button_text.get_rect(center=self.back_button.center)
 
         screen.blit(button_text, button_text_rect)
 
 
 class PauseScreen:
     """Displays the pause menu."""
+
     def __init__(self, game: "GameWindow") -> None:
         """Initialize the pause screen."""
         self.game = game
@@ -265,7 +349,6 @@ class PauseScreen:
 
         self.font = pygame.font.Font(None, 32)
         self.title = pygame.font.Font(None, 60)
-
         self.menu = MenuPause()
 
     def events(self, events: list[pygame.event.Event]) -> None:
@@ -274,6 +357,7 @@ class PauseScreen:
 
         if action == "Resume":
             pass
+
         elif action == "Return to main menu":
             self.game.change_screen(StartScreen(self.game))
 
@@ -284,6 +368,7 @@ class PauseScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the pause screen."""
         screen.fill(colors.black)
+
         # screen.blit(self.background, (0, 0))
 
         self.menu.draw(screen)
@@ -291,6 +376,7 @@ class PauseScreen:
 
 class HighscoresScreen:
     """Displays the game's high scores."""
+
     def __init__(self, game: "GameWindow") -> None:
         """Initialize the high scores screen."""
         self.game = game
@@ -345,13 +431,52 @@ class HighscoresScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the high scores screen."""
         # screen.blit(self.background, (0, 0))
+
         screen.fill(colors.black)
 
-        draw_text(screen, "HIGHSCORES", 100, 100, self.title, colors.white)
+        title_surface = self.title.render(
+            "★ ★ HALL OF FAME ★ ★",
+            True,
+            colors.white,
+        )
 
-        draw_text(screen, "RANK", self.rank_x, 200, self.font, colors.white)
-        draw_text(screen, "PLAYER", self.name_x, 200, self.font, colors.white)
-        draw_text(screen, "SCORE", self.score_x, 200, self.font, colors.white)
+        title_x = (screen.get_width() - title_surface.get_width()) // 2
+
+        draw_text(
+            screen,
+            "★ ★ HALL OF FAME ★ ★",
+            title_x,
+            100,
+            self.title,
+            colors.white,
+        )
+
+        draw_text(
+            screen,
+            "RANK",
+            self.rank_x,
+            200,
+            self.font,
+            colors.white,
+        )
+
+        draw_text(
+            screen,
+            "IDOL",
+            self.name_x,
+            200,
+            self.font,
+            colors.white,
+        )
+
+        draw_text(
+            screen,
+            "SCORE",
+            self.score_x,
+            200,
+            self.font,
+            colors.white,
+        )
 
         for i, (name, score) in enumerate(self.scores):
             # mettre entry a la place de name, score
@@ -360,36 +485,48 @@ class HighscoresScreen:
             # name = entry["name"]
             # score = entry["score"]
 
-            draw_text(screen, str(i + 1), self.rank_x, y, self.font,
-                      colors.white)
-            draw_text(screen, name, self.name_x, y, self.font,
-                      colors.white)
-            draw_text(screen, str(score), self.score_x, y, self.font,
-                      colors.white)
+            draw_text(
+                screen, str(i + 1), self.rank_x, y, self.font, colors.white
+            )
+
+            draw_text(screen, name, self.name_x, y, self.font, colors.white)
+
+            draw_text(
+                screen, str(score), self.score_x, y, self.font, colors.white
+            )
 
         pygame.draw.rect(screen, colors.yellow, self.back_button)
 
         button_text = self.font.render("Retour", True, colors.black)
-        button_text_rect = button_text.get_rect(
-            center=self.back_button.center
-        )
+
+        button_text_rect = button_text.get_rect(center=self.back_button.center)
 
         screen.blit(button_text, button_text_rect)
 
 
-class GameOverScreen:
-    """Displays the game over screen."""
-    def __init__(self, game: "GameWindow") -> None:
-        """Initialize the game over screen."""
+class EndGameScreen:
+    """Displays the end game screen."""
+
+    def __init__(
+        self,
+        game: "GameWindow",
+        victory: bool,
+    ) -> None:
+        """Initialize the end game screen."""
         self.game = game
-        # donnee de test
+        self.victory = victory
+
+        # Donnée de test
         self.score = 12500
+
         self.font = pygame.font.Font(None, 48)
         self.title = pygame.font.Font(None, 80)
         self.font_message = pygame.font.Font(None, 32)
 
+        self.continue_button = pygame.Rect(412, 650, 200, 60)
+
         # self.background = pygame.image.load(
-        #     "background-start.png"
+        #     "background-end.png"
         # ).convert()
 
         # self.background = pygame.transform.scale(
@@ -397,110 +534,67 @@ class GameOverScreen:
         # )
 
     def events(self, events: list[pygame.event.Event]) -> None:
-        """Handle events from the game over screen."""
+        """Handle events from the end game screen."""
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    self.game.change_screen(
-                        NameInputScreen(self.game)
-                    )
+                    self.game.change_screen(NameInputScreen(self.game))
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if self.continue_button.collidepoint(event.pos):
+                        self.game.change_screen(NameInputScreen(self.game))
 
     def update(self, delta_time: float) -> None:
-        """Update the game over screen."""
+        """Update the end game screen."""
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw the game over screen."""
+        """Draw the end game screen."""
         screen.fill(colors.black)
 
-        game_over = self.title.render("GAME OVER", True, colors.white)
-        game_over_rect = game_over.get_rect(
-            center=(screen.get_width() // 2, 300)
+        if self.victory:
+            title_text = "VICTORY!"
+        else:
+            title_text = "GAME OVER"
+
+        title = self.title.render(
+            title_text,
+            True,
+            colors.white,
         )
-        screen.blit(game_over, game_over_rect)
+
+        title_rect = title.get_rect(center=(screen.get_width() // 2, 300))
+
+        screen.blit(title, title_rect)
 
         score = self.font.render(
             f"Final score: {self.score}",
             True,
-            colors.white
+            colors.white,
         )
-        score_rect = score.get_rect(
-            center=(screen.get_width() // 2, 450)
-        )
+
+        score_rect = score.get_rect(center=(screen.get_width() // 2, 450))
+
         screen.blit(score, score_rect)
 
-        message = self.font_message.render(
-            "Press ENTER to continue",
+        pygame.draw.rect(
+            screen,
+            colors.yellow,
+            self.continue_button,
+        )
+
+        button_text = self.font_message.render(
+            "CONTINUE",
             True,
-            colors.white
+            colors.black,
         )
-        message_rect = message.get_rect(
-            center=(screen.get_width() // 2, 550)
+
+        button_text_rect = button_text.get_rect(
+            center=self.continue_button.center
         )
-        screen.blit(message, message_rect)
 
-
-class VictoryScreen:
-    """Displays the victory screen."""
-    def __init__(self, game: "GameWindow") -> None:
-        """Initialize the victory screen."""
-        self.game = game
-        # donnee de test
-        self.score = 12500
-        self.font = pygame.font.Font(None, 48)
-        self.title = pygame.font.Font(None, 80)
-        self.font_message = pygame.font.Font(None, 32)
-
-        # self.background = pygame.image.load(
-        #     "background-start.png"
-        # ).convert()
-
-        # self.background = pygame.transform.scale(
-        #     self.background, (1024, 1080)
-        # )
-
-    def events(self, events: list[pygame.event.Event]) -> None:
-        """Handle events from the victory screen."""
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    self.game.change_screen(
-                        NameInputScreen(self.game)
-                    )
-
-    def update(self, delta_time: float) -> None:
-        """Update the victory screen."""
-        pass
-
-    def draw(self, screen: pygame.Surface) -> None:
-        """Draw the victory screen."""
-        screen.fill(colors.black)
-
-        victory = self.title.render("Victory!", True, colors.white)
-        victory_rect = victory.get_rect(
-            center=(screen.get_width() // 2, 300)
-        )
-        screen.blit(victory, victory_rect)
-
-        score = self.font.render(
-            f"Final score: {self.score}",
-            True,
-            colors.white
-        )
-        score_rect = score.get_rect(
-            center=(screen.get_width() // 2, 450)
-        )
-        screen.blit(score, score_rect)
-
-        message = self.font_message.render(
-            "Press ENTER to continue",
-            True,
-            colors.white
-        )
-        message_rect = message.get_rect(
-            center=(screen.get_width() // 2, 550)
-        )
-        screen.blit(message, message_rect)
+        screen.blit(button_text, button_text_rect)
 
 
 class NameInputScreen:
@@ -519,34 +613,50 @@ class NameInputScreen:
         # )
 
         self.name = ""
+        self.score = 12500
+
+        self.font = pygame.font.Font(None, 50)
+        self.title = pygame.font.Font(None, 70)
+        self.message_font = pygame.font.Font(None, 32)
+
+        self.input_rect = pygame.Rect(312, 350, 400, 70)
+        self.continue_button = pygame.Rect(412, 500, 200, 60)
 
     def events(self, events: list[pygame.event.Event]) -> None:
         """Handle player name input events."""
         for event in events:
-
             if event.type == pygame.KEYDOWN:
-
                 if event.key == pygame.K_RETURN:
-                    if self.name.strip():
-                        if self.game.highscore.add_score(
-                            self.name.strip(),
-                            self.game.score
-                        ):
-                            self.game.highscore.save_score()
-
-                        self.game.change_screen(
-                            HighscoresScreen(self.game)
-                        )
+                    self._submit_name()
 
                 elif event.key == pygame.K_BACKSPACE:
                     self.name = self.name[:-1]
 
                 else:
-                    if (
-                        len(self.name) < 10
-                        and (event.unicode.isalnum() or event.unicode == " ")
+                    if len(self.name) < 10 and (
+                        event.unicode.isalnum() or event.unicode == " "
                     ):
                         self.name += event.unicode
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if self.continue_button.collidepoint(event.pos):
+                        self._submit_name()
+
+    def _submit_name(self) -> None:
+        """Submit the player name."""
+        name = self.name.strip()
+
+        if not name:
+            return
+
+        # if self.game.highscore.add_score(
+        #     name,
+        #     self.game.score,
+        # ):
+        #     self.game.highscore.save_score()
+
+        self.game.change_screen(HighscoresScreen(self.game))
 
     def update(self, delta_time: float) -> None:
         """Update the name input screen."""
@@ -554,28 +664,59 @@ class NameInputScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the name input screen."""
-        # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
 
-        font = pygame.font.Font(None, 50)
-        title = pygame.font.Font(None, 70)
-
-        text = title.render(
+        title = self.title.render(
             "ENTER YOUR NAME",
             True,
-            colors.white
+            colors.white,
         )
-        text_rect = text.get_rect(
-            center=(screen.get_width() // 2, 250)
-        )
-        screen.blit(text, text_rect)
 
-        name_text = font.render(
+        title_rect = title.get_rect(center=(screen.get_width() // 2, 200))
+
+        screen.blit(title, title_rect)
+
+        pygame.draw.rect(
+            screen,
+            colors.white,
+            self.input_rect,
+            2,
+        )
+
+        name_text = self.font.render(
             self.name,
             True,
-            colors.white
+            colors.white,
         )
-        name_rect = name_text.get_rect(
-            center=(screen.get_width() // 2, 400)
-        )
+
+        name_rect = name_text.get_rect(center=self.input_rect.center)
+
         screen.blit(name_text, name_rect)
+
+        message = self.message_font.render(
+            "10 characters maximum",
+            True,
+            colors.white,
+        )
+
+        message_rect = message.get_rect(center=(screen.get_width() // 2, 450))
+
+        screen.blit(message, message_rect)
+
+        pygame.draw.rect(
+            screen,
+            colors.yellow,
+            self.continue_button,
+        )
+
+        button_text = self.message_font.render(
+            "CONTINUE",
+            True,
+            colors.black,
+        )
+
+        button_text_rect = button_text.get_rect(
+            center=self.continue_button.center
+        )
+
+        screen.blit(button_text, button_text_rect)

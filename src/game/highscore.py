@@ -35,10 +35,7 @@ class Highscore:
                 ):
                     self.scores.append(entry)
 
-            self.scores.sort(
-                key=lambda s: s["score"],
-                reverse=True
-            )
+            self.scores.sort(key=lambda s: s["score"], reverse=True)
 
             self.scores = self.scores[:10]
 
@@ -70,15 +67,9 @@ class Highscore:
         if isinstance(score, bool) or score < 0:
             return False
 
-        self.scores.append({
-            "name": name,
-            "score": score
-        })
+        self.scores.append({"name": name, "score": score})
 
-        self.scores.sort(
-            key=lambda s: s["score"],
-            reverse=True
-        )
+        self.scores.sort(key=lambda s: s["score"], reverse=True)
 
         self.scores = self.scores[:10]
 
