@@ -17,26 +17,26 @@ class StartScreen:
     def __init__(self, game: "GameWindow") -> None:
         self.game = game
 
-        # self.background = pygame.image.load(
-        #     "background-start.png"
-        # ).convert()
+        self.background = pygame.image.load(
+            "src/interface/assets/background/background.png"
+        ).convert()
 
-        # self.background = pygame.transform.scale(
-        #     self.background, (1024, 1080)
-        # )
+        self.background = pygame.transform.scale(self.background, (1024, 1080))
 
         # self.banner = pygame.image.load(
         #     "pac-idol.png"
         # ).convert_alpha()
 
         self.font = pygame.font.Font(
-            "src/interface/assets/fonts/aldotheapache.ttf", 30
+            "src/interface/assets/fonts/upheavtt.ttf", 30
         )
         self.highscore_font = pygame.font.Font(
-            "src/interface/assets/fonts/aldotheapache.ttf", 32
+            "src/interface/assets/fonts/upheavtt.ttf", 32
         )
         self.banner_rect = pygame.Rect(100, 150, 824, 450)
-        self.subtitle_font = pygame.font.Font(None, 36)
+        self.subtitle_font = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 36
+        )
         self.menu = MenuStartScreen()
 
     def events(self, events: list[pygame.event.Event]) -> None:
@@ -64,8 +64,8 @@ class StartScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the main menu screen."""
-        # screen.blit(self.background, (0, 0))
-        screen.fill(colors.black)
+        screen.blit(self.background, (0, 0))
+        # screen.fill(colors.black)
 
         highscore = self.highscore_font.render(
             "HIGH SCORE : 12500", True, colors.white
@@ -142,13 +142,11 @@ class OptionsScreen:
         """Initialize the options screen."""
         self.game = game
 
-        # self.background = pygame.image.load(
-        #     "background-start.png"
-        # ).convert()
+        self.background = pygame.image.load(
+            "src/interface/assets/background/background.png"
+        ).convert()
 
-        # self.background = pygame.transform.scale(
-        #     self.background, (1024, 1080)
-        # )
+        self.background = pygame.transform.scale(self.background, (1024, 1080))
 
         self.menu = MenuOptions()
 
@@ -165,8 +163,8 @@ class OptionsScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the options screen."""
-        # screen.blit(self.background, (0, 0))
-        screen.fill(colors.black)
+        screen.blit(self.background, (0, 0))
+        # screen.fill(colors.black)
         self.menu.draw(screen)
 
 
@@ -177,9 +175,10 @@ class InstructionsScreen:
         """Initialize the instructions screen."""
         self.game = game
 
-        # self.background = pygame.image.load(
-        #     "background-start.png"
-        # ).convert()
+        self.background = pygame.image.load(
+            "src/interface/assets/background/background.png"
+        ).convert()
+
         # self.background = pygame.transform.scale(
         #     self.background, (1024, 1080)
         # )
@@ -200,8 +199,15 @@ class InstructionsScreen:
         #     "assets/icons/super_pacgum.png"
         # ).convert_alpha()
 
-        self.font = pygame.font.Font(None, 32)
-        self.title = pygame.font.Font(None, 60)
+        self.font = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 44
+        )
+        self.title = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 60
+        )
+        self.font_button = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 20
+        )
         self.back_button = pygame.Rect(100, 800, 100, 60)
         self.icon_left_rect = pygame.Rect(380, 30, 30, 30)
         self.icon_right_rect = pygame.Rect(750, 30, 30, 30)
@@ -223,8 +229,8 @@ class InstructionsScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the instructions screen."""
-        # screen.blit(self.background, (0, 0))
-        screen.fill(colors.black)
+        screen.blit(self.background, (0, 0))
+        # screen.fill(colors.black)
 
         title_surface = self.title.render("INSTRUCTIONS", True, colors.white)
 
@@ -325,7 +331,7 @@ class InstructionsScreen:
 
         pygame.draw.rect(screen, colors.yellow, self.back_button)
 
-        button_text = self.font.render("Retour", True, colors.black)
+        button_text = self.font_button.render("Back", True, colors.black)
 
         button_text_rect = button_text.get_rect(center=self.back_button.center)
 
@@ -339,9 +345,9 @@ class PauseScreen:
         """Initialize the pause screen."""
         self.game = game
 
-        # self.background = pygame.image.load(
-        #     "background-pause.png"
-        # ).convert()
+        self.background = pygame.image.load(
+            "src/interface/assets/background/background.png"
+        ).convert()
 
         # self.background = pygame.transform.scale(
         #     self.background, (1024, 1080)
@@ -367,9 +373,9 @@ class PauseScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the pause screen."""
-        screen.fill(colors.black)
+        # screen.fill(colors.black)
 
-        # screen.blit(self.background, (0, 0))
+        screen.blit(self.background, (0, 0))
 
         self.menu.draw(screen)
 
@@ -381,25 +387,32 @@ class HighscoresScreen:
         """Initialize the high scores screen."""
         self.game = game
 
-        # self.background = pygame.image.load(
-        #     "background-start.png"
-        # ).convert()
+        self.background = pygame.image.load(
+            "src/interface/assets/background/background.png"
+        ).convert()
 
-        # self.background = pygame.transform.scale(
-        #     self.background, (1024, 1080)
-        # )
+        self.font = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 44
+        )
 
-        self.font = pygame.font.Font(None, 32)
-        self.title = pygame.font.Font(None, 60)
+        self.title = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 60
+        )
+
+        self.font_button = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 20
+        )
+
         self.back_button = pygame.Rect(100, 800, 100, 60)
 
         self.rank_x = 150
         self.name_x = 350
         self.score_x = 700
 
+        # High scores
         # self.scores = self.game.highscore.top_score()
 
-        # temp score pour test
+        # Temporary scores for testing
         self.scores = [
             ("EMILIE", 12500),
             ("PLAYER2", 10000),
@@ -430,21 +443,14 @@ class HighscoresScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the high scores screen."""
-        # screen.blit(self.background, (0, 0))
+        screen.blit(self.background, (0, 0))
 
-        screen.fill(colors.black)
-
-        title_surface = self.title.render(
-            "★ ★ HALL OF FAME ★ ★",
-            True,
-            colors.white,
-        )
-
-        title_x = (screen.get_width() - title_surface.get_width()) // 2
+        title_width = self.title.size("HALL OF FAME")[0]
+        title_x = (screen.get_width() - title_width) // 2
 
         draw_text(
             screen,
-            "★ ★ HALL OF FAME ★ ★",
+            "HALL OF FAME",
             title_x,
             100,
             self.title,
@@ -479,29 +485,53 @@ class HighscoresScreen:
         )
 
         for i, (name, score) in enumerate(self.scores):
-            # mettre entry a la place de name, score
             y = 250 + i * 50
 
-            # name = entry["name"]
-            # score = entry["score"]
-
             draw_text(
-                screen, str(i + 1), self.rank_x, y, self.font, colors.white
+                screen,
+                str(i + 1),
+                self.rank_x,
+                y,
+                self.font,
+                colors.white,
             )
 
-            draw_text(screen, name, self.name_x, y, self.font, colors.white)
-
             draw_text(
-                screen, str(score), self.score_x, y, self.font, colors.white
+                screen,
+                name,
+                self.name_x,
+                y,
+                self.font,
+                colors.white,
             )
 
-        pygame.draw.rect(screen, colors.yellow, self.back_button)
+            draw_text(
+                screen,
+                str(score),
+                self.score_x,
+                y,
+                self.font,
+                colors.white,
+            )
 
-        button_text = self.font.render("Retour", True, colors.black)
+        pygame.draw.rect(
+            screen,
+            colors.yellow,
+            self.back_button,
+        )
+
+        button_text = self.font_button.render(
+            "Back",
+            True,
+            colors.black,
+        )
 
         button_text_rect = button_text.get_rect(center=self.back_button.center)
 
-        screen.blit(button_text, button_text_rect)
+        screen.blit(
+            button_text,
+            button_text_rect,
+        )
 
 
 class EndGameScreen:

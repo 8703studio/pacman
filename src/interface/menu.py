@@ -8,10 +8,10 @@ class MenuStartScreen:
     def __init__(self) -> None:
         """Initialize the menu."""
         self.font = pygame.font.Font(
-            "src/interface/assets/fonts/aldotheapache.ttf", 48
+            "src/interface/assets/fonts/upheavtt.ttf", 48
         )
         self.small_font = pygame.font.Font(
-            "src/interface/assets/fonts/aldotheapache.ttf", 32
+            "src/interface/assets/fonts/upheavtt.ttf", 24
         )
 
         self.options = [
@@ -78,7 +78,9 @@ class MenuOptions:
 
     def __init__(self) -> None:
         """Initialize the menu."""
-        self.font = pygame.font.Font(None, 48)
+        self.font = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 44
+        )
 
         self.options = [
             "Sound",
@@ -90,7 +92,7 @@ class MenuOptions:
         self.values = {
             "Sound": True,
             "Music": True,
-            "Theme": "Classic",
+            "Theme": "Classic K-POP",
         }
 
         self.selected = 0
@@ -148,7 +150,7 @@ class MenuOptions:
             if self.values["Theme"] == "Classic K-POP":
                 self.values["Theme"] = "Monichrome K-pop"
             else:
-                self.values["Theme"] = "Classic"
+                self.values["Theme"] = "Classic K-POP"
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the options menu."""
@@ -187,7 +189,9 @@ class MenuPause:
     """Displays the pause menu."""
 
     def __init__(self) -> None:
-        self.font = pygame.font.Font(None, 48)
+        self.font = pygame.font.Font(
+            "src/interface/assets/fonts/upheavtt.ttf", 48
+        )
         self.options = [
             "Resume",
             "Return to main menu",

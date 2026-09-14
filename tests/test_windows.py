@@ -1,7 +1,6 @@
 from src.interface.game_window import GameWindow
 from src.maze.maze_adapter import MazeAdapter
 
-
 adapter = MazeAdapter()
 
 maze = adapter.generate_level(
@@ -11,6 +10,6 @@ maze = adapter.generate_level(
     height=21,
 )
 
-window = GameWindow(1024, 950)
+window = GameWindow(1024, 1000)
 window.maze = maze
 window.run()
