@@ -148,7 +148,7 @@ class MenuOptions:
 
         elif option == "Theme":
             if self.values["Theme"] == "Classic K-POP":
-                self.values["Theme"] = "Monichrome K-pop"
+                self.values["Theme"] = "Monochrome K-pop"
             else:
                 self.values["Theme"] = "Classic K-POP"
 

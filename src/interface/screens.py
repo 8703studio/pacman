@@ -72,7 +72,7 @@ class StartScreen:
         )
 
         highscore_rect = highscore.get_rect(
-            centerx=screen.get_width() // 2, top=20
+            centerx=screen.get_width() // 2, top=30
         )
 
         screen.blit(highscore, highscore_rect)
@@ -200,10 +200,10 @@ class InstructionsScreen:
         # ).convert_alpha()
 
         self.font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 44
+            "src/interface/assets/fonts/upheavtt.ttf", 36
         )
         self.title = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 60
+            "src/interface/assets/fonts/upheavtt.ttf", 70
         )
         self.font_button = pygame.font.Font(
             "src/interface/assets/fonts/upheavtt.ttf", 20
@@ -232,48 +232,62 @@ class InstructionsScreen:
         screen.blit(self.background, (0, 0))
         # screen.fill(colors.black)
 
-        title_surface = self.title.render("INSTRUCTIONS", True, colors.white)
+        title_text = "INSTRUCTIONS"
+        title_width = self.title.size(title_text)[0]
 
-        square_size = 30
+        icon_size = 30
         space = 20
-        title_y = 50
 
-        total_width = (
-            square_size
-            + space
-            + title_surface.get_width()
-            + space
-            + square_size
+        total_width = icon_size + space + title_width + space + icon_size
+
+        title_x = (screen.get_width() - total_width) // 2
+        title_y = 100
+
+        left_icon_x = title_x
+        right_icon_x = title_x + icon_size + space + title_width + space
+
+        title_x += icon_size + space
+
+        title_surface = self.title.render(
+            title_text,
+            True,
+            colors.white,
         )
 
-        start_x = (1024 - total_width) // 2
+        icon_y = title_y + (title_surface.get_height() - icon_size) // 2
 
-        left_rect = pygame.Rect(
-            start_x,
-            title_y + (title_surface.get_height() - square_size) // 2,
-            square_size,
-            square_size,
+        pygame.draw.rect(
+            screen,
+            colors.white,
+            pygame.Rect(
+                left_icon_x,
+                icon_y,
+                icon_size,
+                icon_size,
+            ),
+            3,
         )
-
-        title_x = start_x + square_size + space
-
-        right_rect = pygame.Rect(
-            title_x + title_surface.get_width() + space,
-            title_y + (title_surface.get_height() - square_size) // 2,
-            square_size,
-            square_size,
-        )
-
-        pygame.draw.rect(screen, colors.white, left_rect, 3)
 
         draw_text(
-            screen, "INSTRUCTIONS", title_x, title_y, self.title, colors.white
+            screen,
+            title_text,
+            title_x,
+            title_y,
+            self.title,
+            colors.white,
         )
 
-        pygame.draw.rect(screen, colors.white, right_rect, 3)
-
-        # placeholders
-        icon_size = 30
+        pygame.draw.rect(
+            screen,
+            colors.white,
+            pygame.Rect(
+                right_icon_x,
+                icon_y,
+                icon_size,
+                icon_size,
+            ),
+            3,
+        )
 
         icon_positions = [
             (50, 200),
@@ -392,11 +406,11 @@ class HighscoresScreen:
         ).convert()
 
         self.font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 44
+            "src/interface/assets/fonts/upheavtt.ttf", 30
         )
 
         self.title = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 60
+            "src/interface/assets/fonts/upheavtt.ttf", 70
         )
 
         self.font_button = pygame.font.Font(
@@ -463,7 +477,7 @@ class HighscoresScreen:
             self.rank_x,
             200,
             self.font,
-            colors.white,
+            colors.yellow,
         )
 
         draw_text(
@@ -472,7 +486,7 @@ class HighscoresScreen:
             self.name_x,
             200,
             self.font,
-            colors.white,
+            colors.yellow,
         )
 
         draw_text(
@@ -481,11 +495,11 @@ class HighscoresScreen:
             self.score_x,
             200,
             self.font,
-            colors.white,
+            colors.yellow,
         )
 
         for i, (name, score) in enumerate(self.scores):
-            y = 250 + i * 50
+            y = 250 + i * 52
 
             draw_text(
                 screen,
@@ -550,7 +564,7 @@ class EndGameScreen:
         self.score = 12500
 
         self.font = pygame.font.Font(None, 48)
-        self.title = pygame.font.Font(None, 80)
+        self.title = pygame.font.Font(None, 70)
         self.font_message = pygame.font.Font(None, 32)
 
         self.continue_button = pygame.Rect(412, 650, 200, 60)
