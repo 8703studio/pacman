@@ -1,11 +1,15 @@
 import pygame
 
 from src.interface.screens import StartScreen
+from src.interface.theme.theme import CLASSIC_THEME
+from src.interface.theme.theme_manager import ThemeManager
 
 
 class TestGame:
+
     def __init__(self):
         self.running = True
+        self.theme_manager = ThemeManager(CLASSIC_THEME)
 
     def change_screen(self, screen):
         self.current_screen = screen

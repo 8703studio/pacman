@@ -1,12 +1,29 @@
 import pygame
-from src.interface import colors
+
+from typing import Protocol
+
+from src.interface.theme.theme_manager import ThemeManager
+from src.interface.theme.theme import CLASSIC_THEME, SECOND_THEME
+
+
+class GameInterface(Protocol):
+    """Interface required by the interface screens."""
+
+    theme_manager: ThemeManager
+    running: bool
+
+    def change_screen(self, screen: object) -> None:
+        """Change the current interface screen."""
+        ...
+        """Change the current interface screen."""
 
 
 class MenuStartScreen:
     """Displays the main menu."""
 
-    def __init__(self) -> None:
+    def __init__(self, game: GameInterface) -> None:
         """Initialize the menu."""
+        self.game = game
         self.font = pygame.font.Font(
             "src/interface/assets/fonts/upheavtt.ttf", 48
         )
@@ -59,9 +76,15 @@ class MenuStartScreen:
 
         x = (screen.get_width() - total_width) // 2
 
+        theme = self.game.theme_manager.get_theme()
+
         for i, option in enumerate(self.options):
 
-            color = colors.yellow if i == self.selected else colors.white
+            color = (
+                theme.menu_selected_color
+                if i == self.selected
+                else theme.menu_text_color
+            )
 
             option_text = self.small_font.render(option, True, color)
 
@@ -76,8 +99,9 @@ class MenuStartScreen:
 class MenuOptions:
     """Displays the options menu."""
 
-    def __init__(self) -> None:
+    def __init__(self, game: GameInterface) -> None:
         """Initialize the menu."""
+        self.game = game
         self.font = pygame.font.Font(
             "src/interface/assets/fonts/upheavtt.ttf", 44
         )
@@ -92,7 +116,11 @@ class MenuOptions:
         self.values = {
             "Sound": True,
             "Music": True,
-            "Theme": "Classic K-POP",
+            "Theme": (
+                "Pastel K-POP"
+                if self.game.theme_manager.get_theme() == SECOND_THEME
+                else "Classic K-POP"
+            ),
         }
 
         self.selected = 0
@@ -148,9 +176,11 @@ class MenuOptions:
 
         elif option == "Theme":
             if self.values["Theme"] == "Classic K-POP":
-                self.values["Theme"] = "Monochrome K-pop"
+                self.values["Theme"] = "Pastel K-POP"
+                self.game.theme_manager.set_theme(SECOND_THEME)
             else:
                 self.values["Theme"] = "Classic K-POP"
+                self.game.theme_manager.set_theme(CLASSIC_THEME)
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the options menu."""
@@ -159,7 +189,12 @@ class MenuOptions:
         self.option_rects = []
 
         for i, option in enumerate(self.options):
-            color = colors.yellow if i == self.selected else colors.white
+            theme = self.game.theme_manager.get_theme()
+            color = (
+                theme.menu_selected_color
+                if i == self.selected
+                else theme.menu_text_color
+            )
 
             if option == "Sound":
                 value = "ON" if self.values["Sound"] else "OFF"
@@ -188,7 +223,8 @@ class MenuOptions:
 class MenuPause:
     """Displays the pause menu."""
 
-    def __init__(self) -> None:
+    def __init__(self, game: GameInterface) -> None:
+        self.game = game
         self.font = pygame.font.Font(
             "src/interface/assets/fonts/upheavtt.ttf", 48
         )
@@ -224,8 +260,14 @@ class MenuPause:
         start_x = 260
         self.option_rects = []
 
+        theme = self.game.theme_manager.get_theme()
+
         for i, option in enumerate(self.options):
-            color = colors.yellow if i == self.selected else colors.white
+            color = (
+                theme.menu_selected_color
+                if i == self.selected
+                else theme.menu_text_color
+            )
 
             option_text = self.font.render(option, True, color)
 
