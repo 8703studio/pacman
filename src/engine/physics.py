@@ -29,14 +29,16 @@ class Engine():
     # direction contain dx, dy, bits
     def is_wall(self, case: tuple[int, int],
                 direction: tuple[int, int, int]) -> bool:
-        x, y = case
-        x_dir, y_dir, bits = direction
+        y, x = case
+        bits = direction
 
+        print(y, " ", x)
         return self.is_in_grid(case) and self.grid[y][x] & bits
 
     # this method verified if the entity is in the grid
     def is_in_grid(self, case: tuple[int, int]) -> bool:
         x, y = case
         if x > 0 and x < self.x_len and y > 0 and y < self.y_len:
+            print("hello")
             return True
         return False

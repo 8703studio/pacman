@@ -1,9 +1,9 @@
-from config import Parser, load_json
-from entities import Pacman, EntityDirection
+from .config import Parser, GameConfig
+from .entities import Pacman, EntityDirection
 
 __all__ = [
     "Parser",
-    "load_json",
     "Pacman",
-    "EntityDirection"
+    "EntityDirection",
+    "GameConfig"
 ]
