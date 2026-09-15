@@ -8,6 +8,8 @@ from src.interface.menu import (
 )
 from src.interface.hud import HUD
 from src.interface.utils import draw_text
+
+# from src.interface.utils import get_center
 from src.interface import colors
 
 
@@ -201,7 +203,7 @@ class InstructionsScreen:
         )
 
         self.small_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 26
+            "src/interface/assets/fonts/upheavtt.ttf", 24
         )
 
         self.title = pygame.font.Font(
@@ -216,7 +218,7 @@ class InstructionsScreen:
             "src/interface/assets/fonts/upheavtt.ttf", 20
         )
 
-        self.back_button = pygame.Rect(100, 800, 100, 55)
+        self.back_button = pygame.Rect(100, 950, 100, 55)
 
     def events(self, events: list[pygame.event.Event]) -> None:
         """Handle events from the instructions screen."""
@@ -236,134 +238,131 @@ class InstructionsScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the instructions screen."""
         screen.blit(self.background, (0, 0))
+
         theme = self.game.theme_manager.get_theme()
 
         # Title
         title_text = "HOW TO PLAY"
 
-        title_width = self.title.size(title_text)[0]
-        title_x = (screen.get_width() - title_width) // 2
-        title_y = 90
-
-        draw_text(
-            screen,
+        title = self.title.render(
             title_text,
-            title_x,
-            title_y,
-            self.title,
+            True,
             theme.menu_text_color,
         )
 
-        # HOW TO PLAY
-        # how_to_play = pygame.Rect(
-        #     160,
-        #     200,
-        #     704,
-        #     190,
-        # )
+        title_rect = title.get_rect(
+            centerx=screen.get_width() // 2,
+            top=70,
+        )
 
-        # pygame.draw.rect(
-        #     screen,
-        #     theme.menu_text_color,
-        #     how_to_play,
-        #     3,
-        # )
+        screen.blit(title, title_rect)
 
-        # Placeholders
-        placeholder_positions = [
-            (220, 230),
-            (220, 265),
-            (220, 300),
-            (220, 335),
+        # Main instruction panel
+        panel_rect = pygame.Rect(
+            100,
+            180,
+            824,
+            430,
+        )
+
+        pygame.draw.rect(
+            screen,
+            theme.menu_text_color,
+            panel_rect,
+            3,
+        )
+
+        # Instruction cards
+        cards = [
+            (
+                pygame.Rect(140, 220, 340, 160),
+                "MOVE",
+                "ARROW KEYS",
+            ),
+            (
+                pygame.Rect(544, 220, 340, 160),
+                "PAC-GUM",
+                "EAT",
+            ),
+            (
+                pygame.Rect(140, 410, 340, 160),
+                "POWER",
+                "+50 PTS",
+            ),
+            (
+                pygame.Rect(544, 410, 340, 160),
+                "RIVAL IDOLS",
+                "AVOID",
+            ),
         ]
 
-        for x, y in placeholder_positions:
+        for rect, title_text, description in cards:
+            pygame.draw.rect(
+                screen,
+                theme.title_text_color,
+                rect,
+                2,
+            )
+
+            card_title = self.section_font.render(
+                title_text,
+                True,
+                theme.title_text_color,
+            )
+
+            card_title_rect = card_title.get_rect(
+                centerx=rect.centerx,
+                top=rect.top + 15,
+            )
+
+            screen.blit(card_title, card_title_rect)
+
+            # Placeholder for future image
+            placeholder = pygame.Rect(
+                rect.centerx - 25,
+                rect.top + 55,
+                50,
+                50,
+            )
+
             pygame.draw.rect(
                 screen,
                 theme.menu_text_color,
-                pygame.Rect(
-                    x,
-                    y,
-                    35,
-                    35,
-                ),
-                3,
+                placeholder,
+                2,
             )
 
+            card_description = self.small_font.render(
+                description,
+                True,
+                theme.menu_text_color,
+            )
+
+            description_rect = card_description.get_rect(
+                centerx=rect.centerx,
+                bottom=rect.bottom - 15,
+            )
+
+            screen.blit(
+                card_description,
+                description_rect,
+            )
+
+        # Score system
         draw_text(
             screen,
-            "INSTRUCTIONS",
-            220,
-            170,
+            "SCORE SYSTEM",
+            100,
+            650,
             self.section_font,
             theme.title_text_color,
         )
 
         draw_text(
             screen,
-            "MOVE PAC-IDOL",
-            370,
-            235,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "EAT PAC-GUMS",
-            370,
-            270,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "POWER PELLET",
-            370,
-            305,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "AVOID RIVAL IDOLS",
-            370,
-            340,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        # POINTS
-        # points_card = pygame.Rect(
-        #     160,
-        #     400,
-        #     340,
-        #     220,
-        # )
-
-        # pygame.draw.rect(
-        #     screen,
-        #     theme.menu_text_color,
-        #     points_card,
-        #     3,
-        # )
-
-        draw_text(
-            screen,
-            "POINTS",
-            275,
-            415,
-            self.section_font,
-            theme.title_text_color,
-        )
-
-        draw_text(
-            screen,
-            "PAC-DOT",
-            190,
-            470,
+            "PAC-GUM",
+            100,
+            700,
             self.small_font,
             theme.menu_text_color,
         )
@@ -371,8 +370,8 @@ class InstructionsScreen:
         draw_text(
             screen,
             "10 PTS",
-            390,
-            470,
+            650,
+            700,
             self.small_font,
             theme.menu_text_color,
         )
@@ -380,8 +379,8 @@ class InstructionsScreen:
         draw_text(
             screen,
             "POWER PELLET",
-            190,
-            500,
+            100,
+            735,
             self.small_font,
             theme.menu_text_color,
         )
@@ -389,8 +388,8 @@ class InstructionsScreen:
         draw_text(
             screen,
             "50 PTS",
-            390,
-            500,
+            650,
+            735,
             self.small_font,
             theme.menu_text_color,
         )
@@ -398,148 +397,52 @@ class InstructionsScreen:
         draw_text(
             screen,
             "GHOSTS",
-            190,
-            530,
+            100,
+            770,
             self.small_font,
             theme.menu_text_color,
         )
 
         draw_text(
             screen,
-            "200 - 400 - 800 - 1600",
-            190,
-            560,
+            "200 → 1600 PTS",
+            650,
+            770,
             self.small_font,
             theme.menu_text_color,
         )
 
-        # RIVAL IDOLS
-        # rival_idols = pygame.Rect(
-        #     524,
-        #     400,
-        #     340,
-        #     220,
-        # )
-
-        # pygame.draw.rect(
-        #     screen,
-        #     theme.menu_text_color,
-        #     rival_idols,
-        #     3,
-        # )
-
+        # Lightsticks
         draw_text(
             screen,
-            "RIVAL IDOLS",
-            590,
-            415,
-            self.section_font,
-            theme.title_text_color,
-        )
-
-        draw_text(
-            screen,
-            "G-DRAGON",
-            555,
-            470,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "SHADOW",
-            750,
-            470,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "MOMO",
-            555,
-            500,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "SPEEDY",
-            750,
-            500,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "JOY",
-            555,
-            530,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "BASHFUL",
-            750,
-            530,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "LOUIS",
-            555,
-            560,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        draw_text(
-            screen,
-            "POKEY",
-            750,
-            560,
-            self.small_font,
-            theme.menu_text_color,
-        )
-
-        # LIGHTSTICKS BONUS
-        draw_text(
-            screen,
-            "LIGHTSTICKS BONUS",
-            380,
-            670,
+            "LIGHTSTICKS",
+            100,
+            825,
             self.section_font,
             theme.title_text_color,
         )
 
         lightstick_positions = [
-            (162, 720),
-            (272, 720),
-            (382, 720),
-            (492, 720),
-            (602, 720),
-            (712, 720),
-            (822, 720),
+            200,
+            300,
+            400,
+            500,
+            600,
+            700,
+            800,
         ]
 
-        for x, y in lightstick_positions:
+        for x in lightstick_positions:
             pygame.draw.rect(
                 screen,
                 theme.menu_text_color,
                 pygame.Rect(
-                    x,
-                    y,
+                    x - 20,
+                    860,
                     40,
                     55,
                 ),
-                3,
+                2,
             )
 
         # Back button
