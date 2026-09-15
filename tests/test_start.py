@@ -17,7 +17,7 @@ class TestGame:
 
 pygame.init()
 
-screen = pygame.display.set_mode((1024, 950))
+screen = pygame.display.set_mode((1024, 1080))
 pygame.display.set_caption("Test Start Screen")
 
 game = TestGame()

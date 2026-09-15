@@ -7,7 +7,7 @@ from src.interface.menu import (
     MenuPause,
 )
 from src.interface.hud import HUD
-from src.interface.text_renderer import draw_text
+from src.interface.utils import draw_text
 from src.interface import colors
 
 
@@ -296,7 +296,7 @@ class InstructionsScreen:
             220,
             170,
             self.section_font,
-            theme.menu_text_color,
+            theme.title_text_color,
         )
 
         draw_text(
@@ -623,7 +623,7 @@ class HighscoresScreen:
         self.background = pygame.image.load(theme.background_image).convert()
 
         self.font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 26
+            "src/interface/assets/fonts/upheavtt.ttf", 36
         )
 
         self.title = pygame.font.Font(
@@ -634,7 +634,7 @@ class HighscoresScreen:
             "src/interface/assets/fonts/upheavtt.ttf", 20
         )
 
-        self.back_button = pygame.Rect(100, 800, 100, 60)
+        self.back_button = pygame.Rect(100, 950, 100, 60)
 
         self.rank_center = 280
         self.name_center = 512
@@ -727,7 +727,7 @@ class HighscoresScreen:
 
         # Scores
         for i, (name, score) in enumerate(self.scores):
-            y = 280 + i * 50
+            y = 320 + i * 50
 
             rank_width = self.font.size(str(i + 1))[0]
 

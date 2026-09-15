@@ -12,3 +12,10 @@ def draw_text(
     """Draw text on the screen."""
     text_surface = font.render(text, True, color)
     screen.blit(text_surface, (x, y))
+
+
+def get_center(
+    screen: pygame.Surface,
+) -> tuple[int, int]:
+    """Center the elements"""
+    return (screen.get_width // 2, screen.get_height // 2)

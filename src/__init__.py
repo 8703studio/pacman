@@ -1,8 +1,9 @@
-from src.config import Parser
-from src.entities import Pacman, EntityDirection
+from .config import Parser, GameConfig
+from .entities import Pacman, EntityDirection
 
 __all__ = [
     "Parser",
     "Pacman",
-    "EntityDirection"
+    "EntityDirection",
+    "GameConfig"
 ]

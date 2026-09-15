@@ -8,5 +8,8 @@ class grid_object(Enum):
 
     # matrice contenant les objets creer a partir du maze
 
-def eat(self, ) -> None:
-        pass
+
+def eat(
+    self,
+) -> None:
+    pass

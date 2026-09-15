@@ -1,4 +1,4 @@
-from src.entities.entity import Pacman, EntityDirection
+from .entity import Pacman, EntityDirection
 
 __all__ = [
     "Pacman",
