@@ -201,8 +201,11 @@ class MenuOptions:
                 text = f"Sound : {value}"
 
             elif option == "Music":
-                value = "ON" if self.values["Music"] else "OFF"
-                text = f"Music : {value}"
+                text = "Music : COMING SOON"
+
+            # elif option == "Music":
+            #     value = "ON" if self.values["Music"] else "OFF"
+            #     text = f"Music : {value}"
 
             elif option == "Theme":
                 text = f"Theme : {self.values['Theme']}"
