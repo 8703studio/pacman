@@ -18,4 +18,4 @@ def get_center(
     screen: pygame.Surface,
 ) -> tuple[int, int]:
     """Center the elements"""
-    return (screen.get_width // 2, screen.get_height // 2)
+    return (screen.get_width() // 2, screen.get_height() // 2)

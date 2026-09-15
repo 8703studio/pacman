@@ -111,6 +111,7 @@ class GameScreen:
     def __init__(self, game: GameInterface) -> None:
         """Initialize the game screen."""
         self.game = game
+        self.hud = HUD()
 
         # theme = self.game.theme_manager.get_theme()
 
@@ -129,7 +130,7 @@ class GameScreen:
         """Handle events from the game"""
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_BACKSPACE:
                     self.game.change_screen(PauseScreen(self.game))
 
             # if event.type == pygame.MOUSEBUTTONDOWN:
@@ -145,7 +146,6 @@ class GameScreen:
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
         # theme = self.game.theme_manager.get_theme()
-        self.hud = HUD()
 
 
 class OptionsScreen:
@@ -169,6 +169,13 @@ class OptionsScreen:
     def events(self, events: list[pygame.event.Event]) -> None:
         """Handle events from the options menu."""
         action = self.menu.handle_events(events)
+
+        for event in events:
+            if (
+                event.type == pygame.KEYDOWN
+                and event.key == pygame.K_BACKSPACE
+            ):
+                action = "Back"
 
         if action == "Back":
             self.game.change_screen(StartScreen(self.game))
@@ -224,7 +231,7 @@ class InstructionsScreen:
         """Handle events from the instructions screen."""
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_BACKSPACE:
                     self.game.change_screen(StartScreen(self.game))
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -252,7 +259,7 @@ class InstructionsScreen:
 
         title_rect = title.get_rect(
             centerx=screen.get_width() // 2,
-            top=70,
+            top=100,
         )
 
         screen.blit(title, title_rect)
@@ -405,7 +412,7 @@ class InstructionsScreen:
 
         draw_text(
             screen,
-            "200 → 1600 PTS",
+            "200 PTS",
             650,
             770,
             self.small_font,
@@ -438,7 +445,7 @@ class InstructionsScreen:
                 theme.menu_text_color,
                 pygame.Rect(
                     x - 20,
-                    860,
+                    870,
                     40,
                     55,
                 ),
@@ -564,7 +571,7 @@ class HighscoresScreen:
         """Handle events from the high scores screen."""
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_BACKSPACE:
                     self.game.change_screen(StartScreen(self.game))
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -582,17 +589,19 @@ class HighscoresScreen:
 
         # Title
         title_text = "HALL OF FAME"
-        title_width = self.title.size(title_text)[0]
-        title_x = (screen.get_width() - title_width) // 2
 
-        draw_text(
-            screen,
+        title = self.title.render(
             title_text,
-            title_x,
-            100,
-            self.title,
+            True,
             theme.menu_text_color,
         )
+
+        title_rect = title.get_rect(
+            centerx=screen.get_width() // 2,
+            top=100,
+        )
+
+        screen.blit(title, title_rect)
 
         # Column titles
         rank_width = self.font.size("RANK")[0]
