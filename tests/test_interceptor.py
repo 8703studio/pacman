@@ -1,7 +1,22 @@
-from entity import Entity, EntityType, EntityState, EntityDirection
+"""INTERCEPTOR TEST"""
 
+from typing import List, Optional
 from collections import deque
-from typing import Optional
+
+pattern_test: List[List[int]] = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+]
+
+
+pacman_position = (1, 6)
+pacman_direction = (0, 1)
+ghost_position = (5, 2)
 
 
 def get_target(
@@ -42,9 +57,10 @@ def get_neighbors(
     for direction in directions:
         next_y = position[0] + direction[0]
         next_x = position[1] + direction[1]
+        next_position = (next_y, next_x)
 
         if grid[next_y][next_x] == 0:
-            neighbors.append((next_y, next_x))
+            neighbors.append(next_position)
 
     return neighbors
 
@@ -68,14 +84,13 @@ def find_path(
         if current == target:
             break
 
-        for neighbor in get_neighbors(grid, current):
+        neighbors = get_neighbors(grid, current)
+
+        for neighbor in neighbors:
             if neighbor not in visited:
                 visited.add(neighbor)
                 came_from[neighbor] = current
                 queue.append(neighbor)
-
-    if target not in came_from:
-        return []
 
     path = []
     current = target
@@ -112,13 +127,52 @@ def get_direction(
     return (0, 0)
 
 
-class Ghost_interceptor(Entity):
-    def __init__(self, position):
-        super().__init__(position)
-        self.entity_type = EntityType.GHOST
+def main() -> None:
+    """Run the interceptor test."""
+    print("Test grid:")
 
-    def move(self):
-        return super().move()
+    for row in pattern_test:
+        print(row)
 
-    def reset(self):
-        return super().reset()
+    print("Pacman:", pacman_position)
+    print("Direction:", pacman_direction)
+    print("Ghost:", ghost_position)
+
+    target = get_target(
+        pattern_test,
+        pacman_position,
+        pacman_direction,
+    )
+
+    print("Target:", target)
+
+    neighbors = get_neighbors(
+        pattern_test,
+        ghost_position,
+    )
+
+    print("Neighbors:", neighbors)
+
+    path = find_path(
+        pattern_test,
+        ghost_position,
+        target,
+    )
+
+    print("Path:", path)
+
+    for i in range(len(path) - 1):
+        current = path[i]
+        next_position = path[i + 1]
+
+        direction = get_direction(
+            current,
+            next_position,
+        )
+
+        print("Ghost move:", next_position)
+        print("Direction:", direction)
+
+
+if __name__ == "__main__":
+    main()

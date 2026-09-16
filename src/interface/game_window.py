@@ -38,6 +38,7 @@ class GameWindow:
             width=self.width,
             height=self.height,
             hud_height=self.hud_height,
+            theme=self.theme_manager.get_theme(),
             margin=self.margin,
         )
 
