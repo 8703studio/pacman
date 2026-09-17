@@ -9,9 +9,48 @@
 
 ## Table of Contents
 
+- 📝 [Description](#-description)
+- 🛠️ [Instructions](#️-instructions)
+  - [Requirements](#requirements)
+  - [Installation & Setup](#installation--setup)
+  - [Makefile Commands](#makefile-commands)
+- ✅ [Configuration File](#-configuration-file)
+- ✅ [Highscore](#-highscore)
+- 🧩 [Maze Generation](#-maze-generation)
+- 🏗️ [Architecture Overview](#️-architecture-overview)
+  - [Project Layout Tree](#project-layout-tree)
+  - [Config](#config)
+  - [Entities & Ghosts](#entities--ghosts)
+  - [Interface](#interface)
+  - [Game](#game)
+- 👻 [Ghost AI](#-ghost-ai)
+  - [Ghost Interceptor — BFS pathfinding](#ghost-interceptor--bfs-pathfinding)
+- 🕹️ [Cheat Mode](#️-cheat-mode)
+- 🧪 [Tests](#-tests)
+- 🤝 [Contributions](#-contributions)
+- 🤖 [AI Usage](#-ai-usage)
+- 📚 [Resources](#-resources)
+- 📋 [Project Management](#-project-management)
 
+# Description
 
+# Instructions
 
+# Configuration
+
+# Highscore
+
+# Cheat Mode
+
+# Maze Generation
+
+# Implementation 
+
+# General Software Architecture
+
+# Project Management
+
+# Ressources 
 
 
 

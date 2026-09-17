@@ -15,7 +15,7 @@ class MazeAdapter:
         "left": WEST,
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def generate_level(
@@ -24,7 +24,7 @@ class MazeAdapter:
         seed_base: int,
         width: int,
         height: int,
-        max_retries=3
+        max_retries=3,
     ) -> list[list[int]]:
         """Generate a maze for the requested level."""
         if level == 1:
@@ -42,12 +42,15 @@ class MazeAdapter:
                 )
                 return raw_maze.maze
             except Exception as e:
-                print(f"WARNING, maze generation failed "
-                      f"(attempt {attempt+1}): {e}")
+                print(
+                    f"WARNING, maze generation failed "
+                    f"(attempt {attempt+1}): {e}"
+                )
                 current_seed = random.randint(0, 1000000)
 
-        raise RuntimeError(f"Maze generation failed "
-                           f"after {max_retries} attempts")
+        raise RuntimeError(
+            f"Maze generation failed " f"after {max_retries} attempts"
+        )
 
     def is_wall(
         self,
@@ -124,8 +127,8 @@ class MazeAdapter:
             (0, 0),
             (width - 1, 0),
             (0, height - 1),
-            (width - 1, height - 1)
-            ]
+            (width - 1, height - 1),
+        ]
         return corners
 
     def is_walkable(self, maze, x, y):
@@ -150,7 +153,4 @@ class MazeAdapter:
         width = len(maze[0])
         pacman_pos = (width // 2, height // 2)
         ghost_positions = self.get_corners(maze)
-        return {
-            "pacman": pacman_pos,
-            "ghosts": ghost_positions
-        }
+        return {"pacman": pacman_pos, "ghosts": ghost_positions}

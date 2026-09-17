@@ -6,7 +6,6 @@ from src.entities.entity import Entity, EntityType, EntityDirection
 
 from src.maze.maze_adapter import MazeAdapter
 
-
 DIRECTION_TO_STRING = {
     EntityDirection.UP: "up",
     EntityDirection.RIGHT: "right",
@@ -81,9 +80,7 @@ def find_path(
     came_from: dict[
         tuple[int, int],
         Optional[tuple[int, int]],
-    ] = {
-        ghost_position: None
-    }
+    ] = {ghost_position: None}
 
     while queue:
         current = queue.popleft()
@@ -161,7 +158,7 @@ class Ghost_interceptor(Entity):
 
     def move(
         self,
-        direction=None,
+        direction: tuple[int, int] | None = None,
     ) -> None:
         """Move the ghost one step along the path towards its target."""
         if (

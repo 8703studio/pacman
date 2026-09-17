@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from collections import deque
 
-
 # tuple (line, column)
+Position = tuple[int, int]
 
 
 class EntityDirection(Enum):
@@ -26,16 +26,16 @@ class EntityType(Enum):
 
 
 class Entity(ABC):
-    def __init__(self, position) -> None:
-        self.start_pos = position
-        self.current_pos = self.start_pos
-        self.vitesse = 0
-        self.direction = EntityDirection.DOWN
-        self.state = EntityState.NORMAL
-        self.entity_type = EntityType.NULL
+    def __init__(self, position: Position) -> None:
+        self.start_pos: Position = position
+        self.current_pos: Position = self.start_pos
+        self.vitesse: float = 0
+        self.direction: EntityDirection = EntityDirection.DOWN
+        self.state: EntityState = EntityState.NORMAL
+        self.entity_type: EntityType = EntityType.NULL
 
     @abstractmethod
-    def move(self, direction) -> None:
+    def move(self, direction: tuple[int, int]) -> None:
         pass
 
     @abstractmethod
@@ -44,13 +44,13 @@ class Entity(ABC):
 
 
 class Pacman(Entity):
-    def __init__(self, position):
+    def __init__(self, position: Position) -> None:
         super().__init__(position)
         self.entity_type = EntityType.PACMAN
         self.vitesse = 0.5
-        self.input_buffer: deque[tuple[int, int]] = deque()
+        self.input_buffer: deque[Position] = deque()
 
-    def move(self, direction) -> None:
+    def move(self, direction: tuple[int, int]) -> None:
         d_x, d_y = direction
         x_pos, y_pos = self.current_pos
         self.current_pos = (x_pos + d_x, y_pos + d_y)
