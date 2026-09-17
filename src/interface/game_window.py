@@ -5,7 +5,7 @@ from src.interface.theme.theme import CLASSIC_THEME
 from src.interface.hud import HUD
 from src.interface.theme.theme_manager import ThemeManager
 from src.interface.maze_renderer import MazeRenderer
-from src.interface.screens import StartScreen
+from src.interface.screens.start_screen import StartScreen
 
 
 class GameWindow:
@@ -59,6 +59,10 @@ class GameWindow:
     def change_screen(self, screen: Any) -> None:
         """Change the current interface screen."""
         self.current_screen = screen
+
+    def show_start_screen(self) -> None:
+        """Return to the start screen."""
+        self.current_screen = StartScreen(self)
 
     def draw(self) -> None:
         """Draw the current screen on the game window."""

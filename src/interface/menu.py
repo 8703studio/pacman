@@ -2,9 +2,9 @@ import pygame
 
 from typing import Optional, Protocol
 
-from src.interface.maze_renderer import MazeRenderer
 from src.interface.theme.theme_manager import ThemeManager
 from src.interface.theme.theme import CLASSIC_THEME, SECOND_THEME
+from src.interface.maze_renderer import MazeRenderer
 
 
 class GameInterface(Protocol):
@@ -12,11 +12,19 @@ class GameInterface(Protocol):
 
     theme_manager: ThemeManager
     running: bool
-    maze_renderer: MazeRenderer
-    maze: Optional[list[list[int]]]
 
     def change_screen(self, screen: object) -> None:
         """Change the current interface screen."""
+
+    def show_start_screen(self) -> None:
+        """Return to the start screen."""
+
+
+class GameScreenInterface(GameInterface, Protocol):
+    """Interface required by the game screen."""
+
+    maze_renderer: MazeRenderer
+    maze: Optional[list[list[int]]]
 
 
 class MenuStartScreen:

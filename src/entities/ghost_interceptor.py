@@ -7,6 +7,7 @@ from src.entities.entity import (
 
 from collections import deque
 from typing import Optional
+from src.maze.maze_adapter import MazeAdapter
 
 
 def get_target(
@@ -121,12 +122,40 @@ class Ghost_interceptor(Entity):
     def __init__(self, position):
         super().__init__(position)
         self.entity_type = EntityType.GHOST
-        self.grid = None
-        self.pacman_position = None
-        self.pacman_direction = None
+        self.grid: Optional[list[list[int]]] = None
+        self.pacman_position: Optional[tuple[int, int]] = None
+        self.pacman_direction: Optional[tuple[int, int]] = None
 
-    def move(self):
-        pass
+    def move(self) -> None:
+        if (
+            self.grid is None
+            or self.pacman_position is None
+            or self.pacman_direction is None
+        ):
+            return
+
+        target = get_target(
+            self.grid,
+            self.pacman_position,
+            self.pacman_direction,
+        )
+
+        path = find_path(
+            self.grid,
+            self.current_pos,
+            target,
+        )
+
+        if len(path) > 1:
+            next_position = path[1]
+
+            direction = get_direction(
+                self.current_pos,
+                next_position,
+            )
+
+            self.direction = EntityDirection(direction)
+            self.current_pos = next_position
 
     def reset(self):
         return super().reset()
