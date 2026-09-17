@@ -25,6 +25,8 @@ class TestGame:
 
         self.maze = mazegen.maze
 
+        print("MAZE SIZE :", len(self.maze), "x", len(self.maze[0]))
+
         self.maze_renderer = MazeRenderer(
             width=1024,
             height=1080,

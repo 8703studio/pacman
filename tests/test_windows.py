@@ -1,7 +1,7 @@
 import pygame
 
 from src.interface.game_window import GameWindow
-from src.interface.screens import GameScreen
+from src.interface.screens.game_screen import GameScreen
 from src.maze.maze_adapter import MazeAdapter
 
 adapter = MazeAdapter()

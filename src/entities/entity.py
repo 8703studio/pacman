@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from collections import deque
 
+
 # tuple (line, column)
 
 
@@ -34,7 +35,7 @@ class Entity(ABC):
         self.entity_type = EntityType.NULL
 
     @abstractmethod
-    def move(self) -> None:
+    def move(self, direction) -> None:
         pass
 
     @abstractmethod
@@ -53,7 +54,7 @@ class Pacman(Entity):
         d_x, d_y = direction
         x_pos, y_pos = self.current_pos
         self.current_pos = (x_pos + d_x, y_pos + d_y)
-        self.input_buffer.popleft()
+        self.direction = EntityDirection(direction)
 
     def reset(self) -> None:
         self.input_buffer.clear()

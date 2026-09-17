@@ -1,3 +1,4 @@
+
 import pygame
 
 from src.interface.maze_renderer import MazeRenderer
@@ -5,10 +6,10 @@ from src.entities.entity import EntityDirection, Entity
 
 
 class EntityRenderer:
-    """Render the game entities on the maze generated"""
+    """Render the game entities on the maze generated."""
 
     def __init__(self, maze_renderer: MazeRenderer) -> None:
-        """Initialize the entity renderer for the maze"""
+        """Initialize the entity renderer for the maze."""
         self.maze_renderer = maze_renderer
 
         self.ghost_image = pygame.image.load(
@@ -37,7 +38,7 @@ class EntityRenderer:
         maze: list[list[int]],
         entity: Entity,
     ) -> None:
-        """Draw an entity on it's current maze position."""
+        """Draw an entity on its current maze position."""
         y, x = entity.current_pos
 
         pixel_x, pixel_y = self.maze_renderer.get_cell_position(
@@ -70,6 +71,6 @@ class EntityRenderer:
             ghost_image,
             (
                 int(pixel_x + (cell_size - ghost_size) / 2),
-                int(pixel_y + (cell_size - ghost_size) / 2),
+                int(pixel_y + (cell_size - ghost_size) / 2 - 3),
             ),
         )
