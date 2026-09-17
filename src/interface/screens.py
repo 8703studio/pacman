@@ -8,6 +8,9 @@ from src.interface.menu import (
 )
 from src.interface.hud import HUD
 from src.interface.utils import draw_text
+from src.entities.ghost_interceptor import Ghost_interceptor
+from src.entities.entity import Pacman
+from src.interface.entity_renderer import EntityRenderer
 
 # from src.interface.utils import get_center
 from src.interface import colors
@@ -112,7 +115,9 @@ class GameScreen:
         """Initialize the game screen."""
         self.game = game
         self.hud = HUD()
-
+        self.entity_renderer = EntityRenderer(self.game.maze_renderer)
+        self.ghost = Ghost_interceptor((2, 5))
+        self.pacman = Pacman((1, 6))
         # theme = self.game.theme_manager.get_theme()
 
         # if theme.background_image is None:
@@ -146,6 +151,16 @@ class GameScreen:
         # screen.blit(self.background, (0, 0))
         screen.fill(colors.black)
         # theme = self.game.theme_manager.get_theme()
+
+        self.game.maze_renderer.draw(
+            screen,
+            self.game.maze,
+        )
+        self.entity_renderer.draw(
+            screen,
+            self.game.maze,
+            self.ghost,
+        )
 
 
 class OptionsScreen:

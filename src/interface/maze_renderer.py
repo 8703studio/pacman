@@ -35,9 +35,45 @@ class MazeRenderer:
         )
         return cell_size
 
+    def get_cell_position(
+        self,
+        maze: list[list[int]],
+        x: int,
+        y: int,
+    ) -> tuple[float, float]:
+        """Return the pixel position of a maze cell."""
+        rows = len(maze)
+        cols = len(maze[0])
+
+        cell_size = self.get_cell_size(maze)
+
+        total_width = cell_size * cols
+        total_height = cell_size * rows
+
+        offset_x = (self.width - total_width) / 2 + self.margin
+
+        offset_y = (
+            self.hud_height
+            + (self.height - self.hud_height - total_height) / 2
+            + self.margin
+        )
+
+        pixel_x = offset_x + x * cell_size
+        pixel_y = offset_y + y * cell_size
+
+        return pixel_x, pixel_y
+
     @staticmethod
-    def _draw_segment(screen, color, start, end, width, border_radius) -> None:
-        """Draw an axis-aligned wall segment as a thick rect with rounded caps."""
+    def _draw_segment(
+        screen: pygame.Surface,
+        color: pygame.Color,
+        start: tuple[float, float],
+        end: tuple[float, float],
+        width: float,
+        border_radius: int,
+    ) -> None:
+        """Draw an axis-aligned wall segment as a thick rect
+        with rounded caps."""
         x1, y1 = start
         x2, y2 = end
         half = width / 2
@@ -111,13 +147,3 @@ class MazeRenderer:
                         self._draw_segment(
                             screen, color, start, end, width, radius
                         )
-
-    # def draw_entities(
-    #     self,
-    #     screen: pygame.Surface,
-    #     player,
-    #     ghosts,
-    #     pellets
-    # ) -> None:
-    #     """Draw the player, ghosts and pellets on the screen."""
-    #     pass

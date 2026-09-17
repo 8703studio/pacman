@@ -1,4 +1,9 @@
-from entity import Entity, EntityType, EntityState, EntityDirection
+from src.entities.entity import (
+    Entity,
+    EntityType,
+    EntityState,
+    EntityDirection,
+)
 
 from collections import deque
 from typing import Optional
@@ -116,9 +121,12 @@ class Ghost_interceptor(Entity):
     def __init__(self, position):
         super().__init__(position)
         self.entity_type = EntityType.GHOST
+        self.grid = None
+        self.pacman_position = None
+        self.pacman_direction = None
 
     def move(self):
-        return super().move()
+        pass
 
     def reset(self):
         return super().reset()

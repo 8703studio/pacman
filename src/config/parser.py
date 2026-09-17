@@ -4,15 +4,15 @@ from typing import Any
 
 
 class Parser:
-    """Parse and validate the game configuration."""
+    """
+    parse and validate the game config file
+    """
 
     def build_config(self, filepath: str) -> dict[str, Any]:
-        """Build a validated configuration from a JSON file."""
         raw_data = self.load_json(filepath)
         return self.validate_data(raw_data)
 
     def validate_data(self, data: dict[str, Any]) -> dict[str, Any]:
-        """Validate configuration values and apply safe defaults."""
         defaults: dict[str, Any] = {
             "highscore_filename": "highscore.json",
             "lives": 3,
@@ -26,19 +26,14 @@ class Parser:
         }
 
         if not isinstance(data, dict):
-            print(
-                "WARNING: configuration is not a JSON object, "
-                "using defaults"
-            )
+            print("WARNING: config is not a JSON object, using defaults")
             return defaults
 
         cleaned: dict[str, Any] = {}
 
         for key, default in defaults.items():
             if key not in data:
-                print(
-                    f"WARNING: missing '{key}', " f"using default: {default}"
-                )
+                print(f"WARNING: missing '{key}', using default: {default}")
                 cleaned[key] = default
                 continue
 
@@ -46,10 +41,7 @@ class Parser:
 
             if key == "highscore_filename":
                 if not isinstance(value, str):
-                    print(
-                        f"WARNING: invalid '{key}', "
-                        f"using default: {default}"
-                    )
+                    print(f"WARNING: '{key}' invalid, fallback {default}")
                     cleaned[key] = default
                 else:
                     cleaned[key] = value
@@ -62,65 +54,57 @@ class Parser:
                 "pointperghost",
                 "levelsmaxtime",
             }:
-                if (
-                    not isinstance(value, int)
-                    or isinstance(value, bool)
-                    or value <= 0
-                ):
-                    print(
-                        f"WARNING: invalid '{key}', "
-                        f"using default: {default}"
-                    )
-                    cleaned[key] = default
-                else:
-                    cleaned[key] = value
+                ok = (
+                    isinstance(value, int)
+                    and not isinstance(value, bool)
+                    and value > 0
+                )
+                if not ok:
+                    print(f"WARNING: '{key}' invalid, fallback {default}")
+                cleaned[key] = value if ok else default
 
             elif key == "seed":
-                if not isinstance(value, int) or isinstance(value, bool):
+                if isinstance(value, int) and not isinstance(value, bool):
+                    cleaned[key] = value
+                else:
+                    print(f"WARNING: '{key}' invalid, fallback {default}")
+                    cleaned[key] = default
+
+            elif key == "levels":
+                if not isinstance(value, list) or not value:
                     print(
-                        f"WARNING: invalid '{key}', "
-                        f"using default: {default}"
+                        f"WARNING: '{key}' invalid or empty, "
+                        f"fallback {default}"
+                    )
+                    cleaned[key] = default
+                elif not all(self._is_valid_level(level) for level in value):
+                    print(
+                        f"WARNING: '{key}' invalid or empty, "
+                        f"fallback {default}"
                     )
                     cleaned[key] = default
                 else:
                     cleaned[key] = value
-
-            elif key == "levels":
-                if not isinstance(value, list):
-                    print(
-                        f"WARNING: invalid '{key}', "
-                        f"using default: {default}"
-                    )
-                    cleaned[key] = default
-                else:
-                    valid_levels = True
-
-                    for level in value:
-                        if (
-                            not isinstance(level, dict)
-                            or not isinstance(level.get("width"), int)
-                            or isinstance(level.get("width"), bool)
-                            or not isinstance(level.get("height"), int)
-                            or isinstance(level.get("height"), bool)
-                            or level["width"] <= 0
-                            or level["height"] <= 0
-                        ):
-                            valid_levels = False
-                            break
-
-                    if not valid_levels:
-                        print(
-                            f"WARNING: invalid '{key}', "
-                            f"using default: {default}"
-                        )
-                        cleaned[key] = default
-                    else:
-                        cleaned[key] = value
 
         return cleaned
 
+    def _is_valid_level(self, level: Any) -> bool:
+        if not isinstance(level, dict):
+            return False
+
+        level_width = level.get("width")
+        level_height = level.get("height")
+
+        return (
+            isinstance(level_width, int)
+            and not isinstance(level_width, bool)
+            and level_width > 0
+            and isinstance(level_height, int)
+            and not isinstance(level_height, bool)
+            and level_height > 0
+        )
+
     def load_json(self, filepath: str) -> dict[str, Any]:
-        """Load a JSON file and ignore lines starting with #."""
         if not os.path.exists(filepath):
             print(f"WARNING: {filepath} does not exist")
             return {}
@@ -132,18 +116,19 @@ class Parser:
             cleaned = "".join(
                 line for line in lines if not line.strip().startswith("#")
             )
-
             data = json.loads(cleaned)
 
             if not isinstance(data, dict):
-                print("WARNING: configuration is not a JSON object")
+                print("WARNING: config is not a JSON object")
                 return {}
-
             return data
 
         except json.JSONDecodeError as error:
             print(f"WARNING: JSON syntax error: {error}")
             return {}
+        except UnicodeDecodeError as error:
+            print(f"WARNING: bad encoding: {error}")
+            return {}
         except OSError as error:
-            print(f"WARNING: unable to read configuration: {error}")
+            print(f"WARNING: can't read config: {error}")
             return {}

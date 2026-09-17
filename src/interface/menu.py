@@ -1,7 +1,8 @@
 import pygame
 
-from typing import Protocol
+from typing import Optional, Protocol
 
+from src.interface.maze_renderer import MazeRenderer
 from src.interface.theme.theme_manager import ThemeManager
 from src.interface.theme.theme import CLASSIC_THEME, SECOND_THEME
 
@@ -11,10 +12,10 @@ class GameInterface(Protocol):
 
     theme_manager: ThemeManager
     running: bool
+    maze_renderer: MazeRenderer
+    maze: Optional[list[list[int]]]
 
     def change_screen(self, screen: object) -> None:
-        """Change the current interface screen."""
-        ...
         """Change the current interface screen."""
 
 
@@ -202,10 +203,6 @@ class MenuOptions:
 
             elif option == "Music":
                 text = "Music : COMING SOON"
-
-            # elif option == "Music":
-            #     value = "ON" if self.values["Music"] else "OFF"
-            #     text = f"Music : {value}"
 
             elif option == "Theme":
                 text = f"Theme : {self.values['Theme']}"
