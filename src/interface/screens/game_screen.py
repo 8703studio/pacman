@@ -17,10 +17,8 @@ class GameScreen:
         self.game = game
         self.hud = HUD()
         self.maze_adapter = MazeAdapter()
-        self.entity_renderer = EntityRenderer(
-            self.game.maze_renderer
-        )
-        self.ghost = Ghost_interceptor((5, 2))
+        self.entity_renderer = EntityRenderer(self.game.maze_renderer)
+        self.ghost = Ghost_interceptor((0, 1))
         print("CREATION :", self.ghost.current_pos)
         self.pacman = Pacman((1, 6))
 
@@ -91,9 +89,7 @@ class GameScreen:
             self.ghost,
         )
 
-        cell_size = self.game.maze_renderer.get_cell_size(
-            self.game.maze
-        )
+        cell_size = self.game.maze_renderer.get_cell_size(self.game.maze)
 
         pixel_x, pixel_y = self.game.maze_renderer.get_cell_position(
             self.game.maze,

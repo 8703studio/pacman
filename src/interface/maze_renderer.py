@@ -105,8 +105,8 @@ class MazeRenderer:
             + self.margin
         )
 
-        wall_width = 16
-        highlight_width = 6
+        wall_width = 14
+        highlight_width = 4
 
         layers = (
             (self.theme.wall_color, wall_width, wall_width // 2),
