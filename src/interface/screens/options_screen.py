@@ -8,6 +8,7 @@ class OptionsScreen:
 
     def __init__(self, game: GameInterface) -> None:
         """Initialize the options screen."""
+
         self.game = game
 
         theme = self.game.theme_manager.get_theme()
@@ -19,11 +20,6 @@ class OptionsScreen:
             theme.background_image
         ).convert()
 
-        self.background = pygame.transform.scale(
-            self.background,
-            (1024, 1080)
-        )
-
         self.menu = MenuOptions(self.game)
 
     def events(
@@ -31,6 +27,7 @@ class OptionsScreen:
         events: list[pygame.event.Event],
     ) -> None:
         """Handle events from the options menu."""
+
         action = self.menu.handle_events(events)
 
         for event in events:
@@ -49,8 +46,15 @@ class OptionsScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the options screen."""
-        screen.blit(self.background, (0, 0))
 
-        # screen.fill(colors.black)
+        self.background = pygame.transform.scale(
+            self.background,
+            screen.get_size(),
+        )
+
+        screen.blit(
+            self.background,
+            (0, 0),
+        )
 
         self.menu.draw(screen)

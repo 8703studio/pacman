@@ -1,7 +1,7 @@
 import pygame
 
 from src.interface.menu import GameInterface
-from src.interface.utils import draw_text
+from src.interface.utils import draw_text, get_center
 
 
 class HighscoresScreen:
@@ -36,16 +36,11 @@ class HighscoresScreen:
         )
 
         self.back_button = pygame.Rect(
-            100,
-            950,
+            0,
+            0,
             100,
             60,
         )
-
-        self.rank_center = 280
-        self.name_center = 512
-        self.score_center = 744
-
         # High scores
         # self.scores = self.game.highscore.top_score()
 
@@ -87,6 +82,15 @@ class HighscoresScreen:
 
         theme = self.game.theme_manager.get_theme()
 
+        center_x, _ = get_center(screen)
+        width = screen.get_width()
+
+        spacing = width // 4
+
+        rank_center = center_x - spacing
+        name_center = center_x
+        score_center = center_x + spacing
+
         # Title
         title_text = "HALL OF FAME"
 
@@ -97,7 +101,7 @@ class HighscoresScreen:
         )
 
         title_rect = title.get_rect(
-            centerx=screen.get_width() // 2,
+            centerx=center_x,
             top=100,
         )
 
@@ -109,7 +113,7 @@ class HighscoresScreen:
         draw_text(
             screen,
             "RANK",
-            self.rank_center - rank_width // 2,
+            rank_center - rank_width // 2,
             220,
             self.font,
             theme.title_text_color,
@@ -120,7 +124,7 @@ class HighscoresScreen:
         draw_text(
             screen,
             "IDOL",
-            self.name_center - name_width // 2,
+            name_center - name_width // 2,
             220,
             self.font,
             theme.title_text_color,
@@ -131,7 +135,7 @@ class HighscoresScreen:
         draw_text(
             screen,
             "SCORE",
-            self.score_center - score_width // 2,
+            score_center - score_width // 2,
             220,
             self.font,
             theme.title_text_color,
@@ -146,7 +150,7 @@ class HighscoresScreen:
             draw_text(
                 screen,
                 str(i + 1),
-                self.rank_center - rank_width // 2,
+                rank_center - rank_width // 2,
                 y,
                 self.font,
                 theme.menu_text_color,
@@ -157,7 +161,7 @@ class HighscoresScreen:
             draw_text(
                 screen,
                 name,
-                self.name_center - name_width // 2,
+                name_center - name_width // 2,
                 y,
                 self.font,
                 theme.menu_text_color,
@@ -168,13 +172,18 @@ class HighscoresScreen:
             draw_text(
                 screen,
                 str(score),
-                self.score_center - score_width // 2,
+                score_center - score_width // 2,
                 y,
                 self.font,
                 theme.menu_text_color,
             )
 
         # Back button
+        self.back_button.bottomleft = (
+            100,
+            screen.get_height() - 100,
+        )
+
         pygame.draw.rect(
             screen,
             theme.button_color,

@@ -16,31 +16,46 @@ class InstructionsScreen:
         if theme.background_image is None:
             raise ValueError("Background image is not defined")
 
-        self.background = pygame.image.load(theme.background_image).convert()
+        self.background = pygame.image.load(
+            theme.background_image
+        ).convert()
 
         self.font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 26
+            "src/interface/assets/fonts/upheavtt.ttf",
+            26,
         )
 
         self.small_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 24
+            "src/interface/assets/fonts/upheavtt.ttf",
+            24,
         )
 
         self.title = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 60
+            "src/interface/assets/fonts/upheavtt.ttf",
+            60,
         )
 
         self.section_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 30
+            "src/interface/assets/fonts/upheavtt.ttf",
+            30,
         )
 
         self.font_button = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 20
+            "src/interface/assets/fonts/upheavtt.ttf",
+            20,
         )
 
-        self.back_button = pygame.Rect(100, 950, 100, 55)
+        self.back_button = pygame.Rect(
+            0,
+            0,
+            100,
+            60,
+        )
 
-    def events(self, events: list[pygame.event.Event]) -> None:
+    def events(
+        self,
+        events: list[pygame.event.Event],
+    ) -> None:
         """Handle events from the instructions screen."""
         for event in events:
             if event.type == pygame.KEYDOWN:
@@ -57,33 +72,49 @@ class InstructionsScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the instructions screen."""
-        screen.blit(self.background, (0, 0))
-
         theme = self.game.theme_manager.get_theme()
 
-        # Title
-        title_text = "HOW TO PLAY"
+        width = screen.get_width()
+        height = screen.get_height()
+        center_x = width // 2
 
+        self.background = pygame.transform.scale(
+            self.background,
+            screen.get_size(),
+        )
+
+        screen.blit(
+            self.background,
+            (0, 0),
+        )
+
+        # Title
         title = self.title.render(
-            title_text,
+            "HOW TO PLAY",
             True,
             theme.menu_text_color,
         )
 
         title_rect = title.get_rect(
-            centerx=screen.get_width() // 2,
-            top=100,
+            centerx=center_x,
+            top=int(height * 0.09),
         )
 
         screen.blit(title, title_rect)
 
         # Main instruction panel
+        panel_width = int(width * 0.80)
+        panel_height = int(height * 0.40)
+
         panel_rect = pygame.Rect(
-            100,
-            180,
-            824,
-            430,
+            0,
+            0,
+            panel_width,
+            panel_height,
         )
+
+        panel_rect.centerx = center_x
+        panel_rect.top = int(height * 0.17)
 
         pygame.draw.rect(
             screen,
@@ -93,24 +124,65 @@ class InstructionsScreen:
         )
 
         # Instruction cards
+        card_width = int(panel_rect.width * 0.415)
+        card_height = int(panel_rect.height * 0.37)
+
+        vertical_gap = int(panel_rect.height * 0.07)
+
+        left_x = panel_rect.left + 40
+
+        right_x = (
+            panel_rect.right
+            - 40
+            - card_width
+        )
+
+        top_y = panel_rect.top + 40
+
+        bottom_y = (
+            top_y
+            + card_height
+            + vertical_gap
+        )
+
         cards = [
             (
-                pygame.Rect(140, 220, 340, 160),
+                pygame.Rect(
+                    left_x,
+                    top_y,
+                    card_width,
+                    card_height,
+                ),
                 "MOVE",
                 "ARROW KEYS",
             ),
             (
-                pygame.Rect(544, 220, 340, 160),
+                pygame.Rect(
+                    right_x,
+                    top_y,
+                    card_width,
+                    card_height,
+                ),
                 "PAC-GUM",
                 "EAT",
             ),
             (
-                pygame.Rect(140, 410, 340, 160),
+                pygame.Rect(
+                    left_x,
+                    bottom_y,
+                    card_width,
+                    card_height,
+                ),
                 "POWER",
                 "+50 PTS",
             ),
             (
-                pygame.Rect(544, 410, 340, 160),
+                pygame.Rect(
+                    right_x,
+                    bottom_y,
+                    card_width,
+                    card_height,
+                ),
                 "RIVAL IDOLS",
                 "AVOID",
             ),
@@ -135,7 +207,10 @@ class InstructionsScreen:
                 top=rect.top + 15,
             )
 
-            screen.blit(card_title, card_title_rect)
+            screen.blit(
+                card_title,
+                card_title_rect,
+            )
 
             # Placeholder for future image
             placeholder = pygame.Rect(
@@ -169,11 +244,15 @@ class InstructionsScreen:
             )
 
         # Score system
+        score_left = int(width * 0.10)
+        score_right = int(width * 0.635)
+        score_top = int(height * 0.60)
+
         draw_text(
             screen,
             "SCORE SYSTEM",
-            100,
-            650,
+            score_left,
+            score_top,
             self.section_font,
             theme.title_text_color,
         )
@@ -181,8 +260,8 @@ class InstructionsScreen:
         draw_text(
             screen,
             "PAC-GUM",
-            100,
-            700,
+            score_left,
+            score_top + int(height * 0.046),
             self.small_font,
             theme.menu_text_color,
         )
@@ -190,8 +269,8 @@ class InstructionsScreen:
         draw_text(
             screen,
             "10 PTS",
-            650,
-            700,
+            score_right,
+            score_top + int(height * 0.046),
             self.small_font,
             theme.menu_text_color,
         )
@@ -199,8 +278,8 @@ class InstructionsScreen:
         draw_text(
             screen,
             "POWER PELLET",
-            100,
-            735,
+            score_left,
+            score_top + int(height * 0.079),
             self.small_font,
             theme.menu_text_color,
         )
@@ -208,8 +287,8 @@ class InstructionsScreen:
         draw_text(
             screen,
             "50 PTS",
-            650,
-            735,
+            score_right,
+            score_top + int(height * 0.079),
             self.small_font,
             theme.menu_text_color,
         )
@@ -217,8 +296,8 @@ class InstructionsScreen:
         draw_text(
             screen,
             "GHOSTS",
-            100,
-            770,
+            score_left,
+            score_top + int(height * 0.111),
             self.small_font,
             theme.menu_text_color,
         )
@@ -226,30 +305,34 @@ class InstructionsScreen:
         draw_text(
             screen,
             "200 PTS",
-            650,
-            770,
+            score_right,
+            score_top + int(height * 0.111),
             self.small_font,
             theme.menu_text_color,
         )
 
         # Lightsticks
+        lightstick_title_y = int(height * 0.764)
+
         draw_text(
             screen,
             "LIGHTSTICKS",
-            100,
-            825,
+            score_left,
+            lightstick_title_y,
             self.section_font,
             theme.title_text_color,
         )
 
+        lightstick_y = int(height * 0.806)
+
         lightstick_positions = [
-            200,
-            300,
-            400,
-            500,
-            600,
-            700,
-            800,
+            int(width * 0.195),
+            int(width * 0.293),
+            int(width * 0.391),
+            int(width * 0.488),
+            int(width * 0.586),
+            int(width * 0.684),
+            int(width * 0.781),
         ]
 
         for x in lightstick_positions:
@@ -258,7 +341,7 @@ class InstructionsScreen:
                 theme.menu_text_color,
                 pygame.Rect(
                     x - 20,
-                    870,
+                    lightstick_y,
                     40,
                     55,
                 ),
@@ -266,6 +349,11 @@ class InstructionsScreen:
             )
 
         # Back button
+        self.back_button.bottomleft = (
+            100,
+            height - 80,
+        )
+
         pygame.draw.rect(
             screen,
             theme.button_color,
@@ -278,7 +366,9 @@ class InstructionsScreen:
             theme.button_color_text,
         )
 
-        button_text_rect = button_text.get_rect(center=self.back_button.center)
+        button_text_rect = button_text.get_rect(
+            center=self.back_button.center,
+        )
 
         screen.blit(
             button_text,

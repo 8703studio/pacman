@@ -25,43 +25,60 @@ class StartScreen:
         if theme.background_image is None:
             raise ValueError("Background image is not defined")
 
-        self.background = pygame.image.load(theme.background_image).convert()
-
-        self.background = pygame.transform.scale(self.background, (1024, 1080))
-
-        # self.banner = pygame.image.load(
-        #     "pac-idol.png"
-        # ).convert_alpha()
+        self.background = pygame.image.load(
+            theme.background_image
+        ).convert()
 
         self.font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 30
+            "src/interface/assets/fonts/upheavtt.ttf",
+            30,
         )
+
         self.highscore_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 32
+            "src/interface/assets/fonts/upheavtt.ttf",
+            32,
         )
-        self.banner_rect = pygame.Rect(100, 150, 824, 450)
+
+        self.banner_rect = pygame.Rect(
+            0,
+            0,
+            0,
+            0,
+        )
+
         self.subtitle_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf", 36
+            "src/interface/assets/fonts/upheavtt.ttf",
+            36,
         )
+
         self.menu = MenuStartScreen(self.game)
 
-    def events(self, events: list[pygame.event.Event]) -> None:
+    def events(
+        self,
+        events: list[pygame.event.Event],
+    ) -> None:
         """Handle events from the main menu."""
         action = self.menu.handle_events(events)
 
         if action == "Start Game":
             self.game.change_screen(
                 GameScreen(cast(GameScreenInterface, self.game))
-                )
+            )
 
         elif action == "View Highscores":
-            self.game.change_screen(HighscoresScreen(self.game))
+            self.game.change_screen(
+                HighscoresScreen(self.game)
+            )
 
         elif action == "Instructions":
-            self.game.change_screen(InstructionsScreen(self.game))
+            self.game.change_screen(
+                InstructionsScreen(self.game)
+            )
 
         elif action == "Options":
-            self.game.change_screen(OptionsScreen(self.game))
+            self.game.change_screen(
+                OptionsScreen(self.game)
+            )
 
         elif action == "Exit":
             self.game.running = False
@@ -72,36 +89,70 @@ class StartScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the main menu screen."""
-        screen.blit(self.background, (0, 0))
         theme = self.game.theme_manager.get_theme()
-        # screen.fill(colors.black)
+
+        screen_size = screen.get_size()
+
+        self.background = pygame.transform.scale(
+            self.background,
+            screen_size,
+        )
+
+        screen.blit(
+            self.background,
+            (0, 0),
+        )
+
+        banner_width = int(screen.get_width() * 0.8)
+        banner_height = int(screen.get_height() * 0.42)
+
+        self.banner_rect.size = (
+            banner_width,
+            banner_height,
+        )
+
+        self.banner_rect.centerx = screen.get_width() // 2
+        self.banner_rect.top = int(
+            screen.get_height() * 0.14
+        )
 
         highscore = self.highscore_font.render(
-            "HIGH SCORE : 12500", True, theme.menu_text_color
+            "HIGH SCORE : 12500",
+            True,
+            theme.menu_text_color,
         )
 
         highscore_rect = highscore.get_rect(
-            centerx=screen.get_width() // 2, top=30
+            centerx=screen.get_width() // 2,
+            top=30,
         )
 
-        screen.blit(highscore, highscore_rect)
+        screen.blit(
+            highscore,
+            highscore_rect,
+        )
 
-        pygame.draw.rect(screen, theme.menu_text_color, self.banner_rect, 3)
+        pygame.draw.rect(
+            screen,
+            theme.menu_text_color,
+            self.banner_rect,
+            3,
+        )
 
         subtitle = self.subtitle_font.render(
-            "K-POP ARCADE", True, theme.title_text_color
+            "K-POP ARCADE",
+            True,
+            theme.title_text_color,
         )
 
         subtitle_rect = subtitle.get_rect(
-            centerx=screen.get_width() // 2, top=self.banner_rect.bottom + 20
+            centerx=screen.get_width() // 2,
+            top=self.banner_rect.bottom + 20,
         )
 
-        screen.blit(subtitle, subtitle_rect)
-
-        # banner_rect = self.banner.get_rect()
-        # banner_rect.centerx = screen.get_rect().centerx
-        # banner_rect.top = 100
-
-        # screen.blit(self.banner, banner_rect)
+        screen.blit(
+            subtitle,
+            subtitle_rect,
+        )
 
         self.menu.draw(screen)
