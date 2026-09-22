@@ -12,7 +12,7 @@ def main():
         print(line)
     engine = Engine(mazegen.maze)
     print(engine.is_in_grid((9, 2)))
-    print(engine.is_wall((4, 9), (1, 0, mazegen.maze[3][9])))
+    print(engine.is_wall(4, 4))
 
 
 if __name__ == "__main__":
