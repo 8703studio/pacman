@@ -14,11 +14,11 @@ class Engine():
         self.grid = grid
 
     @property
-    def column_len(self) -> int:
+    def width(self) -> int:
         return len(self.grid[0])
 
     @property
-    def line_len(self) -> int:
+    def height(self) -> int:
         return len(self.grid)
 
     def is_valid_position(self, next_case: tuple[int, int],
@@ -36,4 +36,4 @@ class Engine():
     # this method verified if the entity is in the grid
     def is_in_grid(self, case: tuple[int, int]) -> bool:
         x, y = case
-        return x > 0 and x < self.x_len and y > 0 and y < self.y_len
+        return x >= 0 and x < self.width and y >= 0 and y < self.height

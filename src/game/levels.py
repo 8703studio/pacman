@@ -1,6 +1,6 @@
 from enum import Enum
 
-class grid_object(Enum):
+class GridObject(Enum):
     EMPTY = 0
     GUM = 1
     SUPERGUM = 2
@@ -9,7 +9,7 @@ class grid_object(Enum):
 class Level():
     def __init__(self, level_config, grid_level) -> None:
         self.level_config = level_config
-        self.grid_level: list[list[int]]= grid_level
+        self.grid_level: list[list[GridObject]]= grid_level
 
     @property
     def object_grid(self):
