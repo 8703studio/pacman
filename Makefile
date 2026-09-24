@@ -5,7 +5,7 @@ ENV_NAME=pacman
 PIP_VENV=pacman/bin/pip
 
 install:
-	python3 -m venv ${ENV_NAME}
+	py -3.12 -m venv ${ENV_NAME}
 	${PIP_VENV} install mypy
 	${PIP_VENV} install -r ${DEPENDENCIES}
 
