@@ -1,9 +1,8 @@
-from enum import Enum
-
 """
     the engine class can do the verification like physics, etc.. in game
 
 """
+
 
 class Engine():
     def __init__(self, grid) -> None:
@@ -25,12 +24,15 @@ class Engine():
 
     def is_valid_position(self, next_case: tuple[int, int],
                           case: tuple[int, int], bits: int) -> bool:
-        
-        pass
+        cy, cx = case
+        ncy, ncx = next_case
+        return (self.is_in_grid(next_case) 
+                and not self.is_wall(self.grid[cy][cx], bits)
+                and not self.is_wall(self.grid[ncy]
+                                     [ncx], self.opposite_wall(bits)))
 
     def opposite_wall(self, bits_current_case: int) -> int:
         return self.opposite_bits[bits_current_case]
-            
 
     # this method verify if the entity faced a wall
     def is_wall(self, case_value: int,

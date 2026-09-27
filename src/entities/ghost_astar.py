@@ -1,4 +1,5 @@
-from entity import Entity, EntityType, EntityState, EntityDirection
+from entity import Entity, EntityType
+
 
 
 class Hoshi_ghost_1(Entity):
