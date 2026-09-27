@@ -1,44 +1,46 @@
 """
     the engine class can do the verification like physics, etc.. in game
 
-    the class have  2 property x_len and y_len
-
-    x_len = len of 1 line of the matrix
-
-    y_len = len of the matrix
 """
 
 
 class Engine():
     def __init__(self, grid) -> None:
         self.grid = grid
+        self.opposite_bits = {
+            1: 4,
+            2: 8,
+            4: 1,
+            8: 2
+        }
 
     @property
-    def x_len(self) -> int:
+    def width(self) -> int:
         return len(self.grid[0])
 
     @property
-    def y_len(self) -> int:
+    def height(self) -> int:
         return len(self.grid)
 
     def is_valid_position(self, next_case: tuple[int, int],
-                          case: tuple[int, int]) -> bool:
-        pass
+                          case: tuple[int, int], bits: int) -> bool:
+        cy, cx = case
+        ncy, ncx = next_case
+        return (self.is_in_grid(next_case) 
+                and not self.is_wall(self.grid[cy][cx], bits)
+                and not self.is_wall(self.grid[ncy]
+                                     [ncx], self.opposite_wall(bits)))
+
+    def opposite_wall(self, bits_current_case: int) -> int:
+        return self.opposite_bits[bits_current_case]
 
     # this method verify if the entity faced a wall
-    # direction contain dx, dy, bits
-    def is_wall(self, case: tuple[int, int],
-                direction: tuple[int, int, int]) -> bool:
-        y, x = case
-        bits = direction
-
-        print(y, " ", x)
-        return self.is_in_grid(case) and self.grid[y][x] & bits
+    def is_wall(self, case_value: int,
+                bits: int) -> bool:
+        print(case_value, bits)
+        return (case_value & bits) != 0
 
     # this method verified if the entity is in the grid
     def is_in_grid(self, case: tuple[int, int]) -> bool:
-        x, y = case
-        if x > 0 and x < self.x_len and y > 0 and y < self.y_len:
-            print("hello")
-            return True
-        return False
+        y, x = case
+        return x >= 0 and x < self.width and y >= 0 and y < self.height

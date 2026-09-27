@@ -5,10 +5,9 @@ ENV_NAME=pacman
 PIP_VENV=pacman/bin/pip
 
 install:
-	python3 -m venv ${ENV_NAME}
+	py -3.12 -m venv ${ENV_NAME}
 	${PIP_VENV} install mypy
 	${PIP_VENV} install -r ${DEPENDENCIES}
-	${PIP_VENV} install vendor/mazegenerator-2.1.0-py3-none-any.whl
 
 run:
 	python3 ${PJ_MAIN} ${CONFIG}
@@ -21,9 +20,6 @@ clean:
 	find . -name "__pycache__" -exec rm -rf {} \;
 	find . -name ".mypy_cache" -exec rm -rf {} \;
 	find . -name "${FILENAME}" -exec rm -rf {} \;
-
-test:
-	PYTHONPATH=src python3 -m pytest tests
 
 lint:
 	flake8 . && mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
