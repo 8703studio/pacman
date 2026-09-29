@@ -51,9 +51,9 @@ class Pacman(Entity):
         self.input_buffer: deque[Position] = deque()
 
     def move(self, direction: tuple[int, int]) -> None:
-        d_x, d_y = direction
-        x_pos, y_pos = self.current_pos
-        self.current_pos = (x_pos + d_x, y_pos + d_y)
+        d_y, d_x = direction
+        y_pos, x_pos = self.current_pos
+        self.current_pos = (y_pos + d_y, x_pos + d_x)
         self.direction = EntityDirection(direction)
 
     def reset(self) -> None:

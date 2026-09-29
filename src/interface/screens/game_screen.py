@@ -7,6 +7,7 @@ from src.interface import colors
 from src.entities.ghost_interceptor import Ghost_interceptor
 from src.entities.entity import Pacman
 from src.maze.maze_adapter import MazeAdapter
+from src.engine.input import get_direction
 
 
 class GameScreen:
@@ -22,44 +23,45 @@ class GameScreen:
         print("CREATION :", self.ghost.current_pos)
         self.pacman = Pacman((1, 6))
 
-    def events(
-        self,
-        events: list[pygame.event.Event],
-    ) -> None:
-        """Handle events from the game."""
+    def events(self, events):
         if self.game.maze is None:
             return
 
-        directions = {
-            pygame.K_UP: "up",
-            pygame.K_DOWN: "down",
-            pygame.K_LEFT: "left",
-            pygame.K_RIGHT: "right",
+        direction_names = {
+            (-1, 0): "up",
+            (1, 0): "down",
+            (0, -1): "left",
+            (0, 1): "right",
         }
 
         for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key not in directions:
-                    continue
+            direction = get_direction(event)
 
-                direction_name = directions[event.key]
+            if direction is None:
+                continue
 
-                y, x = self.pacman.current_pos
+            print("TUPLE DIRECTION :", direction)
 
-                if not self.maze_adapter.is_wall(
-                    self.game.maze,
-                    x,
-                    y,
-                    direction_name,
-                ):
-                    self.pacman.move(
-                        {
-                            "up": (-1, 0),
-                            "down": (1, 0),
-                            "left": (0, -1),
-                            "right": (0, 1),
-                        }[direction_name]
-                    )
+            direction_name = direction_names[direction]
+
+            print("TOUCHE :", event.key)
+            print("DIRECTION :", direction_name)
+            print("POSITION AVANT :", self.pacman.current_pos)
+
+            y, x = self.pacman.current_pos
+
+            if not self.maze_adapter.is_wall(
+                self.game.maze,
+                x,
+                y,
+                direction_name,
+            ):
+                self.pacman.move(direction)
+                print("POSITION APRES :", self.pacman.current_pos)
+            else:
+                print("MUR : déplacement impossible")
+
+            print("--------------------")
 
     def update(self, delta_time: float) -> None:
         """Update the game screen."""

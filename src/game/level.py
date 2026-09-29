@@ -2,12 +2,12 @@ from ..enums import GridObject
 
 
 class Level():
-    def __init__(self, wall_grid: list[list[int]], time: int) -> None:
-        self.time: int = time
+    def __init__(self, wall_grid: list[list[int]]) -> None:
+        self.time: int = 90
         self.grid: list[list[int]] = wall_grid
         self.corners: list[tuple] = self._get_corners()
-        self.grid_level: list[list[GridObject]] = self.create_grid_object()
-        self.element_numb: int = self.get_numb_elem()
+        self.grid_level: list[list[GridObject]] = self._create_grid_object()
+        self.element_numb: int = self._get_numb_elem()
 
     def _get_corners(self) -> list[tuple]:
         width: int = len(self.grid[0])
@@ -19,7 +19,7 @@ class Level():
             (height - 1, width - 1)
         ]
 
-    def get_numb_elem(self) -> int:
+    def _get_numb_elem(self) -> int:
         total: int = 0
         for row in self.grid_level:
             for elem in row:
@@ -27,7 +27,7 @@ class Level():
                     total += 1
         return total
 
-    def create_grid_object(self) -> list[list[GridObject]]:
+    def _create_grid_object(self) -> list[list[GridObject]]:
         obj_grid: list[list[GridObject]] = [[GridObject.GUM if obj != 15 else
                                              GridObject.EMPTY for obj in
                                             row] for row in self.grid]
@@ -43,3 +43,11 @@ class Level():
         if obj == GridObject.GUM or obj == GridObject.SUPERGUM:
             self.element_numb -= 1
         return obj
+
+    def clear_grid(self) -> None:
+        self.grid_level = [[GridObject.EMPTY
+                            for _ in row] for row in self.grid]
+        self.element_numb = 0
+
+    def is_finished(self) -> bool:
+        return self.element_numb == 0

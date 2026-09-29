@@ -27,14 +27,6 @@ def get_target(
     for _ in range(3):
         y, x = position
 
-        print(
-            "TEST TARGET :",
-            position,
-            direction_str,
-            "WALL =",
-            maze_adapter.is_wall(grid, x, y, direction_str),
-        )
-
         if maze_adapter.is_wall(grid, x, y, direction_str):
             break
 
@@ -175,10 +167,6 @@ class Ghost_interceptor(Entity):
 
         self.move_timer = 0
 
-        print("PACMAN :", self.pacman_position)
-
-        print("DIRECTION PACMAN :", self.pacman_direction)
-
         target = get_target(
             self.maze_adapter,
             self.grid,
@@ -186,22 +174,12 @@ class Ghost_interceptor(Entity):
             self.pacman_direction,
         )
 
-        print("POSITION PACMAN :", self.pacman_position)
-
-        print("TARGET CALCULE :", target)
-
         path = find_path(
             self.maze_adapter,
             self.grid,
             self.current_pos,
             target,
         )
-
-        print("FANTOME :", self.current_pos)
-
-        print("TARGET :", target)
-
-        print("PATH :", path)
 
         if len(path) > 1:
             next_position = path[1]
