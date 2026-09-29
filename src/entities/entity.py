@@ -14,12 +14,9 @@ class Entity(ABC):
         self.entity_type = EntityType.NULL
 
     @abstractmethod
-    def move(self, direction) -> None:
+    def move(self) -> None:
         pass
 
     @abstractmethod
     def reset(self) -> None:
         pass
-
-
-

@@ -1,6 +1,6 @@
 import mazegenerator as maze
 from src.engine.physics import Engine
-from src.engine.level import Level
+from src.game.level import Level
 from src import GameConfig
 
 # maze generator tuples (y, x) (column, line)
@@ -25,8 +25,6 @@ def main():
     # engine = Engine(mazegen.maze)
     # print(engine.is_in_grid((0, 1)))
     # print(engine.is_wall(4, 4))
-    
-    
 
 
 if __name__ == "__main__":
