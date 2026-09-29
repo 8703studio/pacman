@@ -26,7 +26,7 @@ class Engine():
                           case: tuple[int, int], bits: int) -> bool:
         cy, cx = case
         ncy, ncx = next_case
-        return (self.is_in_grid(next_case) 
+        return (self.is_in_grid(next_case)
                 and not self.is_wall(self.grid[cy][cx], bits)
                 and not self.is_wall(self.grid[ncy]
                                      [ncx], self.opposite_wall(bits)))

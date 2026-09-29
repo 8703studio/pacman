@@ -9,6 +9,7 @@ class GameConfig(BaseModel):
     pointperpacgum: int = Field(default=10, gt=0)
     pointpersuperpacgum: int = Field(default=50, gt=0)
     pointperghost: int = Field(default=200, gt=0)
+    pointperfruit: int = Field(default=100, gt=0)
     levels: list[dict[str, int]] = Field(
         default_factory=lambda:
             [{"width": 21, "height": 21} for _ in range(10)]
@@ -26,6 +27,7 @@ class GameConfig(BaseModel):
             "pointperpacgum": 10,
             "pointpersuperpacgum": 50,
             "pointperghost": 200,
+            "pointperfruit": 100,
             "levels": [
                 {"width": 21, "height": 21}
                 for _ in range(10)
@@ -64,6 +66,7 @@ class GameConfig(BaseModel):
                 "pointperpacgum",
                 "pointpersuperpacgum",
                 "pointperghost",
+                "pointperfruit"
                 "levelsmaxtime",
             }:
                 if (
@@ -112,3 +115,20 @@ class GameConfig(BaseModel):
                         cleaned[key] = value
 
         return cleaned
+
+    def level_data(self) -> dict[str, Any]:
+        return {
+            "levels": self.levels,
+            "levelsmaxtime": self.levelsmaxtime,
+            "seed": self.seed,
+        }
+
+    def game_data(self) -> dict[str, int]:
+        return {
+            "pointperpacgum": self.pointperpacgum,
+            "pointpersuperpacgum": self.pointpersuperpacgum,
+            "pointperghost": self.pointperghost,
+            "pointperfruit": self.pointperfruit,
+            "lives": self.lives,
+            "levelsmaxtime": self.levelsmaxtime,
+        }

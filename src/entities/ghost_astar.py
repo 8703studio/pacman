@@ -1,7 +1,6 @@
 from entity import Entity, EntityType
 
 
-
 class Hoshi_ghost_1(Entity):
     def __init__(self, position):
         super().__init__(position)

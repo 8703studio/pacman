@@ -1,6 +1,4 @@
-from enum import Enum
-
-    # matrice contenant les objets creer a partir du maze
+# matrice contenant les objets creer a partir du maze
 
 
 class Game():

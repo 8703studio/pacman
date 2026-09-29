@@ -1,6 +1,5 @@
-from .entity import Pacman, EntityDirection
+from .pacman import Pacman
 
 __all__ = [
-    "Pacman",
-    "EntityDirection"
+    "Pacman"
 ]

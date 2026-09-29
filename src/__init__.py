@@ -1,6 +1,7 @@
 from .config import Parser, GameConfig
-from .engine import Engine, Level
-from .entities import Pacman, EntityDirection
+from .engine import Engine
+from .entities import Pacman
+from .game import Level, LevelHandler
 
 __all__ = [
     "Parser",
@@ -8,5 +9,6 @@ __all__ = [
     "EntityDirection",
     "GameConfig",
     "Engine",
-    "Level"
+    "Level",
+    "LevelHandler"
 ]
