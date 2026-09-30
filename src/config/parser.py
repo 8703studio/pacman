@@ -1,22 +1,13 @@
-from pydantic import ValidationError
 import json
 import os
-
-from src.config.game_config import GameConfig
 
 
 class Parser:
     """a remplir"""
 
-    def build_config(self, filepath: str) -> GameConfig:
+    def build_config(self, filepath: str) -> dict:
         """a remplir"""
-        raw_data = self.load_json(filepath)
-
-        try:
-            return GameConfig(**raw_data)
-        except ValidationError as e:
-            print(f"WARNING, invalid data :{e}")
-            return GameConfig()
+        return self.load_json(filepath)
 
     def load_json(self, filepath: str) -> dict:
         """a remplir"""

@@ -3,7 +3,6 @@ import json
 import pytest
 
 from src.config.parser import Parser
-from src.config.game_config import GameConfig
 
 
 @pytest.fixture
@@ -21,33 +20,29 @@ def test_load_valid_config(parser, tmp_path):
     }
     """)
 
-    config = parser.build_config(str(p))
+    data = parser.build_config(str(p))
 
-    assert isinstance(config, GameConfig)
-    assert config.lives == 5
-    assert config.seed == 123
-    assert config.pacgum == 42
+    assert isinstance(data, dict)
+    assert data["lives"] == 5
+    assert data["seed"] == 123
 
 
 def test_file_not_found(parser):
-    config = parser.build_config("inexistant.json")
+    data = parser.build_config("inexistant.json")
 
-    assert isinstance(config, GameConfig)
-    assert config.lives == 3
-    assert config.seed == 42
+    assert data == {}
 
 
 def test_invalid_json_syntax(parser, tmp_path):
     p = tmp_path / "bad.json"
     p.write_text("{ bad json 2 }")
 
-    config = parser.build_config(str(p))
+    data = parser.build_config(str(p))
 
-    assert isinstance(config, GameConfig)
-    assert config.lives == 3
+    assert data == {}
 
 
-def test_invalid_values_fallback(parser, tmp_path):
+def test_invalid_values(parser, tmp_path):
     config_data = {
         "lives": -2,
         "pacgum": "not a number"
@@ -56,8 +51,7 @@ def test_invalid_values_fallback(parser, tmp_path):
     p = tmp_path / "invalid_vals.json"
     p.write_text(json.dumps(config_data))
 
-    config = parser.build_config(str(p))
+    data = parser.build_config(str(p))
 
-    assert isinstance(config, GameConfig)
-    assert config.lives == 3
-    assert config.pacgum == 42
+    assert data["lives"] == -2
+    assert data["pacgum"] == "not a number"

@@ -48,12 +48,9 @@ class GameScreen:
             print("DIRECTION :", direction_name)
             print("POSITION AVANT :", self.pacman.current_pos)
 
-            y, x = self.pacman.current_pos
-
             if not self.maze_adapter.is_wall(
                 self.game.maze,
-                x,
-                y,
+                self.pacman.current_pos,
                 direction_name,
             ):
                 self.pacman.move(direction)

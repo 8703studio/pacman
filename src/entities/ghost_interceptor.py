@@ -25,18 +25,11 @@ def get_target(
     position = pacman_position
 
     for _ in range(3):
-        y, x = position
 
-        if maze_adapter.is_wall(grid, x, y, direction_str):
+        if maze_adapter.is_wall(grid, position, direction_str):
             break
 
-        next_x, next_y = maze_adapter.get_neighbor(
-            x,
-            y,
-            direction_str,
-        )
-
-        position = (next_y, next_x)
+        position = maze_adapter.get_neighbor(position, direction_str)
 
     return position
 
@@ -47,15 +40,8 @@ def get_neighbors(
     position: tuple[int, int],
 ) -> list[tuple[int, int]]:
     """Return accessible neighboring positions."""
-    y, x = position
 
-    neighbors = maze_adapter.get_neighbors(
-        grid,
-        x,
-        y,
-    )
-
-    return [(next_y, next_x) for next_x, next_y in neighbors]
+    return maze_adapter.get_neighbors(grid, position)
 
 
 def find_path(

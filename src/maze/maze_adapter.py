@@ -15,6 +15,13 @@ class MazeAdapter:
         "left": WEST,
     }
 
+    OFFSETS = {
+        "up": (-1, 0),
+        "right": (0, 1),
+        "down": (1, 0),
+        "left": (0, -1),
+    }
+
     def __init__(self):
         pass
 
@@ -52,47 +59,39 @@ class MazeAdapter:
     def is_wall(
         self,
         maze: list[list[int]],
-        x: int,
-        y: int,
+        pos: tuple[int, int],
         direction: str,
     ) -> bool:
         """Return True if a wall blocks the given direction."""
+        y, x = pos
         wall_code = self.DIRECTIONS[direction]
         return bool(maze[y][x] & wall_code)
 
     def get_neighbor(
         self,
-        x: int,
-        y: int,
+        pos: tuple[int, int],
         direction: str,
     ) -> tuple[int, int]:
         """Return the coordinates of the neighboring cell."""
 
-        offsets = {
-            "up": (0, -1),
-            "right": (1, 0),
-            "down": (0, 1),
-            "left": (-1, 0),
-        }
-
-        dx, dy = offsets[direction]
-        return x + dx, y + dy
+        y, x = pos
+        dy, dx = self.OFFSETS[direction]
+        return (y + dy, x + dx)
 
     def get_neighbors(
         self,
         maze: list[list[int]],
-        x: int,
-        y: int,
+        pos: tuple[int, int],
     ) -> list[tuple[int, int]]:
         """Return all walkable neighboring cells."""
 
         neighbors = []
 
         for direction in self.DIRECTIONS:
-            if not self.is_wall(maze, x, y, direction):
-                nx, ny = self.get_neighbor(x, y, direction)
-                if self.is_walkable(maze, nx, ny):
-                    neighbors.append((nx, ny))
+            if not self.is_wall(maze, pos, direction):
+                npos = self.get_neighbor(pos, direction)
+                if self.is_walkable(maze, npos):
+                    neighbors.append(npos)
 
         return neighbors
 
@@ -105,10 +104,10 @@ class MazeAdapter:
 
         for y, line in enumerate(maze):
             for x, _ in enumerate(line):
-                neighbors = self.get_neighbors(maze, x, y)
+                neighbors = self.get_neighbors(maze, (y, x))
 
                 if neighbors:
-                    walkable_cells.append((x, y))
+                    walkable_cells.append((y, x))
 
         return walkable_cells
 
@@ -128,7 +127,8 @@ class MazeAdapter:
             ]
         return corners
 
-    def is_walkable(self, maze, x, y):
+    def is_walkable(self, maze, pos):
+        y, x = pos
         if not (0 <= y < len(maze) and 0 <= x < len(maze[0])):
             return False
         if maze[y][x] == 15:

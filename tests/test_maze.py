@@ -29,7 +29,7 @@ print(corners)
 
 for y in range(len(maze)):
     for x in range(len(maze[y])):
-        neighbors = adapter.get_neighbors(maze, x, y)
+        neighbors = adapter.get_neighbors(maze, (y, x))
         print(f"({x}, {y}) -> {neighbors}")
 
 spawns = adapter.get_spawn_positions(maze)
