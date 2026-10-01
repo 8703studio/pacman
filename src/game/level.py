@@ -2,8 +2,8 @@ from ..enums import GridObject
 
 
 class Level():
-    def __init__(self, wall_grid: list[list[int]]) -> None:
-        self.time: int = 90
+    def __init__(self, wall_grid: list[list[int]], time: int) -> None:
+        self.time: int = time
         self.grid: list[list[int]] = wall_grid
         self.corners: list[tuple] = self._get_corners()
         self.grid_level: list[list[GridObject]] = self._create_grid_object()
