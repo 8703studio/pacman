@@ -1,7 +1,8 @@
-from entity import Entity, EntityType, EntityState, EntityDirection
+from entity import Entity, EntityType
+from ghost import Ghost
 
 
-class Ghost_random(Entity):
+class GhostRandom(Entity, Ghost):
     def __init__(self, position):
         super().__init__(position)
         self.entity_type = EntityType.GHOST

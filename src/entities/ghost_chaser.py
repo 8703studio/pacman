@@ -1,7 +1,7 @@
-from entity import Entity, EntityType, EntityState, EntityDirection
+from entity import Entity, EntityType
 
 
-class Ghost_bfs(Entity):
+class GhostChaser(Entity):
     def __init__(self, position):
         super().__init__(position)
         self.entity_type = EntityType.GHOST

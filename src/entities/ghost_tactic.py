@@ -1,7 +1,7 @@
-from entity import Entity, EntityType
+from entity import Entity, EntityType, EntityState, EntityDirection
 
 
-class Hoshi_ghost_1(Entity):
+class GhostTactic(Entity):
     def __init__(self, position):
         super().__init__(position)
         self.entity_type = EntityType.GHOST
