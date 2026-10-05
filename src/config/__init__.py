@@ -1,6 +1,7 @@
-from parser import Parser, load_json
+from .parser import Parser
+from .game_config import GameConfig
 
 __all__ = [
     "Parser",
-    "load_json"
+    "GameConfig"
 ]
