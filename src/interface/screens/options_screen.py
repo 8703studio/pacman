@@ -16,7 +16,7 @@ class OptionsScreen:
         if theme.background_image is None:
             raise ValueError("Background image is not defined")
 
-        self.background = pygame.image.load(
+        self.background_image = pygame.image.load(
             theme.background_image
         ).convert()
 
@@ -47,13 +47,13 @@ class OptionsScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the options screen."""
 
-        self.background = pygame.transform.scale(
-            self.background,
+        background = pygame.transform.scale(
+            self.background_image,
             screen.get_size(),
         )
 
         screen.blit(
-            self.background,
+            background,
             (0, 0),
         )
 

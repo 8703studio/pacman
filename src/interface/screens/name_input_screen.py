@@ -5,37 +5,39 @@ from src.interface.screens.highscores_screen import HighscoresScreen
 
 
 class NameInputScreen:
-
     """Handles player name input for the high score."""
 
     def __init__(
         self,
         game: GameInterface,
     ) -> None:
-
         """Initialize the name input screen."""
 
         self.game = game
-
         theme = self.game.theme_manager.get_theme()
 
         if theme.background_image is None:
-
             raise ValueError("Background image is not defined")
 
-        self.background = pygame.image.load(
+        self.background_image = pygame.image.load(
             theme.background_image
         ).convert()
 
         self.name = ""
-
         self.score = 12500
 
-        self.font = pygame.font.Font(None, 50)
-
-        self.title = pygame.font.Font(None, 70)
-
-        self.message_font = pygame.font.Font(None, 32)
+        self.font = pygame.font.Font(
+            theme.font_path,
+            50,
+        )
+        self.title = pygame.font.Font(
+            theme.font_path,
+            70,
+        )
+        self.message_font = pygame.font.Font(
+            theme.font_path,
+            32,
+        )
 
         self.input_rect = pygame.Rect(
             0,
@@ -55,48 +57,36 @@ class NameInputScreen:
         self,
         events: list[pygame.event.Event],
     ) -> None:
-
         """Handle player name input events."""
 
         for event in events:
-
             if event.type == pygame.KEYDOWN:
-
                 if event.key == pygame.K_RETURN:
-
                     self._submit_name()
 
                 elif event.key == pygame.K_BACKSPACE:
-
                     self.name = self.name[:-1]
 
                 else:
-
                     if len(self.name) < 10 and (
                         event.unicode.isalnum()
                         or event.unicode == " "
                     ):
-
                         self.name += event.unicode
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-
                 if event.button == 1:
-
                     if self.continue_button.collidepoint(
                         event.pos
                     ):
-
                         self._submit_name()
 
     def _submit_name(self) -> None:
-
         """Submit the player name."""
 
         name = self.name.strip()
 
         if not name:
-
             return
 
         self.game.change_screen(
@@ -104,25 +94,23 @@ class NameInputScreen:
         )
 
     def update(self, delta_time: float) -> None:
-
         """Update the name input screen."""
 
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
-
         """Draw the name input screen."""
 
         width = screen.get_width()
         height = screen.get_height()
 
-        self.background = pygame.transform.scale(
-            self.background,
+        background = pygame.transform.scale(
+            self.background_image,
             screen.get_size(),
         )
 
         screen.blit(
-            self.background,
+            background,
             (0, 0),
         )
 

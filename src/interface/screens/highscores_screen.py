@@ -9,6 +9,7 @@ class HighscoresScreen:
 
     def __init__(self, game: GameInterface) -> None:
         """Initialize the high scores screen."""
+
         self.game = game
 
         theme = self.game.theme_manager.get_theme()
@@ -16,22 +17,22 @@ class HighscoresScreen:
         if theme.background_image is None:
             raise ValueError("Background image is not defined")
 
-        self.background = pygame.image.load(
+        self.background_image = pygame.image.load(
             theme.background_image
         ).convert()
 
         self.font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             36,
         )
 
         self.title = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             70,
         )
 
         self.font_button = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             20,
         )
 
@@ -41,6 +42,7 @@ class HighscoresScreen:
             100,
             60,
         )
+
         # High scores
         # self.scores = self.game.highscore.top_score()
 
@@ -63,6 +65,7 @@ class HighscoresScreen:
         events: list[pygame.event.Event],
     ) -> None:
         """Handle events from the high scores screen."""
+
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
@@ -74,16 +77,32 @@ class HighscoresScreen:
 
     def update(self, delta_time: float) -> None:
         """Update the high scores screen."""
+
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the high scores screen."""
-        screen.blit(self.background, (0, 0))
+
+        screen_size = screen.get_size()
+
+        background = pygame.transform.scale(
+            self.background_image,
+            screen_size,
+        )
+
+        screen.blit(background, (0, 0))
 
         theme = self.game.theme_manager.get_theme()
 
         center_x, _ = get_center(screen)
+
+        height = screen.get_height()
         width = screen.get_width()
+
+        title_top = int(height * 0.08)
+        columns_y = int(height * 0.22)
+        scores_start_y = int(height * 0.28)
+        row_gap = int(height * 0.055)
 
         spacing = width // 4
 
@@ -92,6 +111,7 @@ class HighscoresScreen:
         score_center = center_x + spacing
 
         # Title
+
         title_text = "HALL OF FAME"
 
         title = self.title.render(
@@ -102,19 +122,20 @@ class HighscoresScreen:
 
         title_rect = title.get_rect(
             centerx=center_x,
-            top=100,
+            top=title_top,
         )
 
         screen.blit(title, title_rect)
 
         # Column titles
+
         rank_width = self.font.size("RANK")[0]
 
         draw_text(
             screen,
             "RANK",
             rank_center - rank_width // 2,
-            220,
+            columns_y,
             self.font,
             theme.title_text_color,
         )
@@ -125,7 +146,7 @@ class HighscoresScreen:
             screen,
             "IDOL",
             name_center - name_width // 2,
-            220,
+            columns_y,
             self.font,
             theme.title_text_color,
         )
@@ -136,14 +157,15 @@ class HighscoresScreen:
             screen,
             "SCORE",
             score_center - score_width // 2,
-            220,
+            columns_y,
             self.font,
             theme.title_text_color,
         )
 
         # Scores
+
         for i, (name, score) in enumerate(self.scores):
-            y = 320 + i * 50
+            y = scores_start_y + i * row_gap
 
             rank_width = self.font.size(str(i + 1))[0]
 
@@ -179,9 +201,10 @@ class HighscoresScreen:
             )
 
         # Back button
+
         self.back_button.bottomleft = (
-            100,
-            screen.get_height() - 100,
+            int(width * 0.08),
+            height - int(height * 0.08),
         )
 
         pygame.draw.rect(
@@ -200,7 +223,4 @@ class HighscoresScreen:
             center=self.back_button.center,
         )
 
-        screen.blit(
-            button_text,
-            button_text_rect,
-        )
+        screen.blit(button_text, button_text_rect)

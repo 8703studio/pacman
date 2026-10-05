@@ -1,5 +1,7 @@
 import pygame
+
 from dataclasses import dataclass
+
 from src.interface import colors
 
 
@@ -36,6 +38,7 @@ class Theme:
     button_color_text: pygame.Color
 
     # Assets
+    font_path: str | None = None
     player_sprite: str | None = None
     ghost_sprites: list[str] | None = None
     wall_texture: str | None = None
@@ -48,6 +51,7 @@ class Theme:
 
 CLASSIC_THEME = Theme(
     name="classic",
+
     # Game
     background_color=colors.black,
     wall_color=colors.classic_accent,
@@ -69,6 +73,7 @@ CLASSIC_THEME = Theme(
     ],
     pellet_name="Pac-gum",
     super_pellet_name="Super Pac-gum",
+
     # Interface
     menu_text_color=colors.classic_text,
     menu_selected_color=colors.classic_selected,
@@ -78,7 +83,9 @@ CLASSIC_THEME = Theme(
     title_text_color=colors.classic_title,
     button_color=colors.classic_button,
     button_color_text=colors.classic_button_text,
+
     # Assets
+    font_path="src/interface/assets/fonts/upheavtt.ttf",
     player_sprite="assets/classic/pacman.png",
     ghost_sprites=[
         "assets/classic/ghosts.png",
@@ -94,6 +101,7 @@ CLASSIC_THEME = Theme(
 
 SECOND_THEME = Theme(
     name="pastel",
+
     # Game
     background_color=colors.white,
     wall_color=colors.orange,
@@ -115,6 +123,7 @@ SECOND_THEME = Theme(
     ],
     pellet_name="Pac-gum",
     super_pellet_name="Super Pac-gum",
+
     # Interface
     menu_text_color=colors.pastel_text,
     menu_selected_color=colors.pastel_selected,
@@ -124,7 +133,9 @@ SECOND_THEME = Theme(
     title_text_color=colors.pastel_title,
     button_color=colors.pastel_button,
     button_color_text=colors.pastel_button_text,
+
     # Assets
+    font_path="src/interface/assets/fonts/aldotheapache.ttf",
     player_sprite="assets/second/pacman.png",
     ghost_sprites=[
         "assets/second/ghosts.png",

@@ -6,7 +6,7 @@ from src.interface import colors
 
 
 class MazeRenderer:
-    """Renders the maze and its game entities."""
+    """Renders the maze"""
 
     def __init__(
         self,

@@ -1,12 +1,10 @@
 import pygame
 
 from src.interface.menu import GameInterface
-from src.interface import colors
 from src.interface.screens.name_input_screen import NameInputScreen
 
 
 class EndGameScreen:
-
     """Displays the end game screen."""
 
     def __init__(
@@ -14,7 +12,6 @@ class EndGameScreen:
         game: GameInterface,
         victory: bool,
     ) -> None:
-
         """Initialize the end game screen."""
 
         self.game = game
@@ -23,28 +20,22 @@ class EndGameScreen:
         theme = self.game.theme_manager.get_theme()
 
         if self.victory:
-
             background_path = theme.victory_background_image
-
         else:
-
             background_path = theme.gameover_background_image
 
         if background_path is None:
-
             raise ValueError("End game background is not defined")
 
-        self.background = pygame.image.load(
+        self.background_image = pygame.image.load(
             background_path
         ).convert()
 
         self.score = 12500
 
-        self.font = pygame.font.Font(None, 48)
-
-        self.title = pygame.font.Font(None, 70)
-
-        self.font_message = pygame.font.Font(None, 32)
+        self.font = pygame.font.Font(theme.font_path, 48)
+        self.title = pygame.font.Font(theme.font_path, 70)
+        self.font_message = pygame.font.Font(theme.font_path, 32)
 
         self.continue_button = pygame.Rect(
             0,
@@ -57,62 +48,49 @@ class EndGameScreen:
         self,
         events: list[pygame.event.Event],
     ) -> None:
-
         """Handle events from the end game screen."""
 
         for event in events:
-
             if event.type == pygame.KEYDOWN:
-
                 if event.key == pygame.K_RETURN:
-
                     self.game.change_screen(
                         NameInputScreen(self.game)
                     )
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-
                 if event.button == 1:
-
                     if self.continue_button.collidepoint(
                         event.pos
                     ):
-
                         self.game.change_screen(
                             NameInputScreen(self.game)
                         )
 
     def update(self, delta_time: float) -> None:
-
         """Update the end game screen."""
-
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
-
         """Draw the end game screen."""
 
         width = screen.get_width()
         height = screen.get_height()
 
-        self.background = pygame.transform.scale(
-            self.background,
+        background = pygame.transform.scale(
+            self.background_image,
             screen.get_size(),
         )
 
         screen.blit(
-            self.background,
+            background,
             (0, 0),
         )
 
         theme = self.game.theme_manager.get_theme()
 
         if self.victory:
-
             title_text = "VICTORY!"
-
         else:
-
             title_text = "GAME OVER"
 
         title = self.title.render(
@@ -152,7 +130,7 @@ class EndGameScreen:
 
         pygame.draw.rect(
             screen,
-            colors.yellow,
+            theme.button_color,
             self.continue_button,
         )
 

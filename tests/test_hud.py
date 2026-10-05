@@ -1,5 +1,6 @@
 import pygame
 from src.interface.hud import HUD
+from src.interface.theme.theme import CLASSIC_THEME
 
 
 def main():
@@ -7,7 +8,7 @@ def main():
 
     screen = pygame.display.set_mode((800, 600))
     clock = pygame.time.Clock()
-    hud = HUD()
+    hud = HUD(CLASSIC_THEME)
 
     running = True
 

@@ -18,6 +18,7 @@ class StartScreen:
 
     def __init__(self, game: GameInterface) -> None:
         """Initialize the start screen."""
+
         self.game = game
 
         theme = self.game.theme_manager.get_theme()
@@ -25,17 +26,12 @@ class StartScreen:
         if theme.background_image is None:
             raise ValueError("Background image is not defined")
 
-        self.background = pygame.image.load(
+        self.background_image = pygame.image.load(
             theme.background_image
         ).convert()
 
-        self.font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
-            30,
-        )
-
         self.highscore_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             32,
         )
 
@@ -47,7 +43,7 @@ class StartScreen:
         )
 
         self.subtitle_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             36,
         )
 
@@ -93,15 +89,12 @@ class StartScreen:
 
         screen_size = screen.get_size()
 
-        self.background = pygame.transform.scale(
-            self.background,
+        background = pygame.transform.scale(
+            self.background_image,
             screen_size,
         )
 
-        screen.blit(
-            self.background,
-            (0, 0),
-        )
+        screen.blit(background, (0, 0))
 
         banner_width = int(screen.get_width() * 0.8)
         banner_height = int(screen.get_height() * 0.42)

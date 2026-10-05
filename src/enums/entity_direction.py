@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class EntityDirection(Enum):
     UP = (-1, 0)
     LEFT = (0, -1)

@@ -15,15 +15,28 @@ class GameScreen:
 
     def __init__(self, game: GameScreenInterface) -> None:
         """Initialize the game screen."""
+
         self.game = game
-        self.hud = HUD()
+
+        self.hud = HUD(
+            self.game.theme_manager.get_theme()
+        )
+
         self.maze_adapter = MazeAdapter()
-        self.entity_renderer = EntityRenderer(self.game.maze_renderer)
+
+        self.entity_renderer = EntityRenderer(
+            self.game.maze_renderer
+        )
+
         self.ghost = Ghost_interceptor((0, 1))
-        print("CREATION :", self.ghost.current_pos)
         self.pacman = Pacman((1, 6))
 
-    def events(self, events):
+    def events(
+        self,
+        events: list[pygame.event.Event],
+    ) -> None:
+        """Handle game events."""
+
         if self.game.maze is None:
             return
 
@@ -40,13 +53,7 @@ class GameScreen:
             if direction is None:
                 continue
 
-            print("TUPLE DIRECTION :", direction)
-
             direction_name = direction_names[direction]
-
-            print("TOUCHE :", event.key)
-            print("DIRECTION :", direction_name)
-            print("POSITION AVANT :", self.pacman.current_pos)
 
             if not self.maze_adapter.is_wall(
                 self.game.maze,
@@ -54,14 +61,10 @@ class GameScreen:
                 direction_name,
             ):
                 self.pacman.move(direction)
-                print("POSITION APRES :", self.pacman.current_pos)
-            else:
-                print("MUR : déplacement impossible")
-
-            print("--------------------")
 
     def update(self, delta_time: float) -> None:
         """Update the game screen."""
+
         if self.game.maze is None:
             return
 
@@ -72,6 +75,7 @@ class GameScreen:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the game screen."""
+
         screen.fill(colors.black)
 
         if self.game.maze is None:
@@ -82,26 +86,18 @@ class GameScreen:
             self.game.maze,
         )
 
-        self.entity_renderer.draw(
+        self.entity_renderer.maze_renderer = (
+            self.game.maze_renderer
+        )
+
+        self.entity_renderer.draw_ghost(
             screen,
             self.game.maze,
             self.ghost,
         )
 
-        cell_size = self.game.maze_renderer.get_cell_size(self.game.maze)
-
-        pixel_x, pixel_y = self.game.maze_renderer.get_cell_position(
-            self.game.maze,
-            self.pacman.current_pos[1],
-            self.pacman.current_pos[0],
-        )
-
-        pygame.draw.circle(
+        self.entity_renderer.draw_pacman(
             screen,
-            colors.yellow,
-            (
-                int(pixel_x + cell_size / 2),
-                int(pixel_y + cell_size / 2),
-            ),
-            int(cell_size / 3),
+            self.game.maze,
+            self.pacman,
         )

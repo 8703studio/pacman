@@ -1,6 +1,4 @@
-from enum import Enum
-
-    # matrice contenant les objets creer a partir du maze
+# matrice contenant les objets creer a partir du maze
 
 
 class Game():
@@ -10,9 +8,6 @@ class Game():
         self.levels = level_handler
         self.pacman = pacman
         self.score = 0
-        self.pacgum = 0
-        self.superpacgum = 0
-        self.fruit = 0
         self.config = config
         self.point: dict[str, int] = dict()
 
@@ -30,6 +25,9 @@ class Game():
 
     @property
     def score_ghost(self):
+        pass
+
+    def main_game(self):
         pass
 
     def add_score(self, score: int):

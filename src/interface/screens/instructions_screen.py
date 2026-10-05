@@ -9,6 +9,7 @@ class InstructionsScreen:
 
     def __init__(self, game: GameInterface) -> None:
         """Initialize the instructions screen."""
+
         self.game = game
 
         theme = self.game.theme_manager.get_theme()
@@ -16,32 +17,27 @@ class InstructionsScreen:
         if theme.background_image is None:
             raise ValueError("Background image is not defined")
 
-        self.background = pygame.image.load(
+        self.background_image = pygame.image.load(
             theme.background_image
         ).convert()
 
-        self.font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
-            26,
-        )
-
         self.small_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             24,
         )
 
         self.title = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             60,
         )
 
         self.section_font = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             30,
         )
 
         self.font_button = pygame.font.Font(
-            "src/interface/assets/fonts/upheavtt.ttf",
+            theme.font_path,
             20,
         )
 
@@ -57,6 +53,7 @@ class InstructionsScreen:
         events: list[pygame.event.Event],
     ) -> None:
         """Handle events from the instructions screen."""
+
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
@@ -68,25 +65,24 @@ class InstructionsScreen:
 
     def update(self, delta_time: float) -> None:
         """Update the instructions screen."""
+
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the instructions screen."""
+
         theme = self.game.theme_manager.get_theme()
 
         width = screen.get_width()
         height = screen.get_height()
         center_x = width // 2
 
-        self.background = pygame.transform.scale(
-            self.background,
+        background = pygame.transform.scale(
+            self.background_image,
             screen.get_size(),
         )
 
-        screen.blit(
-            self.background,
-            (0, 0),
-        )
+        screen.blit(background, (0, 0))
 
         # Title
         title = self.title.render(
@@ -126,11 +122,9 @@ class InstructionsScreen:
         # Instruction cards
         card_width = int(panel_rect.width * 0.415)
         card_height = int(panel_rect.height * 0.37)
-
         vertical_gap = int(panel_rect.height * 0.07)
 
         left_x = panel_rect.left + 40
-
         right_x = (
             panel_rect.right
             - 40
@@ -138,7 +132,6 @@ class InstructionsScreen:
         )
 
         top_y = panel_rect.top + 40
-
         bottom_y = (
             top_y
             + card_height
@@ -350,8 +343,8 @@ class InstructionsScreen:
 
         # Back button
         self.back_button.bottomleft = (
-            100,
-            height - 80,
+            int(width * 0.08),
+            height - int(height * 0.08),
         )
 
         pygame.draw.rect(
