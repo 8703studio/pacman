@@ -6,7 +6,7 @@ from src.interface.entity_renderer import EntityRenderer
 from src.interface import colors
 from src.entities.ghost_interceptor import Ghost_interceptor
 from src.entities.entity import Pacman
-from src.maze.maze_adapter import MazeAdapter
+from src.engine.physics import Engine
 from src.engine.input import get_direction
 
 
@@ -22,14 +22,12 @@ class GameScreen:
             self.game.theme_manager.get_theme()
         )
 
-        self.maze_adapter = MazeAdapter()
-
         self.entity_renderer = EntityRenderer(
             self.game.maze_renderer
         )
 
         self.ghost = Ghost_interceptor((0, 1))
-        self.pacman = Pacman((1, 6))
+        self.pacman = Pacman((10, 10))
 
     def events(
         self,
@@ -40,11 +38,13 @@ class GameScreen:
         if self.game.maze is None:
             return
 
-        direction_names = {
-            (-1, 0): "up",
-            (1, 0): "down",
-            (0, -1): "left",
-            (0, 1): "right",
+        engine = Engine(self.game.maze)
+
+        direction_bits = {
+            (-1, 0): 1,
+            (0, 1): 2,
+            (1, 0): 4,
+            (0, -1): 8,
         }
 
         for event in events:
@@ -53,12 +53,17 @@ class GameScreen:
             if direction is None:
                 continue
 
-            direction_name = direction_names[direction]
+            bits = direction_bits[direction]
 
-            if not self.maze_adapter.is_wall(
-                self.game.maze,
+            next_position = (
+                self.pacman.current_pos[0] + direction[0],
+                self.pacman.current_pos[1] + direction[1],
+            )
+
+            if engine.is_valid_position(
+                next_position,
                 self.pacman.current_pos,
-                direction_name,
+                bits,
             ):
                 self.pacman.move(direction)
 
@@ -68,7 +73,7 @@ class GameScreen:
         if self.game.maze is None:
             return
 
-        self.ghost.grid = self.game.maze
+        self.ghost.engine = Engine(self.game.maze)
         self.ghost.pacman_position = self.pacman.current_pos
         self.ghost.pacman_direction = self.pacman.direction
         self.ghost.move()

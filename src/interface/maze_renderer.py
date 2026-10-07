@@ -1,8 +1,12 @@
 import pygame
 
-from src.maze.maze_adapter import MazeAdapter
 from src.interface.theme.theme import Theme
 from src.interface import colors
+
+NORTH = 1
+EAST = 2
+SOUTH = 4
+WEST = 8
 
 
 class MazeRenderer:
@@ -104,17 +108,8 @@ class MazeRenderer:
         maze: list[list[int]],
     ) -> None:
         """Draw the maze walls on the screen."""
-        rows = len(maze)
-        cols = len(maze[0])
         cell_size = self.get_cell_size(maze)
-        total_width = cell_size * cols
-        total_height = cell_size * rows
-        offset_x = (self.width - total_width) / 2 + self.margin
-        offset_y = (
-            self.hud_height
-            + (self.height - self.hud_height - total_height) / 2
-            + self.margin
-        )
+        offset_x, offset_y = self.get_cell_position(maze, 0, 0)
 
         wall_width = 14
         highlight_width = 4
@@ -131,28 +126,28 @@ class MazeRenderer:
                     pixel_y = int(offset_y + y * cell_size)
                     size = int(cell_size)
 
-                    if cell & MazeAdapter.NORTH:
+                    if cell & NORTH:
                         start = (pixel_x, pixel_y)
                         end = (pixel_x + size, pixel_y)
                         self._draw_segment(
                             screen, color, start, end, width, radius
                         )
 
-                    if cell & MazeAdapter.EAST:
+                    if cell & EAST:
                         start = (pixel_x + size, pixel_y)
                         end = (pixel_x + size, pixel_y + size)
                         self._draw_segment(
                             screen, color, start, end, width, radius
                         )
 
-                    if cell & MazeAdapter.SOUTH:
+                    if cell & SOUTH:
                         start = (pixel_x, pixel_y + size)
                         end = (pixel_x + size, pixel_y + size)
                         self._draw_segment(
                             screen, color, start, end, width, radius
                         )
 
-                    if cell & MazeAdapter.WEST:
+                    if cell & WEST:
                         start = (pixel_x, pixel_y)
                         end = (pixel_x, pixel_y + size)
                         self._draw_segment(

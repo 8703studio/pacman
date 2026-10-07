@@ -148,7 +148,7 @@ class MazeAdapter:
     def get_spawn_positions(self, maze):
         height = len(maze)
         width = len(maze[0])
-        pacman_pos = (width // 2, height // 2)
+        pacman_pos = (height // 2, width // 2)
         ghost_positions = self.get_corners(maze)
         return {
             "pacman": pacman_pos,

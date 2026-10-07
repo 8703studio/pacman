@@ -109,7 +109,7 @@ class EntityRenderer:
         )
 
         cell_size = self.maze_renderer.get_cell_size(maze)
-        pacman_size = int(cell_size * 0.58)
+        pacman_size = int(cell_size * 0.5)
 
         print("DIRECTION PACMAN :", pacman.direction)
         frame_idx = 1

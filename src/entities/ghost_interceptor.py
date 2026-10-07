@@ -26,10 +26,10 @@ def get_target(
     direction = pacman_direction.value
 
     direction_bits = {
-        EntityDirection.LEFT: 1,
-        EntityDirection.DOWN: 2,
-        EntityDirection.RIGHT: 4,
-        EntityDirection.UP: 8,
+        EntityDirection.UP: 1,
+        EntityDirection.RIGHT: 2,
+        EntityDirection.DOWN: 4,
+        EntityDirection.LEFT: 8,
     }
 
     bits = direction_bits[pacman_direction]
@@ -55,10 +55,10 @@ def get_neighbors(
     """Return accessible neighboring positions."""
 
     directions = {
-        (0, -1): 1,
-        (1, 0): 2,
-        (0, 1): 4,
-        (-1, 0): 8,
+        (-1, 0): 1,
+        (0, 1): 2,
+        (1, 0): 4,
+        (0, -1): 8,
     }
 
     neighbors = []
@@ -176,10 +176,7 @@ class Ghost_interceptor(Entity):
 
         self.move_timer = 0
 
-    def move(
-        self,
-        direction: tuple[int, int]
-    ) -> None:
+    def move(self, direction: Optional[tuple[int, int]] = None) -> None:
         """Move the ghost one step along the path towards its target."""
         if (
             self.engine is None
