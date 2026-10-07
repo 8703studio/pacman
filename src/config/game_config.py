@@ -66,7 +66,7 @@ class GameConfig(BaseModel):
                 "pointperpacgum",
                 "pointpersuperpacgum",
                 "pointperghost",
-                "pointperfruit"
+                "pointperfruit",
                 "levelsmaxtime",
             }:
                 if (
