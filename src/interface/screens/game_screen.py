@@ -5,7 +5,7 @@ from src.interface.hud import HUD
 from src.interface.entity_renderer import EntityRenderer
 from src.interface import colors
 from src.entities.ghost_interceptor import Ghost_interceptor
-from src.entities.entity import Pacman
+from src.entities.entity import Pacman, EntityDirection
 from src.engine.physics import Engine
 from src.engine.input import get_direction
 
@@ -40,32 +40,22 @@ class GameScreen:
 
         engine = Engine(self.game.maze)
 
-        direction_bits = {
-            (-1, 0): 1,
-            (0, 1): 2,
-            (1, 0): 4,
-            (0, -1): 8,
-        }
-
         for event in events:
             direction = get_direction(event)
 
             if direction is None:
                 continue
 
-            bits = direction_bits[direction]
-
-            next_position = (
-                self.pacman.current_pos[0] + direction[0],
-                self.pacman.current_pos[1] + direction[1],
-            )
-
             if engine.is_valid_position(
-                next_position,
+                direction,
                 self.pacman.current_pos,
-                bits,
             ):
-                self.pacman.move(direction)
+                self.pacman.direction = EntityDirection(direction)
+                d_y, d_x = self.pacman.move()
+                self.pacman.current_pos = (
+                    self.pacman.current_pos[0] + d_y,
+                    self.pacman.current_pos[1] + d_x,
+                )
 
     def update(self, delta_time: float) -> None:
         """Update the game screen."""
@@ -76,7 +66,11 @@ class GameScreen:
         self.ghost.engine = Engine(self.game.maze)
         self.ghost.pacman_position = self.pacman.current_pos
         self.ghost.pacman_direction = self.pacman.direction
-        self.ghost.move()
+        d_y, d_x = self.ghost.move()
+        self.ghost.current_pos = (
+            self.ghost.current_pos[0] + d_y,
+            self.ghost.current_pos[1] + d_x,
+        )
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the game screen."""

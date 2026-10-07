@@ -25,22 +25,13 @@ def get_target(
 
     direction = pacman_direction.value
 
-    direction_bits = {
-        EntityDirection.UP: 1,
-        EntityDirection.RIGHT: 2,
-        EntityDirection.DOWN: 4,
-        EntityDirection.LEFT: 8,
-    }
-
-    bits = direction_bits[pacman_direction]
-
     for _ in range(3):
         next_position = (
             position[0] + direction[0],
             position[1] + direction[1],
         )
 
-        if not engine.is_valid_position(next_position, position, bits):
+        if not engine.is_valid_position(direction, position):
             break
 
         position = next_position
@@ -54,26 +45,22 @@ def get_neighbors(
 ) -> list[tuple[int, int]]:
     """Return accessible neighboring positions."""
 
-    directions = {
-        (-1, 0): 1,
-        (0, 1): 2,
-        (1, 0): 4,
-        (0, -1): 8,
-    }
+    directions = [
+        (-1, 0),
+        (0, 1),
+        (1, 0),
+        (0, -1),
+    ]
 
     neighbors = []
 
-    for direction, bits in directions.items():
+    for direction in directions:
         next_position = (
             position[0] + direction[0],
             position[1] + direction[1],
         )
 
-        if engine.is_valid_position(
-            next_position,
-            position,
-            bits,
-        ):
+        if engine.is_valid_position(direction, position):
             neighbors.append(next_position)
 
     return neighbors
@@ -176,19 +163,19 @@ class Ghost_interceptor(Entity):
 
         self.move_timer = 0
 
-    def move(self, direction: Optional[tuple[int, int]] = None) -> None:
-        """Move the ghost one step along the path towards its target."""
+    def move(self) -> tuple[int, int]:
+        """Return the next direction for the ghost."""
         if (
             self.engine is None
             or self.pacman_position is None
             or self.pacman_direction is None
         ):
-            return
+            return (0, 0)
 
         self.move_timer += 1
 
         if self.move_timer < 10:
-            return
+            return (0, 0)
 
         self.move_timer = 0
 
@@ -209,11 +196,14 @@ class Ghost_interceptor(Entity):
 
         if self.direction_queue:
             direction = self.direction_queue.popleft()
-            self.current_pos = (
-                self.current_pos[0] + direction[0],
-                self.current_pos[1] + direction[1],
-            )
             self.direction = EntityDirection(direction)
+            return direction
+
+        return (0, 0)
+
+    def update_ghost(self) -> None:
+        """Update the ghost state."""
+        pass
 
     def reset(self) -> None:
         """Reset the ghost to its starting position."""

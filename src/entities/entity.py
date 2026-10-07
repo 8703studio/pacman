@@ -26,16 +26,20 @@ class EntityType(Enum):
 
 
 class Entity(ABC):
-    def __init__(self, position: Position) -> None:
-        self.start_pos: Position = position
-        self.current_pos: Position = self.start_pos
-        self.vitesse: float = 0
-        self.direction: EntityDirection = EntityDirection.DOWN
-        self.state: EntityState = EntityState.NORMAL
-        self.entity_type: EntityType = EntityType.NULL
+    def __init__(self, position) -> None:
+        self.start_pos = position
+        self.current_pos = self.start_pos
+        self.vitesse = 0
+        self.direction = EntityDirection.DOWN
+        self.state = EntityState.NORMAL
+        self.entity_type = EntityType.NULL
 
     @abstractmethod
-    def move(self, direction: tuple[int, int]) -> None:
+    def move(self) -> tuple[int, int]:
+        pass
+
+    @abstractmethod
+    def update_ghost(self) -> None:
         pass
 
     @abstractmethod
@@ -50,11 +54,11 @@ class Pacman(Entity):
         self.vitesse = 0.5
         self.input_buffer: deque[Position] = deque()
 
-    def move(self, direction: tuple[int, int]) -> None:
-        d_y, d_x = direction
-        y_pos, x_pos = self.current_pos
-        self.current_pos = (y_pos + d_y, x_pos + d_x)
-        self.direction = EntityDirection(direction)
+    def move(self) -> tuple[int, int]:
+        return self.direction.value
+
+    def update_ghost(self) -> None:
+        pass
 
     def reset(self) -> None:
         self.input_buffer.clear()
