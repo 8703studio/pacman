@@ -21,6 +21,7 @@ class MazeRenderer:
         self.height = height
         self.hud_height = hud_height
         self.margin = margin
+        self.bottom_margin = 30
         self.theme = theme
 
     def get_cell_size(self, maze: list[list[int]]) -> float:
@@ -28,7 +29,12 @@ class MazeRenderer:
         rows = len(maze)
         cols = len(maze[0])
         available_width = self.width - 2 * self.margin
-        available_height = self.height - self.hud_height - 2 * self.margin
+        available_height = (
+            self.height
+            - self.hud_height
+            - self.margin
+            - self.bottom_margin
+        )
         cell_size = min(
             available_width / cols,
             available_height / rows,
@@ -54,7 +60,12 @@ class MazeRenderer:
 
         offset_y = (
             self.hud_height
-            + (self.height - self.hud_height - total_height) / 2
+            + (
+                self.height
+                - self.hud_height
+                - self.bottom_margin
+                - total_height
+            ) / 2
             + self.margin
         )
 

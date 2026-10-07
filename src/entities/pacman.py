@@ -1,5 +1,6 @@
 from collections import deque
-from entity import Entity, EntityType
+from .entity import Entity
+from ..enums import EntityType
 
 
 class Pacman(Entity):

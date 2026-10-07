@@ -4,6 +4,7 @@ from src.interface.game_window import GameWindow
 from src.interface.screens.game_screen import GameScreen
 from src.maze.maze_adapter import MazeAdapter
 
+
 adapter = MazeAdapter()
 
 maze = adapter.generate_level(
@@ -18,13 +19,13 @@ window = GameWindow(600, 800)
 window.maze = maze
 window.current_screen = GameScreen(window)
 
-running = True
+while window.running:
 
-while running:
+    window.handle_events()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    window.update(0)
+
+    window.screen = pygame.display.get_surface()
 
     window.draw()
 

@@ -4,7 +4,7 @@ from typing import Optional
 
 from src.entities.entity import Entity, EntityType, EntityDirection
 
-from src.maze.maze_adapter import MazeAdapter
+from src.engine.physics import Engine
 
 DIRECTION_TO_STRING = {
     EntityDirection.UP: "up",
@@ -15,38 +15,72 @@ DIRECTION_TO_STRING = {
 
 
 def get_target(
-    maze_adapter: MazeAdapter,
-    grid: list[list[int]],
+    engine: Engine,
     pacman_position: tuple[int, int],
     pacman_direction: EntityDirection,
 ) -> tuple[int, int]:
     """Find the interception target three cells ahead of Pacman."""
-    direction_str = DIRECTION_TO_STRING[pacman_direction]
+
     position = pacman_position
 
-    for _ in range(3):
+    direction = pacman_direction.value
 
-        if maze_adapter.is_wall(grid, position, direction_str):
+    direction_bits = {
+        EntityDirection.LEFT: 1,
+        EntityDirection.DOWN: 2,
+        EntityDirection.RIGHT: 4,
+        EntityDirection.UP: 8,
+    }
+
+    bits = direction_bits[pacman_direction]
+
+    for _ in range(3):
+        next_position = (
+            position[0] + direction[0],
+            position[1] + direction[1],
+        )
+
+        if not engine.is_valid_position(next_position, position, bits):
             break
 
-        position = maze_adapter.get_neighbor(position, direction_str)
+        position = next_position
 
     return position
 
 
 def get_neighbors(
-    maze_adapter: MazeAdapter,
-    grid: list[list[int]],
+    engine: Engine,
     position: tuple[int, int],
 ) -> list[tuple[int, int]]:
     """Return accessible neighboring positions."""
 
-    return maze_adapter.get_neighbors(grid, position)
+    directions = {
+        (0, -1): 1,
+        (1, 0): 2,
+        (0, 1): 4,
+        (-1, 0): 8,
+    }
+
+    neighbors = []
+
+    for direction, bits in directions.items():
+        next_position = (
+            position[0] + direction[0],
+            position[1] + direction[1],
+        )
+
+        if engine.is_valid_position(
+            next_position,
+            position,
+            bits,
+        ):
+            neighbors.append(next_position)
+
+    return neighbors
 
 
 def find_path(
-    maze_adapter: MazeAdapter,
-    grid: list[list[int]],
+    engine: Engine,
     ghost_position: tuple[int, int],
     target: tuple[int, int],
 ) -> list[tuple[int, int]]:
@@ -67,8 +101,7 @@ def find_path(
             break
 
         for neighbor in get_neighbors(
-            maze_adapter,
-            grid,
+            engine,
             current,
         ):
             if neighbor not in visited:
@@ -89,7 +122,16 @@ def find_path(
 
     path.reverse()
 
-    return path
+    directions = []
+
+    for index in range(len(path) - 1):
+        direction = get_direction(
+            path[index],
+            path[index + 1],
+        )
+        directions.append(direction)
+
+    return directions
 
 
 def get_direction(
@@ -124,23 +166,23 @@ class Ghost_interceptor(Entity):
 
         self.entity_type = EntityType.GHOST
 
-        self.maze_adapter = MazeAdapter()
-
-        self.grid: Optional[list[list[int]]] = None
+        self.engine: Optional[Engine] = None
 
         self.pacman_position: Optional[tuple[int, int]] = None
 
         self.pacman_direction: Optional[EntityDirection] = None
 
+        self.direction_queue: deque[tuple[int, int]] = deque()
+
         self.move_timer = 0
 
     def move(
         self,
-        direction: tuple[int, int] | None = None,
+        direction: tuple[int, int]
     ) -> None:
         """Move the ghost one step along the path towards its target."""
         if (
-            self.grid is None
+            self.engine is None
             or self.pacman_position is None
             or self.pacman_direction is None
         ):
@@ -153,32 +195,31 @@ class Ghost_interceptor(Entity):
 
         self.move_timer = 0
 
-        target = get_target(
-            self.maze_adapter,
-            self.grid,
-            self.pacman_position,
-            self.pacman_direction,
-        )
-
-        path = find_path(
-            self.maze_adapter,
-            self.grid,
-            self.current_pos,
-            target,
-        )
-
-        if len(path) > 1:
-            next_position = path[1]
-
-            direction = get_direction(
-                self.current_pos,
-                next_position,
+        if not self.direction_queue:
+            target = get_target(
+                self.engine,
+                self.pacman_position,
+                self.pacman_direction,
             )
 
-            self.direction = EntityDirection(direction)
+            path = find_path(
+                self.engine,
+                self.current_pos,
+                target,
+            )
 
-            self.current_pos = next_position
+            self.direction_queue.extend(path)
+
+        if self.direction_queue:
+            direction = self.direction_queue.popleft()
+            self.current_pos = (
+                self.current_pos[0] + direction[0],
+                self.current_pos[1] + direction[1],
+            )
+            self.direction = EntityDirection(direction)
 
     def reset(self) -> None:
         """Reset the ghost to its starting position."""
         self.current_pos = self.start_pos
+        self.direction_queue.clear()
+        self.move_timer = 0

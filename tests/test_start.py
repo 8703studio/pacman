@@ -1,4 +1,5 @@
 import pygame
+
 import mazegenerator as maze
 
 from src.interface.screens.start_screen import StartScreen
@@ -25,7 +26,12 @@ class TestGame:
 
         self.maze = mazegen.maze
 
-        print("MAZE SIZE :", len(self.maze), "x", len(self.maze[0]))
+        print(
+            "MAZE SIZE :",
+            len(self.maze),
+            "x",
+            len(self.maze[0]),
+        )
 
         self.maze_renderer = MazeRenderer(
             width=1024,
@@ -38,23 +44,26 @@ class TestGame:
         self.pattern_test = pattern_test
 
     def change_screen(self, screen):
-
         self.current_screen = screen
 
     def show_start_screen(self):
-
         self.current_screen = StartScreen(self)
 
 
 pygame.init()
 
-screen = pygame.display.set_mode((1024, 1080))
+screen = pygame.display.set_mode(
+    (1024, 1080),
+    pygame.RESIZABLE,
+)
+
 pygame.display.set_caption("Test Start Screen")
 
 game = TestGame()
 game.current_screen = StartScreen(game)
 
 clock = pygame.time.Clock()
+
 running = True
 
 while running:
@@ -62,17 +71,16 @@ while running:
     events = pygame.event.get()
 
     for event in events:
-
         if event.type == pygame.QUIT:
-
             running = False
             game.running = False
+
+    screen = pygame.display.get_surface()
 
     game.current_screen.events(events)
     game.current_screen.update(0)
 
     screen.fill((0, 0, 0))
-
     game.current_screen.draw(screen)
 
     pygame.display.flip()

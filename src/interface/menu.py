@@ -65,29 +65,41 @@ class MenuStartScreen:
         """Handle events of main menu."""
 
         for event in events:
+
             if event.type == pygame.KEYDOWN:
+
                 if event.key == pygame.K_RIGHT:
+
                     self.selected = (
                         self.selected + 1
                     ) % len(self.options)
 
                 elif event.key == pygame.K_LEFT:
+
                     self.selected = (
                         self.selected - 1
                     ) % len(self.options)
 
                 elif event.key == pygame.K_RETURN:
+
                     return self.options[self.selected]
 
             elif event.type == pygame.MOUSEMOTION:
+
                 for i, rect in enumerate(self.option_rects):
+
                     if rect.collidepoint(event.pos):
+
                         self.selected = i
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
+
                 if event.button == 1:
+
                     for i, rect in enumerate(self.option_rects):
+
                         if rect.collidepoint(event.pos):
+
                             return self.options[i]
 
         return None
@@ -99,25 +111,43 @@ class MenuStartScreen:
 
         spacing = 35
 
+        theme = self.game.theme_manager.get_theme()
+
+        font = self.small_font
+
         total_width = sum(
-            self.small_font.size(option)[0]
+            font.size(option)[0]
             for option in self.options
         ) + spacing * (len(self.options) - 1)
+
+        if total_width > screen.get_width():
+
+            scale = screen.get_width() / total_width
+            font_size = int(24 * scale)
+
+            font = pygame.font.Font(
+                theme.font_path,
+                font_size,
+            )
+
+            total_width = sum(
+                font.size(option)[0]
+                for option in self.options
+            ) + spacing * (len(self.options) - 1)
 
         x = (screen.get_width() - total_width) // 2
 
         menu_y = int(screen.get_height() * 0.69)
 
-        theme = self.game.theme_manager.get_theme()
-
         for i, option in enumerate(self.options):
+
             color = (
                 theme.menu_selected_color
                 if i == self.selected
                 else theme.menu_text_color
             )
 
-            option_text = self.small_font.render(
+            option_text = font.render(
                 option,
                 True,
                 color,
@@ -129,6 +159,7 @@ class MenuStartScreen:
             )
 
             self.option_rects.append(option_rect)
+
             screen.blit(option_text, option_rect)
 
             x = option_rect.right + spacing

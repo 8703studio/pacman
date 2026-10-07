@@ -1,8 +1,7 @@
 from entity import Entity, EntityType
 
 
-
-class Hoshi_ghost_1(Entity):
+class GhostChaser(Entity):
     def __init__(self, position):
         super().__init__(position)
         self.entity_type = EntityType.GHOST
