@@ -14,7 +14,11 @@ class Entity(ABC):
         self.entity_type = EntityType.NULL
 
     @abstractmethod
-    def move(self) -> None:
+    def move(self) -> tuple[int, int]:
+        pass
+
+    @abstractmethod
+    def update_ghost(self) -> None:
         pass
 
     @abstractmethod

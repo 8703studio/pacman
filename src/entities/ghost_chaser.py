@@ -1,7 +1,9 @@
-from entity import Entity, EntityType
+from entity import Entity
+from ..enums import EntityType
+from ghost import Ghost
 
 
-class GhostChaser(Entity):
+class GhostChaser(Entity, Ghost):
     def __init__(self, position):
         super().__init__(position)
         self.entity_type = EntityType.GHOST

@@ -1,18 +1,10 @@
-from .ghost_random import GhostRandom
-from .ghost_chaser import GhostChaser
-from .ghost_interceptor import GhostInterceptor
-from .ghost_tactic import GhostTactic
+from ghost import Ghost
 
 
 class GhostHandler():
-    def __init__(self, house_coord: list[tuple[int, int]]):
-        pass
-
-    def _create_ghost_list(self):
-        pass
+    def __init__(self, ghost_list: list[Ghost]):
+        self.ghost_list = ghost_list
 
     def move_ghost_list(self):
-        pass
-
-    def update_ghost_list(self):
-        pass
+        for ghost in self.ghost_list:
+            direction = ghost.queue[0]

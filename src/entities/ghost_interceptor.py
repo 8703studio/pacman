@@ -1,7 +1,8 @@
-from entity import Entity, EntityType, EntityState, EntityDirection
+from entity import Entity
+from ..enums import EntityType
+from ghost import Ghost
 
-
-class GhostInterceptor(Entity):
+class GhostInterceptor(Entity, Ghost):
     def __init__(self, position):
         super().__init__(position)
         self.entity_type = EntityType.GHOST

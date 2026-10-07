@@ -2,8 +2,9 @@
 
 
 class Game():
-    def __init__(self, ghost, engine, level_handler, pacman, config) -> None:
-        self.ghost = ghost
+    def __init__(self, ghost_handler, engine,
+                 level_handler, pacman, config) -> None:
+        self.ghost = ghost_handler
         self.engine = engine
         self.levels = level_handler
         self.pacman = pacman
@@ -12,19 +13,9 @@ class Game():
         self.point: dict[str, int] = dict()
 
     @property
-    def score_gum(self):
-        pass
+    def object_point(self):
 
-    @property
-    def score_supergum(self):
-        pass
-
-    @property
-    def score_fruit(self):
-        pass
-
-    @property
-    def score_ghost(self):
+    def set_life(self):
         pass
 
     def main_game(self):

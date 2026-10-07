@@ -1,4 +1,5 @@
-from entity import Entity, EntityType
+from entity import Entity
+from ..enums import EntityType
 from ghost import Ghost
 
 
