@@ -1,10 +1,10 @@
-from entity import Entity
+from .entity import Entity
 from ..enums import EntityType
-from ghost import Ghost
 
-class GhostInterceptor(Entity, Ghost):
-    def __init__(self, position):
-        super().__init__(position)
+
+class GhostInterceptor(Entity):
+    def __init__(self):
+        super().__init__()
         self.entity_type = EntityType.GHOST
 
     def move(self):

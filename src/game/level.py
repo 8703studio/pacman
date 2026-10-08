@@ -9,9 +9,6 @@ class Level():
         self.grid_level: list[list[GridObject]] = self._create_grid_object()
         self.element_numb: int = self._get_numb_elem()
 
-    def _create_house(self):
-        pass
-
     def _get_corners(self) -> list[tuple]:
         width: int = len(self.grid[0])
         height: int = len(self.grid)
