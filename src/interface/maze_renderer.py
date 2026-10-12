@@ -108,11 +108,38 @@ class MazeRenderer:
         maze: list[list[int]],
     ) -> None:
         """Draw the maze walls on the screen."""
+        rows = len(maze)
+        cols = len(maze[0])
+
         cell_size = self.get_cell_size(maze)
         offset_x, offset_y = self.get_cell_position(maze, 0, 0)
 
-        wall_width = 14
-        highlight_width = 4
+        blocked_cell = NORTH | EAST | SOUTH | WEST
+
+        # Fill blocked cells with the inner highlight color.
+        for y, line in enumerate(maze):
+            for x, cell in enumerate(line):
+                if cell != blocked_cell:
+                    continue
+
+                left = round(offset_x + x * cell_size)
+                top = round(offset_y + y * cell_size)
+                right = round(offset_x + (x + 1) * cell_size)
+                bottom = round(offset_y + (y + 1) * cell_size)
+
+                pygame.draw.rect(
+                    screen,
+                    colors.white,
+                    pygame.Rect(
+                        left,
+                        top,
+                        right - left,
+                        bottom - top,
+                    ),
+                )
+
+        wall_width = max(2, int(cell_size * 0.28))
+        highlight_width = max(1, int(cell_size * 0.08))
 
         layers = (
             (self.theme.wall_color, wall_width, wall_width // 2),
@@ -122,34 +149,57 @@ class MazeRenderer:
         for color, width, radius in layers:
             for y, line in enumerate(maze):
                 for x, cell in enumerate(line):
-                    pixel_x = int(offset_x + x * cell_size)
-                    pixel_y = int(offset_y + y * cell_size)
-                    size = int(cell_size)
+                    left = round(offset_x + x * cell_size)
+                    top = round(offset_y + y * cell_size)
+                    right = round(offset_x + (x + 1) * cell_size)
+                    bottom = round(offset_y + (y + 1) * cell_size)
+
+                    blocked = cell == blocked_cell
 
                     if cell & NORTH:
-                        start = (pixel_x, pixel_y)
-                        end = (pixel_x + size, pixel_y)
-                        self._draw_segment(
-                            screen, color, start, end, width, radius
-                        )
+                        if not (
+                            blocked
+                            and y > 0
+                            and maze[y - 1][x] == blocked_cell
+                        ):
+                            self._draw_segment(
+                                screen, color,
+                                (left, top), (right, top),
+                                width, radius,
+                            )
 
                     if cell & EAST:
-                        start = (pixel_x + size, pixel_y)
-                        end = (pixel_x + size, pixel_y + size)
-                        self._draw_segment(
-                            screen, color, start, end, width, radius
-                        )
+                        if not (
+                            blocked
+                            and x < cols - 1
+                            and maze[y][x + 1] == blocked_cell
+                        ):
+                            self._draw_segment(
+                                screen, color,
+                                (right, top), (right, bottom),
+                                width, radius,
+                            )
 
                     if cell & SOUTH:
-                        start = (pixel_x, pixel_y + size)
-                        end = (pixel_x + size, pixel_y + size)
-                        self._draw_segment(
-                            screen, color, start, end, width, radius
-                        )
+                        if not (
+                            blocked
+                            and y < rows - 1
+                            and maze[y + 1][x] == blocked_cell
+                        ):
+                            self._draw_segment(
+                                screen, color,
+                                (left, bottom), (right, bottom),
+                                width, radius,
+                            )
 
                     if cell & WEST:
-                        start = (pixel_x, pixel_y)
-                        end = (pixel_x, pixel_y + size)
-                        self._draw_segment(
-                            screen, color, start, end, width, radius
-                        )
+                        if not (
+                            blocked
+                            and x > 0
+                            and maze[y][x - 1] == blocked_cell
+                        ):
+                            self._draw_segment(
+                                screen, color,
+                                (left, top), (left, bottom),
+                                width, radius,
+                            )

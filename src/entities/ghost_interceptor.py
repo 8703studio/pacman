@@ -152,50 +152,56 @@ class GhostInterceptor(Entity):
         super().__init__()
         self.start_pos = position
         self.current_pos = position
+
         self.entity_type = EntityType.GHOST
+
         self.engine: Optional[Engine] = None
+
         self.pacman_position: Optional[tuple[int, int]] = None
         self.pacman_direction: Optional[EntityDirection] = None
+        self.last_pacman_direction: Optional[EntityDirection] = None
         self.direction_queue: deque[tuple[int, int]] = deque()
+
         self.move_timer = 0
 
-    def move(self) -> tuple[int, int]:
-        """Return the next direction for the ghost."""
+    def move(self) -> None:
+        """Recalculate the path before each ghost movement."""
+
         if (
             self.engine is None
             or self.pacman_position is None
             or self.pacman_direction is None
         ):
-            return (0, 0)
+            return
 
         self.move_timer += 1
 
         if self.move_timer < 10:
-            return (0, 0)
+            return
 
         self.move_timer = 0
 
-        if not self.direction_queue:
-            target = get_target(
-                self.engine,
-                self.pacman_position,
-                self.pacman_direction,
-            )
+        target = get_target(
+            self.engine,
+            self.pacman_position,
+            self.pacman_direction,
+        )
 
-            path = find_path(
-                self.engine,
-                self.current_pos,
-                target,
-            )
+        path = find_path(
+            self.engine,
+            self.current_pos,
+            target,
+        )
 
-            self.direction_queue.extend(path)
+        self.direction_queue.clear()
+        self.direction_queue.extend(path)
 
         if self.direction_queue:
             direction = self.direction_queue.popleft()
-            self.direction = EntityDirection(direction)
-            return direction
+            entity_direction = EntityDirection(direction)
 
-        return (0, 0)
+            self.direction = entity_direction
+            self.queue.append(entity_direction)
 
     def update_ghost(self) -> None:
         """Update the ghost state."""

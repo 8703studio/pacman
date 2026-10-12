@@ -180,11 +180,11 @@ class HighscoresScreen:
                 theme.menu_text_color,
             )
 
-            name_width = self.font.size(name)[0]
+            name_width = self.font.size(str(name))[0]
 
             draw_text(
                 screen,
-                name,
+                str(name),
                 name_center - name_width // 2,
                 y,
                 self.font,

@@ -8,6 +8,7 @@ from src.entities.ghost_interceptor import GhostInterceptor
 from src.entities.entity import EntityDirection
 from src.entities.pacman import Pacman
 from src.engine.physics import Engine
+from src.interface.screens.pause_screen import PauseScreen
 from src.engine.input import get_direction
 
 
@@ -28,6 +29,7 @@ class GameScreen:
         )
 
         self.ghost = GhostInterceptor((0, 1))
+
         self.pacman = Pacman()
         self.pacman.start_pos = (10, 10)
         self.pacman.current_pos = self.pacman.start_pos
@@ -44,6 +46,15 @@ class GameScreen:
         engine = Engine(self.game.maze)
 
         for event in events:
+            if (
+                event.type == pygame.KEYDOWN
+                and event.key == pygame.K_ESCAPE
+            ):
+                self.game.change_screen(
+                    PauseScreen(self.game, self)
+                )
+                return
+
             direction = get_direction(event)
 
             if direction is None:
@@ -77,11 +88,20 @@ class GameScreen:
         self.ghost.engine = Engine(self.game.maze)
         self.ghost.pacman_position = self.pacman.current_pos
         self.ghost.pacman_direction = self.pacman.direction
-        d_y, d_x = self.ghost.move()
-        self.ghost.current_pos = (
-            self.ghost.current_pos[0] + d_y,
-            self.ghost.current_pos[1] + d_x,
-        )
+
+        self.ghost.move()
+
+        direction = self.ghost.next_move()
+
+        if direction is not None:
+            vector = direction.value
+
+            if self.ghost.engine.is_valid_position(
+                vector,
+                self.ghost.current_pos,
+            ):
+                self.ghost.direction = direction
+                self.ghost.update_entity(vector)
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the game screen."""

@@ -1,55 +1,41 @@
 import pygame
 
 from src.interface.maze_renderer import MazeRenderer
-from src.entities.entity import Entity, EntityDirection
+from src.entities.entity import Entity
 from src.entities.pacman import Pacman
+from src.interface.renderers.ghost_renderer import GhostRenderer
+from src.interface.renderers.pacman_renderer import PacmanRenderer
 
 
 class EntityRenderer:
-    """Render the game entities on the maze generated."""
+    """Coordinate the rendering of game entities."""
 
     def __init__(self, maze_renderer: MazeRenderer) -> None:
-        """Initialize the entity renderer for the maze."""
+        """Initialize the entity renderers."""
         self.maze_renderer = maze_renderer
+        self.ghost_renderer = GhostRenderer(maze_renderer)
+        self.pacman_renderer = PacmanRenderer(maze_renderer)
 
-        self.ghost_image = pygame.image.load(
-            "src/interface/assets/ghosts/joy.png"
-        ).convert_alpha()
+    def _sync_maze_renderer(self) -> None:
+        """Update the maze renderer used by each entity renderer."""
+        self.ghost_renderer.maze_renderer = self.maze_renderer
+        self.pacman_renderer.maze_renderer = self.maze_renderer
 
-        frame_width = self.ghost_image.get_width() // 6
-        frame_height = self.ghost_image.get_height()
-
-        self.ghost_frames = []
-
-        for index in range(6):
-            frame = self.ghost_image.subsurface(
-                pygame.Rect(
-                    index * frame_width,
-                    0,
-                    frame_width,
-                    frame_height,
-                )
-            )
-            self.ghost_frames.append(frame)
-
-        self.pacman_image = pygame.image.load(
-            "src/interface/assets/pacman/pacman-sprite-2.png"
-        ).convert_alpha()
-
-        pacman_frame_width = self.pacman_image.get_width() // 3
-        pacman_frame_height = self.pacman_image.get_height()
-        self.pacman_frames = []
-
-        for index in range(3):
-            frame = self.pacman_image.subsurface(
-                pygame.Rect(
-                    index * pacman_frame_width,
-                    0,
-                    pacman_frame_width,
-                    pacman_frame_height,
-                )
-            )
-            self.pacman_frames.append(frame)
+    def _draw_named_ghost(
+        self,
+        screen: pygame.Surface,
+        maze: list[list[int]],
+        entity: Entity,
+        ghost_name: str,
+    ) -> None:
+        """Draw a ghost using its name."""
+        self._sync_maze_renderer()
+        self.ghost_renderer.draw(
+            screen,
+            maze,
+            entity,
+            ghost_name,
+        )
 
     def draw_ghost(
         self,
@@ -57,42 +43,44 @@ class EntityRenderer:
         maze: list[list[int]],
         entity: Entity,
     ) -> None:
-        """Draw an entity on its current maze position."""
-        y, x = entity.current_pos
+        """Draw Joy using the existing interface."""
+        self.draw_joy(screen, maze, entity)
 
-        pixel_x, pixel_y = self.maze_renderer.get_cell_position(
-            maze,
-            x,
-            y,
-        )
+    def draw_joy(
+        self,
+        screen: pygame.Surface,
+        maze: list[list[int]],
+        entity: Entity,
+    ) -> None:
+        """Draw Joy."""
+        self._draw_named_ghost(screen, maze, entity, "joy")
 
-        cell_size = self.maze_renderer.get_cell_size(maze)
+    def draw_gdragon(
+        self,
+        screen: pygame.Surface,
+        maze: list[list[int]],
+        entity: Entity,
+    ) -> None:
+        """Draw G-DRAGON."""
+        self._draw_named_ghost(screen, maze, entity, "gdragon")
 
-        frame_idx = 0
+    def draw_momo(
+        self,
+        screen: pygame.Surface,
+        maze: list[list[int]],
+        entity: Entity,
+    ) -> None:
+        """Draw MOMO."""
+        self._draw_named_ghost(screen, maze, entity, "momo")
 
-        if entity.direction == EntityDirection.UP:
-            frame_idx = 1
-        elif entity.direction == EntityDirection.DOWN:
-            frame_idx = 2
-        elif entity.direction == EntityDirection.RIGHT:
-            frame_idx = 3
-        elif entity.direction == EntityDirection.LEFT:
-            frame_idx = 4
-
-        ghost_size = int(cell_size * 0.58)
-
-        ghost_image = pygame.transform.scale(
-            self.ghost_frames[frame_idx],
-            (ghost_size, ghost_size),
-        )
-
-        screen.blit(
-            ghost_image,
-            (
-                int(pixel_x + (cell_size - ghost_size) / 2),
-                int(pixel_y + (cell_size - ghost_size) / 2 - 3),
-            ),
-        )
+    def draw_louis(
+        self,
+        screen: pygame.Surface,
+        maze: list[list[int]],
+        entity: Entity,
+    ) -> None:
+        """Draw LOUIS."""
+        self._draw_named_ghost(screen, maze, entity, "louis")
 
     def draw_pacman(
         self,
@@ -100,49 +88,6 @@ class EntityRenderer:
         maze: list[list[int]],
         pacman: Pacman,
     ) -> None:
-        """Draw Pac-Man on its current maze position."""
-        y, x = pacman.current_pos
-
-        pixel_x, pixel_y = self.maze_renderer.get_cell_position(
-            maze,
-            x,
-            y,
-        )
-
-        cell_size = self.maze_renderer.get_cell_size(maze)
-        pacman_size = int(cell_size * 0.5)
-
-        print("DIRECTION PACMAN :", pacman.direction)
-        frame_idx = 1
-
-        if pacman.direction == EntityDirection.LEFT:
-            pacman_image = pygame.transform.flip(
-                self.pacman_frames[frame_idx],
-                True,
-                False,
-            )
-        elif pacman.direction == EntityDirection.UP:
-            pacman_image = pygame.transform.rotate(
-                self.pacman_frames[frame_idx],
-                90,
-            )
-        elif pacman.direction == EntityDirection.DOWN:
-            pacman_image = pygame.transform.rotate(
-                self.pacman_frames[frame_idx],
-                -90,
-            )
-        else:
-            pacman_image = self.pacman_frames[frame_idx]
-
-        pacman_image = pygame.transform.scale(
-            pacman_image,
-            (pacman_size, pacman_size),
-        )
-
-        screen.blit(
-            pacman_image,
-            (
-                int(pixel_x + (cell_size - pacman_size) / 2),
-                int(pixel_y + (cell_size - pacman_size) / 2),
-            ),
-        )
+        """Draw Pac-Man."""
+        self._sync_maze_renderer()
+        self.pacman_renderer.draw(screen, maze, pacman)

@@ -67,7 +67,6 @@ game = TestGame()
 game.current_screen = StartScreen(game)
 
 clock = pygame.time.Clock()
-
 running = True
 
 while running:
@@ -78,6 +77,15 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             game.running = False
+
+        elif event.type == pygame.VIDEORESIZE:
+            game.maze_renderer = MazeRenderer(
+                width=event.w,
+                height=event.h,
+                hud_height=130,
+                theme=game.theme_manager.get_theme(),
+                margin=5,
+            )
 
     screen = pygame.display.get_surface()
 

@@ -378,7 +378,7 @@ class MenuPause:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the pause menu."""
 
-        center_y = int(screen.get_height() * 0.8)
+        center_y = int(screen.get_height() * 0.65)
 
         self.option_rects = []
 
@@ -399,8 +399,8 @@ class MenuPause:
 
             option_rect = option_text.get_rect(
                 midtop=(
-                    screen.get_width() // 2 - 90 + i * 180,
-                    center_y,
+                    screen.get_width() // 2,
+                    center_y + i * 80,
                 )
             )
 

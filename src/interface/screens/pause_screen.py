@@ -1,16 +1,20 @@
 import pygame
 
 from src.interface.menu import GameInterface, MenuPause
-from src.interface.screens.start_screen import StartScreen
 
 
 class PauseScreen:
     """Displays the pause menu."""
 
-    def __init__(self, game: GameInterface) -> None:
+    def __init__(
+        self,
+        game: GameInterface,
+        previous_screen: object,
+    ) -> None:
         """Initialize the pause screen."""
 
         self.game = game
+        self.previous_screen = previous_screen
 
         theme = self.game.theme_manager.get_theme()
 
@@ -35,9 +39,11 @@ class PauseScreen:
         action = self.menu.handle_events(events)
 
         if action == "Resume":
-            pass
+            self.game.change_screen(self.previous_screen)
 
         elif action == "Return to main menu":
+            from src.interface.screens.start_screen import StartScreen
+
             self.game.change_screen(
                 StartScreen(self.game)
             )

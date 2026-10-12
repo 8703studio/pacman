@@ -6,7 +6,7 @@ class Highscore:
 
     def __init__(self, filepath: str) -> None:
         self.filepath = filepath
-        self.scores = []
+        self.scores: list[dict[str, str | int]] = []
 
     def load_score(self) -> None:
         if not os.path.exists(self.filepath):

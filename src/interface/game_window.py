@@ -19,6 +19,7 @@ class GameWindow:
         pygame.init()
         self.theme_manager = ThemeManager(CLASSIC_THEME)
         self.running = True
+
         self.width = width
         self.height = height
         self.clock = pygame.time.Clock()
@@ -56,6 +57,7 @@ class GameWindow:
             elif event.type == pygame.VIDEORESIZE:
                 self.width = event.w
                 self.height = event.h
+                self.screen = pygame.display.get_surface()
 
                 self.maze_renderer = MazeRenderer(
                     width=self.width,
