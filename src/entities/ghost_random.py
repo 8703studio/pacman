@@ -1,9 +1,10 @@
-from entity import Entity, EntityType, EntityState, EntityDirection
+from .entity import Entity
+from ..enums import EntityType
 
 
-class Ghost_random(Entity):
-    def __init__(self, position):
-        super().__init__(position)
+class GhostRandom(Entity):
+    def __init__(self):
+        super().__init__()
         self.entity_type = EntityType.GHOST
 
     def move(self):

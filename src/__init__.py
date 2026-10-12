@@ -1,9 +1,23 @@
 from .config import Parser, GameConfig
-from .entities import Pacman, EntityDirection
+from .engine import Engine
+from .entities import (Pacman, GhostTactic, GhostRandom,
+                       GhostInterceptor, GhostChaser, GhostHandler)
+from .game import Level, LevelHandler, Game
+from .enums import EntityDirection, GridObject
 
 __all__ = [
     "Parser",
+    "GameConfig",
     "Pacman",
+    "LevelHandler",
+    "GhostChaser",
+    "GhostInterceptor",
+    "GhostRandom",
+    "GhostTactic",
     "EntityDirection",
-    "GameConfig"
+    "Engine",
+    "Level",
+    "GhostHandler",
+    "Game",
+    "GridObject"
 ]

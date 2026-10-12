@@ -4,8 +4,9 @@ from src.interface.menu import GameScreenInterface
 from src.interface.hud import HUD
 from src.interface.entity_renderer import EntityRenderer
 from src.interface import colors
-from src.entities.ghost_interceptor import Ghost_interceptor
-from src.entities.entity import Pacman, EntityDirection
+from src.entities.ghost_interceptor import GhostInterceptor
+from src.entities.entity import EntityDirection
+from src.entities.pacman import Pacman
 from src.engine.physics import Engine
 from src.engine.input import get_direction
 
@@ -26,8 +27,10 @@ class GameScreen:
             self.game.maze_renderer
         )
 
-        self.ghost = Ghost_interceptor((0, 1))
-        self.pacman = Pacman((10, 10))
+        self.ghost = GhostInterceptor((0, 1))
+        self.pacman = Pacman()
+        self.pacman.start_pos = (10, 10)
+        self.pacman.current_pos = self.pacman.start_pos
 
     def events(
         self,
@@ -46,16 +49,24 @@ class GameScreen:
             if direction is None:
                 continue
 
+            entity_direction = EntityDirection(direction)
+
+            self.pacman.add_move_to_buffer(entity_direction)
+            self.pacman.move()
+
+            next_direction = self.pacman.next_move()
+
+            if next_direction is None:
+                continue
+
+            vector = next_direction.value
+
             if engine.is_valid_position(
-                direction,
+                vector,
                 self.pacman.current_pos,
             ):
-                self.pacman.direction = EntityDirection(direction)
-                d_y, d_x = self.pacman.move()
-                self.pacman.current_pos = (
-                    self.pacman.current_pos[0] + d_y,
-                    self.pacman.current_pos[1] + d_x,
-                )
+                self.pacman.direction = next_direction
+                self.pacman.update_entity(vector)
 
     def update(self, delta_time: float) -> None:
         """Update the game screen."""

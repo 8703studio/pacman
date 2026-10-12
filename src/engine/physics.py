@@ -14,10 +14,10 @@ class Engine():
             8: 2
         }
         self.bit_direction = {
-            (-1, 0): 1,
-            (0, 1):  2,
+            (0, -1): 8,
             (1, 0):  4,
-            (0, -1): 8
+            (0, 1):  2,
+            (-1, 0): 1
         }
 
     @property
@@ -38,16 +38,15 @@ class Engine():
 
         return (self.is_in_grid(next_case)
                 and not self._is_wall(self.grid[cy][cx], bits)
-                and not self._is_wall(
-                    self.grid[ncy][ncx],
-                    self._opposite_wall(bits)
-                ))
+                and not self._is_wall(self.grid[ncy]
+                                      [ncx], self._opposite_wall(bits)))
 
     def _opposite_wall(self, bits_current_case: int) -> int:
         return self.opposite_bits[bits_current_case]
 
     # this method verify if the entity faced a wall
-    def _is_wall(self, case_value: int, bits: int) -> bool:
+    def _is_wall(self, case_value: int,
+                 bits: int) -> bool:
         print(case_value, bits)
         return (case_value & bits) != 0
 

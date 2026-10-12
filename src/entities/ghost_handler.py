@@ -1,18 +1,17 @@
-from .ghost_random import GhostRandom
-from .ghost_chaser import GhostChaser
-from .ghost_interceptor import GhostInterceptor
-from .ghost_tactic import GhostTactic
+from .entity import Entity
 
 
 class GhostHandler():
-    def __init__(self, house_coord: list[tuple[int, int]]):
-        pass
+    def __init__(self, ghost_list: list[Entity]):
+        self.ghost_list = ghost_list
 
-    def _create_ghost_list(self):
-        pass
+    def set_spawn_ghost(self, corner_level: list[tuple[int, int]]) -> None:
+        for ghost, pos in zip(self.ghost_list, corner_level):
+            ghost.start_pos = pos
+            ghost.current_pos = pos
 
     def move_ghost_list(self):
-        pass
-
-    def update_ghost_list(self):
-        pass
+        listes = []
+        for ghost in self.ghost_list:
+            listes.append((ghost, ghost.queue[0]))
+        return listes

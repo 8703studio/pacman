@@ -1,65 +1,39 @@
 from abc import ABC, abstractmethod
-from enum import Enum
+from ..enums import EntityType, EntityState, EntityDirection
 from collections import deque
-
-# tuple (line, column)
-Position = tuple[int, int]
-
-
-class EntityDirection(Enum):
-    UP = (-1, 0)
-    LEFT = (0, -1)
-    DOWN = (1, 0)
-    RIGHT = (0, 1)
-
-
-class EntityState(Enum):
-    NORMAL = 1
-    WEAK = 2
-    DEAD = 3
-
-
-class EntityType(Enum):
-    NULL = 0
-    PACMAN = 1
-    GHOST = 2
 
 
 class Entity(ABC):
-    def __init__(self, position) -> None:
-        self.start_pos = position
-        self.current_pos = self.start_pos
+    def __init__(self) -> None:
+        self.start_pos: tuple[int, int] = (0, 0)
+        self.current_pos: tuple[int, int] = self.start_pos
         self.vitesse = 0
         self.direction = EntityDirection.DOWN
         self.state = EntityState.NORMAL
         self.entity_type = EntityType.NULL
+        self.queue: deque[EntityDirection] = deque()
+        self.visited: set[tuple[int, int]] = set()
 
     @abstractmethod
-    def move(self) -> tuple[int, int]:
+    def move(self) -> None:
         pass
 
-    @abstractmethod
-    def update_ghost(self) -> None:
-        pass
+    def next_move(self) -> EntityDirection | None:
+        if len(self.queue) != 0:
+            return self.queue.popleft()
+        return None
 
-    @abstractmethod
-    def reset(self) -> None:
-        pass
-
-
-class Pacman(Entity):
-    def __init__(self, position: Position) -> None:
-        super().__init__(position)
-        self.entity_type = EntityType.PACMAN
-        self.vitesse = 0.5
-        self.input_buffer: deque[Position] = deque()
-
-    def move(self) -> tuple[int, int]:
-        return self.direction.value
-
-    def update_ghost(self) -> None:
-        pass
+    def update_entity(self, direction: tuple[int, int]) -> None:
+        cy, cx = self.current_pos
+        dy, dx = direction
+        self.current_pos = (cy + dy, cx + dx)
 
     def reset(self) -> None:
-        self.input_buffer.clear()
-        self.current_pos = self.start_pos
+        self.queue.clear()
+        self.visited.clear()
+
+    def set_state(self, state: EntityState):
+        self.state = state
+
+    def get_state(self) -> EntityState:
+        return self.state

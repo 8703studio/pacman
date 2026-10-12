@@ -1,7 +1,8 @@
 import pygame
 
 from src.interface.maze_renderer import MazeRenderer
-from src.entities.entity import EntityDirection, Entity, Pacman
+from src.entities.entity import Entity, EntityDirection
+from src.entities.pacman import Pacman
 
 
 class EntityRenderer:

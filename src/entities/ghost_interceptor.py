@@ -144,12 +144,14 @@ def get_direction(
     return (0, 0)
 
 
-class Ghost_interceptor(Entity):
+class GhostInterceptor(Entity):
     """Ghost that intercepts Pacman by predicting his path with BFS."""
 
     def __init__(self, position: tuple[int, int]) -> None:
         """Initialize the interceptor ghost at its starting position."""
-        super().__init__(position)
+        super().__init__()
+        self.start_pos = position
+        self.current_pos = position
         self.entity_type = EntityType.GHOST
         self.engine: Optional[Engine] = None
         self.pacman_position: Optional[tuple[int, int]] = None

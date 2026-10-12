@@ -1,9 +1,11 @@
-from entity import Entity, EntityType, EntityState, EntityDirection
+from .entity import Entity
+from ..enums import EntityType
 
 
 class GhostTactic(Entity):
-    def __init__(self, position):
-        super().__init__(position)
+    def __init__(self):
+        super().__init__()
+        self.queue
         self.entity_type = EntityType.GHOST
 
     def move(self):
