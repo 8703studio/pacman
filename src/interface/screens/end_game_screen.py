@@ -54,7 +54,7 @@ class EndGameScreen:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.game.change_screen(
-                        NameInputScreen(self.game)
+                        NameInputScreen(self.game, self.score)
                     )
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -63,7 +63,7 @@ class EndGameScreen:
                         event.pos
                     ):
                         self.game.change_screen(
-                            NameInputScreen(self.game)
+                            NameInputScreen(self.game, self.score)
                         )
 
     def update(self, delta_time: float) -> None:

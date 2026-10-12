@@ -5,6 +5,7 @@ from typing import Optional, Protocol
 from src.interface.theme.theme_manager import ThemeManager
 from src.interface.theme.theme import CLASSIC_THEME, SECOND_THEME
 from src.interface.maze_renderer import MazeRenderer
+from src.game.highscore import Highscore
 
 
 class GameInterface(Protocol):
@@ -12,6 +13,7 @@ class GameInterface(Protocol):
 
     theme_manager: ThemeManager
     running: bool
+    highscore: Highscore
 
     def change_screen(self, screen: object) -> None:
         """Change the current interface screen."""

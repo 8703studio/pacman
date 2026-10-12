@@ -12,6 +12,7 @@ class Highscore:
         if not os.path.exists(self.filepath):
             print(f"WARNING: {self.filepath} doesn't exist")
             self.scores = []
+            self.save_score()
             return
 
         try:
@@ -43,15 +44,33 @@ class Highscore:
             print(f"WARNING: invalid highscore file: {e}")
             self.scores = []
 
-    def save_score(self) -> None:
-        try:
-            with open(self.filepath, "w") as f:
-                json.dump(self.scores, f, indent=4)
+    def save_score(self) -> bool:
+        """Save highscores safely to the JSON file."""
 
-        except OSError as e:
+        temp_path = self.filepath + ".tmp"
+
+        try:
+            with open(temp_path, "w", encoding="utf-8") as file:
+                json.dump(self.scores, file, indent=4)
+                file.write("\n")
+                file.flush()
+                os.fsync(file.fileno())
+
+            os.replace(temp_path, self.filepath)
+            return True
+
+        except (OSError, TypeError, ValueError) as e:
             print(f"WARNING: cannot save highscores: {e}")
+            try:
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+            except OSError:
+                pass
+            return False
 
     def add_score(self, name: str, score: int) -> bool:
+        """Add a score and save the updated leaderboard."""
+
         if not isinstance(name, str):
             return False
 
@@ -61,17 +80,27 @@ class Highscore:
         if not all(c.isalnum() or c == " " for c in name):
             return False
 
-        if not isinstance(score, int):
+        if (
+            not isinstance(score, int)
+            or isinstance(score, bool)
+            or score < 0
+        ):
             return False
 
-        if isinstance(score, bool) or score < 0:
+        previous_scores = self.scores
+        updated_scores = previous_scores.copy()
+        updated_scores.append({"name": name, "score": score})
+        updated_scores.sort(
+            key=lambda entry: entry["score"],
+            reverse=True,
+        )
+        updated_scores = updated_scores[:10]
+
+        self.scores = updated_scores
+
+        if not self.save_score():
+            self.scores = previous_scores
             return False
-
-        self.scores.append({"name": name, "score": score})
-
-        self.scores.sort(key=lambda s: s["score"], reverse=True)
-
-        self.scores = self.scores[:10]
 
         return True
 

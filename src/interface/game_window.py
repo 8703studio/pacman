@@ -7,6 +7,7 @@ from src.interface.hud import HUD
 from src.interface.theme.theme_manager import ThemeManager
 from src.interface.maze_renderer import MazeRenderer
 from src.interface.screens.start_screen import StartScreen
+from src.game.highscore import Highscore
 
 
 class GameWindow:
@@ -16,32 +17,25 @@ class GameWindow:
         """Initialize the game window and its interface components."""
 
         pygame.init()
-
         self.theme_manager = ThemeManager(CLASSIC_THEME)
-
         self.running = True
-
         self.width = width
         self.height = height
-
         self.clock = pygame.time.Clock()
-
         self.hud = HUD(CLASSIC_THEME)
-
         self.maze: Optional[list[list[int]]] = None
-
         self.hud_height = 130
         self.margin = 5
+
+        self.highscore = Highscore("highscore.json")
+        self.highscore.load_score()
 
         self.screen = pygame.display.set_mode(
             (width, height),
             pygame.RESIZABLE,
         )
-
         pygame.display.set_caption("Pac-idol")
-
         self.current_screen = StartScreen(self)
-
         self.maze_renderer = MazeRenderer(
             width=self.width,
             height=self.height,
@@ -98,13 +92,8 @@ class GameWindow:
 
         while self.running:
             self.handle_events()
-
             delta_time = self.clock.tick(60) / 1000
-
             self.update(delta_time)
-
             self.draw()
-
             pygame.display.flip()
-
         pygame.quit()

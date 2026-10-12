@@ -10,6 +10,7 @@ class NameInputScreen:
     def __init__(
         self,
         game: GameInterface,
+        score: int,
     ) -> None:
         """Initialize the name input screen."""
 
@@ -24,7 +25,8 @@ class NameInputScreen:
         ).convert()
 
         self.name = ""
-        self.score = 12500
+        self.score = score
+        self.error_message = ""
 
         self.font = pygame.font.Font(
             theme.font_path,
@@ -87,11 +89,17 @@ class NameInputScreen:
         name = self.name.strip()
 
         if not name:
+            self.error_message = "Please enter a name."
             return
 
-        self.game.change_screen(
-            HighscoresScreen(self.game)
-        )
+        if self.game.highscore.add_score(name, self.score):
+            self.game.change_screen(
+                HighscoresScreen(self.game)
+            )
+        else:
+            self.error_message = (
+                "Unable to save your score. Please try again."
+            )
 
     def update(self, delta_time: float) -> None:
         """Update the name input screen."""
@@ -190,5 +198,21 @@ class NameInputScreen:
         button_text_rect = button_text.get_rect(
             center=self.continue_button.center
         )
+
+        if self.error_message:
+            error_text = self.message_font.render(
+                self.error_message,
+                True,
+                (255, 80, 80),
+            )
+
+            error_rect = error_text.get_rect(
+                center=(
+                    width // 2,
+                    int(height * 0.55),
+                )
+            )
+
+            screen.blit(error_text, error_rect)
 
         screen.blit(button_text, button_text_rect)

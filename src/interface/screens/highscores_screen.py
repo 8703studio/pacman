@@ -43,22 +43,24 @@ class HighscoresScreen:
             60,
         )
 
-        # High scores
-        # self.scores = self.game.highscore.top_score()
-
-        # Temporary scores for testing
         self.scores = [
-            ("EMILIE", 12500),
-            ("PLAYER2", 10000),
-            ("PLAYER3", 8500),
-            ("PLAYER4", 7000),
-            ("PLAYER5", 6000),
-            ("PLAYER6", 5000),
-            ("PLAYER7", 4000),
-            ("PLAYER8", 3000),
-            ("PLAYER9", 2000),
-            ("PLAYER10", 1000),
+            (entry["name"], entry["score"])
+            for entry in self.game.highscore.top_score()
         ]
+
+        # # Temporary scores for testing
+        # self.scores = [
+        #     ("EMILIE", 12500),
+        #     ("PLAYER2", 10000),
+        #     ("PLAYER3", 8500),
+        #     ("PLAYER4", 7000),
+        #     ("PLAYER5", 6000),
+        #     ("PLAYER6", 5000),
+        #     ("PLAYER7", 4000),
+        #     ("PLAYER8", 3000),
+        #     ("PLAYER9", 2000),
+        #     ("PLAYER10", 1000),
+        # ]
 
     def events(
         self,

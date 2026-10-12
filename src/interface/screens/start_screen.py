@@ -116,8 +116,12 @@ class StartScreen:
             screen.get_height() * 0.14
         )
 
+        top_scores = self.game.highscore.top_score(1)
+
+        best_score = top_scores[0]["score"] if top_scores else 0
+
         highscore = highscore_font.render(
-            "HIGH SCORE : 12500",
+            f"HIGH SCORE : {best_score}",
             True,
             theme.menu_text_color,
         )

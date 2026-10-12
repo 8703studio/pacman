@@ -7,6 +7,7 @@ from src.interface.theme.theme import CLASSIC_THEME
 from src.interface.theme.theme_manager import ThemeManager
 from src.interface.maze_renderer import MazeRenderer
 from tests.test_interceptor import pattern_test
+from src.game.highscore import Highscore
 
 
 class TestGame:
@@ -16,6 +17,9 @@ class TestGame:
         self.running = True
 
         self.theme_manager = ThemeManager(CLASSIC_THEME)
+
+        self.highscore = Highscore("highscore.json")
+        self.highscore.load_score()
 
         mazegen = maze.MazeGenerator(
             (21, 21),

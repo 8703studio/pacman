@@ -150,17 +150,11 @@ class Ghost_interceptor(Entity):
     def __init__(self, position: tuple[int, int]) -> None:
         """Initialize the interceptor ghost at its starting position."""
         super().__init__(position)
-
         self.entity_type = EntityType.GHOST
-
         self.engine: Optional[Engine] = None
-
         self.pacman_position: Optional[tuple[int, int]] = None
-
         self.pacman_direction: Optional[EntityDirection] = None
-
         self.direction_queue: deque[tuple[int, int]] = deque()
-
         self.move_timer = 0
 
     def move(self) -> tuple[int, int]:
