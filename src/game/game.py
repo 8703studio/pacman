@@ -1,19 +1,23 @@
 # matrice contenant les objets creer a partir du maze
 from ..config import GameConfig
+from ..engine import Engine
 from .level_handler import LevelHandler
+from ..entities import GhostHandler, Pacman
 # , ghost_handler, engine, level_handler, pacman, config)
 
 
 class Game():
-    def __init__(self, ghost_handler, engine,
-                 level_handler, pacman, config) -> None:
+    def __init__(self, ghost_handler: GhostHandler, engine: Engine,
+                 level_handler: LevelHandler,
+                 pacman: Pacman, config: GameConfig) -> None:
+
+        self.config: GameConfig = config
         self.ghost = ghost_handler
         self.engine = engine
-        self.levels: LevelHandler = level_handler
+        self.levels = level_handler
         self.pacman = pacman
         self.score: int = 0
-        self.life: int = 0
-        self.config: GameConfig = config
+        self.life: int = self.set_life()
         self.point: dict[str, int] = dict()
         self.run: bool = True
 
@@ -31,6 +35,9 @@ class Game():
 
     def lose_life(self):
         self.life -= 1
+
+    def set_life(self) -> int:
+        return self.config.lives
 
     def update(self):
         pass

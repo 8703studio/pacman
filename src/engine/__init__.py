@@ -1,5 +1,5 @@
 from .physics import Engine
-from ..game.level import Level
+from ..game import Level
 
 __all__ =[
     "Engine",

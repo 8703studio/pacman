@@ -8,7 +8,11 @@ class GhostChaser(Entity):
         self.entity_type = EntityType.GHOST
 
     def move(self):
-        return super().move()
+        explo_queue = []
+        '''
+            faire le code du bfs 
+        '''
+        return explo_queue[0]
 
     def reset(self):
         return super().reset()

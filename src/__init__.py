@@ -3,6 +3,7 @@ from .engine import Engine
 from .entities import (Pacman, GhostTactic, GhostRandom,
                        GhostInterceptor, GhostChaser, GhostHandler)
 from .game import Level, LevelHandler, Game
+from .enums import EntityDirection, GridObject
 
 __all__ = [
     "Parser",
@@ -17,5 +18,6 @@ __all__ = [
     "Engine",
     "Level",
     "GhostHandler",
-    "Game"
+    "Game",
+    "GridObject"
 ]
