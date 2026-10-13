@@ -3,7 +3,7 @@ import pygame
 from src.interface.menu import GameScreenInterface
 from src.interface.hud import HUD
 from src.interface.entity_renderer import EntityRenderer
-from src.interface import colors
+from src.interface.background import draw_background
 from src.entities.ghost_interceptor import GhostInterceptor
 from src.entities.entity import EntityDirection
 from src.entities.pacman import Pacman
@@ -106,7 +106,14 @@ class GameScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the game screen."""
 
-        screen.fill(colors.black)
+        theme = self.game.theme_manager.get_theme()
+
+        draw_background(
+            screen,
+            theme.background_color,
+            None,
+            # theme.background_image,
+        )
 
         if self.game.maze is None:
             return

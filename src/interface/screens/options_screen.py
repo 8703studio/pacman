@@ -1,6 +1,7 @@
 import pygame
 
 from src.interface.menu import GameInterface, MenuOptions
+from src.interface.background import draw_background
 
 
 class OptionsScreen:
@@ -10,15 +11,6 @@ class OptionsScreen:
         """Initialize the options screen."""
 
         self.game = game
-
-        theme = self.game.theme_manager.get_theme()
-
-        if theme.background_image is None:
-            raise ValueError("Background image is not defined")
-
-        self.background_image = pygame.image.load(
-            theme.background_image
-        ).convert()
 
         self.menu = MenuOptions(self.game)
 
@@ -47,14 +39,13 @@ class OptionsScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the options screen."""
 
-        background = pygame.transform.scale(
-            self.background_image,
-            screen.get_size(),
-        )
+        theme = self.game.theme_manager.get_theme()
 
-        screen.blit(
-            background,
-            (0, 0),
+        draw_background(
+            screen,
+            theme.background_color,
+            None,
+            # theme.background_image,
         )
 
         self.menu.draw(screen)

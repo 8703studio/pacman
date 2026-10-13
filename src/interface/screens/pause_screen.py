@@ -1,6 +1,7 @@
 import pygame
 
 from src.interface.menu import GameInterface, MenuPause
+from src.interface.background import draw_background
 
 
 class PauseScreen:
@@ -17,13 +18,6 @@ class PauseScreen:
         self.previous_screen = previous_screen
 
         theme = self.game.theme_manager.get_theme()
-
-        if theme.background_image is None:
-            raise ValueError("Background image is not defined")
-
-        self.background_image = pygame.image.load(
-            theme.background_image
-        ).convert()
 
         self.font = pygame.font.Font(theme.font_path, 32)
         self.title = pygame.font.Font(theme.font_path, 60)
@@ -56,14 +50,13 @@ class PauseScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the pause screen."""
 
-        background = pygame.transform.scale(
-            self.background_image,
-            screen.get_size(),
-        )
+        theme = self.game.theme_manager.get_theme()
 
-        screen.blit(
-            background,
-            (0, 0),
+        draw_background(
+            screen,
+            theme.background_color,
+            None,
+            # theme.background_image,
         )
 
         self.menu.draw(screen)

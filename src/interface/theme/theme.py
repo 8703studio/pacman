@@ -53,7 +53,7 @@ CLASSIC_THEME = Theme(
     name="classic",
 
     # Game
-    background_color=colors.black,
+    background_color=colors.dark_purple,
     wall_color=colors.classic_accent,
     text_color=colors.white,
     player_color=colors.yellow,

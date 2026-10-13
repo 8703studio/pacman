@@ -1,6 +1,7 @@
 import pygame
 
 from src.interface.menu import GameInterface
+from src.interface.background import draw_background
 from src.interface.screens.name_input_screen import NameInputScreen
 
 
@@ -18,18 +19,6 @@ class EndGameScreen:
         self.victory = victory
 
         theme = self.game.theme_manager.get_theme()
-
-        if self.victory:
-            background_path = theme.victory_background_image
-        else:
-            background_path = theme.gameover_background_image
-
-        if background_path is None:
-            raise ValueError("End game background is not defined")
-
-        self.background_image = pygame.image.load(
-            background_path
-        ).convert()
 
         self.score = 12500
 
@@ -68,25 +57,23 @@ class EndGameScreen:
 
     def update(self, delta_time: float) -> None:
         """Update the end game screen."""
+
         pass
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the end game screen."""
 
+        theme = self.game.theme_manager.get_theme()
+
+        draw_background(
+            screen,
+            theme.background_color,
+            None,
+            # theme.background_image,
+        )
+
         width = screen.get_width()
         height = screen.get_height()
-
-        background = pygame.transform.scale(
-            self.background_image,
-            screen.get_size(),
-        )
-
-        screen.blit(
-            background,
-            (0, 0),
-        )
-
-        theme = self.game.theme_manager.get_theme()
 
         if self.victory:
             title_text = "VICTORY!"
@@ -137,7 +124,7 @@ class EndGameScreen:
         button_text = self.font_message.render(
             "CONTINUE",
             True,
-            theme.menu_text_color,
+            theme.button_color_text,
         )
 
         button_text_rect = button_text.get_rect(

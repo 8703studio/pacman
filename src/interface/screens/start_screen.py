@@ -1,3 +1,4 @@
+
 import pygame
 
 from typing import cast
@@ -12,6 +13,8 @@ from src.interface.screens.highscores_screen import HighscoresScreen
 from src.interface.screens.instructions_screen import InstructionsScreen
 from src.interface.screens.options_screen import OptionsScreen
 
+from src.interface.background import draw_background
+
 
 class StartScreen:
     """Displays the start screen."""
@@ -21,21 +24,7 @@ class StartScreen:
 
         self.game = game
 
-        theme = self.game.theme_manager.get_theme()
-
-        if theme.background_image is None:
-            raise ValueError("Background image is not defined")
-
-        self.background_image = pygame.image.load(
-            theme.background_image
-        ).convert()
-
-        self.banner_rect = pygame.Rect(
-            0,
-            0,
-            0,
-            0,
-        )
+        self.banner_rect = pygame.Rect(0, 0, 0, 0)
 
         self.menu = MenuStartScreen(self.game)
 
@@ -79,14 +68,12 @@ class StartScreen:
 
         theme = self.game.theme_manager.get_theme()
 
-        screen_size = screen.get_size()
-
-        background = pygame.transform.scale(
-            self.background_image,
-            screen_size,
+        draw_background(
+            screen,
+            theme.background_color,
+            None,
+            # theme.background_image,
         )
-
-        screen.blit(background, (0, 0))
 
         scale = screen.get_height() / 800
 
@@ -143,20 +130,22 @@ class StartScreen:
             3,
         )
 
-        subtitle = subtitle_font.render(
-            "K-POP ARCADE",
+        start_text = subtitle_font.render(
+            "START",
             True,
             theme.title_text_color,
         )
 
-        subtitle_rect = subtitle.get_rect(
+        start_rect = start_text.get_rect(
             centerx=screen.get_width() // 2,
             top=self.banner_rect.bottom + int(20 * scale),
         )
 
+        self.menu.start_button_rect = start_rect
+
         screen.blit(
-            subtitle,
-            subtitle_rect,
+            start_text,
+            start_rect,
         )
 
         self.menu.draw(screen)

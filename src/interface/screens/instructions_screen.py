@@ -2,6 +2,7 @@ import pygame
 
 from src.interface.menu import GameInterface
 from src.interface.utils import draw_text
+from src.interface.background import draw_background
 
 
 class InstructionsScreen:
@@ -13,13 +14,6 @@ class InstructionsScreen:
         self.game = game
 
         theme = self.game.theme_manager.get_theme()
-
-        if theme.background_image is None:
-            raise ValueError("Background image is not defined")
-
-        self.background_image = pygame.image.load(
-            theme.background_image
-        ).convert()
 
         self.small_font = pygame.font.Font(
             theme.font_path,
@@ -77,12 +71,12 @@ class InstructionsScreen:
         height = screen.get_height()
         center_x = width // 2
 
-        background = pygame.transform.scale(
-            self.background_image,
-            screen.get_size(),
+        draw_background(
+            screen,
+            theme.background_color,
+            None,
+            # theme.background_image,
         )
-
-        screen.blit(background, (0, 0))
 
         # Title
         title = self.title.render(

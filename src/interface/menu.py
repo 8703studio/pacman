@@ -58,7 +58,8 @@ class MenuStartScreen:
         ]
 
         self.selected = 0
-        self.option_rects: list[pygame.Rect] = []
+        self.option_rects: list[pygame.Rect | None] = []
+        self.start_button_rect = pygame.Rect(0, 0, 0, 0)
 
     def handle_events(
         self,
@@ -71,37 +72,43 @@ class MenuStartScreen:
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_RIGHT:
-
                     self.selected = (
                         self.selected + 1
                     ) % len(self.options)
 
                 elif event.key == pygame.K_LEFT:
-
                     self.selected = (
                         self.selected - 1
                     ) % len(self.options)
 
                 elif event.key == pygame.K_RETURN:
-
                     return self.options[self.selected]
 
             elif event.type == pygame.MOUSEMOTION:
 
-                for i, rect in enumerate(self.option_rects):
+                if self.start_button_rect.collidepoint(event.pos):
+                    self.selected = 0
 
-                    if rect.collidepoint(event.pos):
-
-                        self.selected = i
+                else:
+                    for i, rect in enumerate(self.option_rects):
+                        if rect is not None and rect.collidepoint(
+                            event.pos
+                        ):
+                            self.selected = i
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
 
                 if event.button == 1:
 
+                    if self.start_button_rect.collidepoint(
+                        event.pos
+                    ):
+                        return "Start Game"
+
                     for i, rect in enumerate(self.option_rects):
-
-                        if rect.collidepoint(event.pos):
-
+                        if rect is not None and rect.collidepoint(
+                            event.pos
+                        ):
                             return self.options[i]
 
         return None
@@ -109,18 +116,21 @@ class MenuStartScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the main menu."""
 
-        self.option_rects = []
+        self.option_rects = [None] * len(self.options)
 
         spacing = 35
-
         theme = self.game.theme_manager.get_theme()
-
         font = self.small_font
+
+        visible_options = [
+            option for option in self.options
+            if option != "Start Game"
+        ]
 
         total_width = sum(
             font.size(option)[0]
-            for option in self.options
-        ) + spacing * (len(self.options) - 1)
+            for option in visible_options
+        ) + spacing * (len(visible_options) - 1)
 
         if total_width > screen.get_width():
 
@@ -134,14 +144,16 @@ class MenuStartScreen:
 
             total_width = sum(
                 font.size(option)[0]
-                for option in self.options
-            ) + spacing * (len(self.options) - 1)
+                for option in visible_options
+            ) + spacing * (len(visible_options) - 1)
 
         x = (screen.get_width() - total_width) // 2
-
         menu_y = int(screen.get_height() * 0.69)
 
         for i, option in enumerate(self.options):
+
+            if option == "Start Game":
+                continue
 
             color = (
                 theme.menu_selected_color
@@ -160,7 +172,7 @@ class MenuStartScreen:
                 top=menu_y,
             )
 
-            self.option_rects.append(option_rect)
+            self.option_rects[i] = option_rect
 
             screen.blit(option_text, option_rect)
 

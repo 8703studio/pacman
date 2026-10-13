@@ -2,6 +2,7 @@ import pygame
 
 from src.interface.menu import GameInterface
 from src.interface.utils import draw_text, get_center
+from src.interface.background import draw_background
 
 
 class HighscoresScreen:
@@ -13,13 +14,6 @@ class HighscoresScreen:
         self.game = game
 
         theme = self.game.theme_manager.get_theme()
-
-        if theme.background_image is None:
-            raise ValueError("Background image is not defined")
-
-        self.background_image = pygame.image.load(
-            theme.background_image
-        ).convert()
 
         self.font = pygame.font.Font(
             theme.font_path,
@@ -85,16 +79,14 @@ class HighscoresScreen:
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the high scores screen."""
 
-        screen_size = screen.get_size()
-
-        background = pygame.transform.scale(
-            self.background_image,
-            screen_size,
-        )
-
-        screen.blit(background, (0, 0))
-
         theme = self.game.theme_manager.get_theme()
+
+        draw_background(
+            screen,
+            theme.background_color,
+            None,
+            # theme.background_image,
+        )
 
         center_x, _ = get_center(screen)
 

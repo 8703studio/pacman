@@ -2,6 +2,7 @@ import pygame
 
 from src.interface.menu import GameInterface
 from src.interface.screens.highscores_screen import HighscoresScreen
+from src.interface.background import draw_background
 
 
 class NameInputScreen:
@@ -15,14 +16,8 @@ class NameInputScreen:
         """Initialize the name input screen."""
 
         self.game = game
+
         theme = self.game.theme_manager.get_theme()
-
-        if theme.background_image is None:
-            raise ValueError("Background image is not defined")
-
-        self.background_image = pygame.image.load(
-            theme.background_image
-        ).convert()
 
         self.name = ""
         self.score = score
@@ -112,17 +107,14 @@ class NameInputScreen:
         width = screen.get_width()
         height = screen.get_height()
 
-        background = pygame.transform.scale(
-            self.background_image,
-            screen.get_size(),
-        )
-
-        screen.blit(
-            background,
-            (0, 0),
-        )
-
         theme = self.game.theme_manager.get_theme()
+
+        draw_background(
+            screen,
+            theme.background_color,
+            None,
+            # theme.background_image,
+        )
 
         title = self.title.render(
             "ENTER YOUR NAME",

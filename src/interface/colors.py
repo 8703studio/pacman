@@ -13,7 +13,7 @@ cyan = pygame.Color("#00FAEA")
 lavender = pygame.Color("#C8B6FF")
 pastel_pink = pygame.Color("#FFB7D5")
 pastel_blue = pygame.Color("#A7D8FF")
-dark_purple = pygame.Color("#4B3B63")
+dark_purple = pygame.Color("#25153E")
 soft_purple = pygame.Color("#9B7EBD")
 pastel_yellow = pygame.Color("#FFE68A")
 
