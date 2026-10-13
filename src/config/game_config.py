@@ -129,5 +129,6 @@ class GameConfig(BaseModel):
             "pointpersuperpacgum": self.pointpersuperpacgum,
             "pointperghost": self.pointperghost,
             "pointperfruit": self.pointperfruit,
-            "lives": self.lives
+            "lives": self.lives,
+            "levelsmaxtime": self.levelsmaxtime,
         }
