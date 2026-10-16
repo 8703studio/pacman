@@ -1,18 +1,19 @@
 # from src.engine.physics import Engine
 # from src.game.level import Level
-from src import Parser
-from src import LevelHandler
+
+from src import Parser, GameConfig
+from src.interface.game_window import GameWindow
 
 # maze generator tuples (y, x) (column, line)
 
 
-def main():
+def main() -> None:
     parser = Parser()
     raw_data = parser.build_config("config.json")
-    print()
-    lvl_handler = LevelHandler(raw_data.level_data())
-    for i in lvl_handler.level_list:
-        print(i.grid_level)
+    config = GameConfig(**raw_data)
+
+    game = GameWindow(800, 800, config)
+    game.run()
 
 
 if __name__ == "__main__":

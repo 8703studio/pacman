@@ -4,8 +4,11 @@ from typing import Optional, Protocol
 
 from src.interface.theme.theme_manager import ThemeManager
 from src.interface.theme.theme import CLASSIC_THEME, SECOND_THEME
-from src.interface.maze_renderer import MazeRenderer
+from src.interface.renderers.maze_renderer import MazeRenderer
 from src.game.highscore import Highscore
+from src.interface.audio_manager import AudioManager
+from src.config import GameConfig
+from src.game.level_handler import LevelHandler
 
 
 class GameInterface(Protocol):
@@ -14,6 +17,7 @@ class GameInterface(Protocol):
     theme_manager: ThemeManager
     running: bool
     highscore: Highscore
+    audio_manager: AudioManager
 
     def change_screen(self, screen: object) -> None:
         """Change the current interface screen."""
@@ -27,6 +31,8 @@ class GameScreenInterface(GameInterface, Protocol):
 
     maze_renderer: MazeRenderer
     maze: Optional[list[list[int]]]
+    level_handler: LevelHandler
+    config: GameConfig
 
 
 class MenuStartScreen:
@@ -202,7 +208,7 @@ class MenuOptions:
         ]
 
         self.values = {
-            "Sound": True,
+            "Sound": self.game.audio_manager.sound_enabled,
             "Music": True,
             "Theme": (
                 "Pastel K-POP"
@@ -266,7 +272,9 @@ class MenuOptions:
         option = self.options[self.selected]
 
         if option == "Sound":
-            self.values["Sound"] = not self.values["Sound"]
+            sound_enabled = not self.game.audio_manager.sound_enabled
+            self.values["Sound"] = sound_enabled
+            self.game.audio_manager.set_sound_enabled(sound_enabled)
 
         elif option == "Music":
             self.values["Music"] = not self.values["Music"]
@@ -361,12 +369,12 @@ class MenuPause:
     ) -> str | None:
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_DOWN:
                     self.selected = (
                         self.selected + 1
                     ) % len(self.options)
 
-                elif event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_UP:
                     self.selected = (
                         self.selected - 1
                     ) % len(self.options)

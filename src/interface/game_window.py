@@ -5,18 +5,30 @@ from typing import Optional, Any
 from src.interface.theme.theme import CLASSIC_THEME
 from src.interface.hud import HUD
 from src.interface.theme.theme_manager import ThemeManager
-from src.interface.maze_renderer import MazeRenderer
+from src.interface.renderers.maze_renderer import MazeRenderer
 from src.interface.screens.start_screen import StartScreen
 from src.game.highscore import Highscore
+from src.interface.audio_manager import AudioManager
+from src.config import GameConfig
+from src import LevelHandler
 
 
 class GameWindow:
     """Manages the main game window and its interface screens."""
 
-    def __init__(self, width: int, height: int) -> None:
+    def __init__(
+        self,
+        width: int,
+
+        height: int,
+        config: GameConfig,
+    ) -> None:
         """Initialize the game window and its interface components."""
 
         pygame.init()
+        self.config = config
+        self.level_handler = LevelHandler(config.level_data())
+        self.audio_manager = AudioManager()
         self.theme_manager = ThemeManager(CLASSIC_THEME)
         self.running = True
 
@@ -24,7 +36,9 @@ class GameWindow:
         self.height = height
         self.clock = pygame.time.Clock()
         self.hud = HUD(CLASSIC_THEME)
-        self.maze: Optional[list[list[int]]] = None
+        self.maze: Optional[list[list[int]]] = (
+            self.level_handler.current_level.grid
+        )
         self.hud_height = 130
         self.margin = 5
 

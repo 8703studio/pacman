@@ -1,13 +1,26 @@
 from ..enums import GridObject
+from time import monotonic
 
 
 class Level():
     def __init__(self, wall_grid: list[list[int]], time: int) -> None:
-        self.time: int = time
+        self.timer: int = time
+        self.start_timer = None
         self.grid: list[list[int]] = wall_grid
         self.corners: list[tuple] = self._get_corners()
         self.grid_level: list[list[GridObject]] = self._create_grid_object()
         self.element_numb: int = self._get_numb_elem()
+
+    def start(self):
+        self.start_timer = monotonic()
+
+    def remaining_time(self):
+        if self.start_timer is None:
+            return self.timer
+
+        elapsed = monotonic() - self.start_timer
+
+        return max(0, self.timer - elapsed)
 
     def _get_corners(self) -> list[tuple]:
         width: int = len(self.grid[0])

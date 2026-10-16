@@ -1,9 +1,10 @@
 from mazegenerator import MazeGenerator
 from .level import Level
+from typing import Any
 
 
 class LevelHandler():
-    def __init__(self, config_level: dict[str, int]):
+    def __init__(self, config_level: dict[str, Any]) -> None:
         self.config_data = config_level
         self.level_list = self._create_list_level()
         self.cur_level = 0

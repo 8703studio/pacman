@@ -1,7 +1,8 @@
 import pygame
 
-from src.interface.maze_renderer import MazeRenderer
+from src.interface.renderers.maze_renderer import MazeRenderer
 from src.entities.entity import Entity, EntityDirection
+from src.enums import EntityState
 
 
 class GhostRenderer:
@@ -73,6 +74,12 @@ class GhostRenderer:
             self.ghost_frames[ghost_name][frame_idx],
             (ghost_size, ghost_size),
         )
+
+        if entity.state == EntityState.WEAK:
+            ghost_image.fill(
+                (50, 100, 255),
+                special_flags=pygame.BLEND_RGB_MULT,
+            )
 
         screen.blit(
             ghost_image,
