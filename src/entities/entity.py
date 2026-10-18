@@ -15,16 +15,19 @@ class Entity(ABC):
         self.queue: deque[EntityDirection] = deque()
         self.visited: set[tuple[int, int]] = set()
         self.last_move = monotonic()
+        self.last_dir: EntityDirection | None = None
 
     def can_move(self):
         return monotonic() - self.last_move >= self.speed
+
     @abstractmethod
     def move(self) -> None:
         pass
 
     def next_move(self) -> EntityDirection | None:
         if len(self.queue) != 0:
-            return self.queue.popleft()
+            self.last_dir = self.queue.popleft()
+            return self.last_dir
         return None
 
     def update_entity(self, direction: tuple[int, int]) -> None:

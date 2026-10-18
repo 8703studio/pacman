@@ -1,7 +1,7 @@
 # from src.engine.physics import Engine
 # from src.game.level import Level, Game
 from src import (Parser, LevelHandler, GhostHandler, GhostChaser, 
-                 GhostInterceptor, GhostRandom,
+                 GhostInterceptor, GhostGlutton,
                  GhostTactic, GameConfig, Game)
 # maze generator tuples (y, x) (column, line)
 
@@ -13,7 +13,7 @@ def main():
     ghost_list = [
         GhostChaser(),
         GhostInterceptor(),
-        GhostRandom(),
+        GhostGlutton(),
         GhostTactic()
     ]
 

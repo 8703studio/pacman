@@ -1,6 +1,7 @@
 from ..enums import GridObject
 from time import monotonic
 
+
 class Level():
     def __init__(self, wall_grid: list[list[int]], time: int) -> None:
         self.timer: int = time

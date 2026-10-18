@@ -3,7 +3,7 @@ from ..config import GameConfig
 from ..engine import Engine
 from .level_handler import LevelHandler
 from ..entities import GhostHandler, Pacman
-from ..enums import EntityState, GamePoint, GridObject
+from ..enums import EntityState, GamePoint, GridObject, StateGame
 from time import monotonic
 # , ghost_handler, engine, level_handler, pacman, config)
 
@@ -24,6 +24,9 @@ class Game():
         self.run: bool = True
         self.weak_time: int = 8
         self.weak_start: float | None = None
+        self.gamestate: StateGame = StateGame.NEW
+        self.start_pause: float | None = None
+        self.start_launch = monotonic()
 
     def _object_point(self):
         dict_point: dict[GamePoint, int] = {}
@@ -39,28 +42,75 @@ class Game():
         spawn = self.levels.current_level
         return (len(spawn.grid) // 2, len(spawn.grid[0]) // 2)
 
-    def main_game(self):
-        while self.run:
-            pass
-
     def add_score(self, score: int):
         self.score += score
 
     def lose_life(self):
         self.life -= 1
+        if self.life == 0:
+            self.gamestate = StateGame.GAMEOVER
 
     def set_life(self) -> int:
         return self.config.lives
 
     def change_level(self):
-        pass
+        nlevel = self.levels.next_level()
+        if nlevel is None:
+            return
+        self.engine.grid = nlevel.grid
+        self.pacman.start_pos = (len(nlevel.grid) // 2,
+                                 len(nlevel.grid[0]) // 2)
+        self.pacman.reset()
+        self.ghosts.set_spawn_ghost(nlevel.corners)
+        for ghost in self.ghosts.ghost_list:
+            ghost.state = EntityState.NORMAL
+            ghost.reset()
+        self.weak_start = None
+        return True
+
+    def pause_game(self):
+        if self.gamestate != StateGame.RESUME:
+            return
+        self.start_pause = monotonic()
+        self.gamestate = StateGame.PAUSE
+
+    def resume_game(self):
+        if self.gamestate != StateGame.PAUSE:
+            return
+
+        if self.start_pause is not None:
+            duration_pause = monotonic() - self.start_pause
+
+            if self.weak_start is not None:
+                self.weak_start += duration_pause
+
+            if self.levels.current_level.start_timer is not None:
+                self.levels.current_level.start_timer += duration_pause
+
+            for ghost in self.ghosts.ghost_list:
+                if ghost.last_move is not None:
+                    ghost.last_move += duration_pause
+
+            if self.pacman.last_move is not None:
+                self.pacman.last_move += duration_pause
+
+            self.start_pause = None
+            self.gamestate = StateGame.RESUME
 
     def set_ghost_state(self):
         self.weak_start = monotonic()
 
         for ghost in self.ghosts.ghost_list:
             if ghost.state != EntityState.DEAD:
+                ghost.reset()
                 ghost.set_state(EntityState.WEAK)
+
+    def verify_dead_ghost(self) -> None:
+        for ghost in self.ghosts.ghost_list:
+            if ghost.state == EntityState.DEAD:
+                if ghost.current_pos == ghost.start_pos:
+                    ghost.reset()
+                    ghost.state = EntityState.NORMAL
 
     def update_weak_time(self):
         if self.weak_start is None:
@@ -71,8 +121,9 @@ class Game():
         if elapsed >= self.weak_time:
             for ghost in self.ghosts.ghost_list:
                 if ghost.state == EntityState.WEAK:
+                    ghost.reset()
                     ghost.set_state(EntityState.NORMAL)
-                    self.weak_start = None
+            self.weak_start = None
 
     def pacman_movement(self):
         if not self.pacman.can_move():
@@ -99,6 +150,7 @@ class Game():
             if not ghost.can_move():
                 continue
 
+            ghost.target = self.pacman.current_pos
             ghost.move()
             move_ghost = ghost.next_move()
 
@@ -112,6 +164,7 @@ class Game():
             if ghost.current_pos == self.pacman.current_pos:
                 if ghost.state == EntityState.WEAK:
                     ghost.state = EntityState.DEAD
+                    ghost.reset()
                     self.add_score(self.point[GamePoint.GHOST])
                     return False
                 else:
@@ -123,9 +176,26 @@ class Game():
     def update(self):
         level = self.levels.current_level
 
+        if self.start_launch is None:
+            return
+
+        if self.gamestate == StateGame.NEW:
+            elapsed = monotonic() - self.start_launch
+            if elapsed <= 3:
+                return
+            self.gamestate = StateGame.RESUME
+            level.start_timer = monotonic()
+
+        if (self.gamestate == StateGame.PAUSE or
+           self.gamestate == StateGame.VICTORY or
+           self.gamestate == StateGame.GAMEOVER):
+            return
+
         if level.remaining_time() <= 0:
             self.run = False
+            self.gamestate = StateGame.GAMEOVER
             return
+
         self.update_weak_time()
 
         self.pacman_movement()
@@ -134,8 +204,13 @@ class Game():
             return
 
         if self.levels.current_level.is_finished():
-            self.change_level()
+            if self.change_level() is not None:
+                self.start_launch = monotonic()
+                self.gamestate = StateGame.NEW
+            else:
+                self.gamestate = StateGame.VICTORY
             return
-        
+
         self.ghosts_movement()
+        self.verify_dead_ghost()
         self.check_collision()

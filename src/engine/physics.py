@@ -1,3 +1,4 @@
+from ..enums import EntityDirection
 """
     the engine class can do the verification like physics, etc.. in game
 
@@ -5,7 +6,7 @@
 
 
 class Engine():
-    def __init__(self, grid) -> None:
+    def __init__(self, grid: list[list[int]]) -> None:
         self.grid = grid
         self.opposite_bits = {
             1: 4,
@@ -28,6 +29,15 @@ class Engine():
     def height(self) -> int:
         return len(self.grid)
 
+    def get_valid_position(self,
+                           case: tuple[int, int]) -> list[EntityDirection]:
+
+        valid_neighbour_list = []
+        for direction in EntityDirection:
+            if self.is_valid_position(direction.value, case):
+                valid_neighbour_list.append(direction)
+        return valid_neighbour_list
+
     def is_valid_position(self, direction: tuple[int, int],
                           case: tuple[int, int]) -> bool:
         cy, cx = case
@@ -47,7 +57,6 @@ class Engine():
     # this method verify if the entity faced a wall
     def _is_wall(self, case_value: int,
                  bits: int) -> bool:
-        print(case_value, bits)
         return (case_value & bits) != 0
 
     # this method verified if the entity is in the grid
