@@ -81,13 +81,18 @@ class MenuStartScreen:
                     self.selected = (
                         self.selected + 1
                     ) % len(self.options)
+                    self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_LEFT:
                     self.selected = (
                         self.selected - 1
                     ) % len(self.options)
+                    self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_RETURN:
+                    self.game.audio_manager.play_sound(
+                        "ui-confirm"
+                    )
                     return self.options[self.selected]
 
             elif event.type == pygame.MOUSEMOTION:
@@ -109,12 +114,18 @@ class MenuStartScreen:
                     if self.start_button_rect.collidepoint(
                         event.pos
                     ):
+                        self.game.audio_manager.play_sound(
+                            "ui-confirm"
+                        )
                         return "Start Game"
 
                     for i, rect in enumerate(self.option_rects):
                         if rect is not None and rect.collidepoint(
                             event.pos
                         ):
+                            self.game.audio_manager.play_sound(
+                                "ui-click"
+                            )
                             return self.options[i]
 
         return None
@@ -232,20 +243,25 @@ class MenuOptions:
                     self.selected = (
                         self.selected + 1
                     ) % len(self.options)
+                    self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_UP:
                     self.selected = (
                         self.selected - 1
                     ) % len(self.options)
+                    self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_LEFT:
                     self._change_value()
+                    self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_RIGHT:
                     self._change_value()
+                    self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_RETURN:
                     if self.options[self.selected] == "Back":
+                        self.game.audio_manager.play_sound("ui-back")
                         return "Back"
 
             elif event.type == pygame.MOUSEMOTION:
@@ -272,9 +288,9 @@ class MenuOptions:
         option = self.options[self.selected]
 
         if option == "Sound":
-            sound_enabled = not self.game.audio_manager.sound_enabled
-            self.values["Sound"] = sound_enabled
-            self.game.audio_manager.set_sound_enabled(sound_enabled)
+            enabled = not self.game.audio_manager.sound_enabled
+            self.game.audio_manager.set_sound_enabled(enabled)
+            self.values["Sound"] = enabled
 
         elif option == "Music":
             self.values["Music"] = not self.values["Music"]

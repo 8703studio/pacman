@@ -13,7 +13,7 @@ from src.engine.input import get_direction
 from src.game.game import Game
 from src.entities import GhostHandler
 from src.interface.renderers.object_renderer import ObjectRenderer
-from src.enums import GamePoint, GridObject
+from src.game.gameplay_controller import GameController
 
 
 class GameScreen:
@@ -60,6 +60,11 @@ class GameScreen:
             self.pacman,
             self.game.config,
         )
+        self.controller = GameController(
+            self.logic,
+            self.ghost,
+            self.game.audio_manager,
+        )
 
     def events(
         self,
@@ -96,52 +101,7 @@ class GameScreen:
         if self.game.maze is None:
             return
 
-        self.logic.update_weak_time()
-        self.pacman.move()
-
-        direction = self.pacman.next_move()
-
-        if direction is not None:
-            vector = direction.value
-
-            engine = Engine(self.game.maze)
-            if engine.is_valid_position(
-                vector,
-                self.pacman.current_pos,
-            ):
-                self.pacman.direction = direction
-                self.pacman.update_entity(vector)
-
-            obj = self.logic.levels.current_level.consume_object(
-                self.pacman.current_pos
-            )
-
-            if obj != GridObject.EMPTY:
-                self.logic.add_score(
-                    self.logic.point[GamePoint[obj.name]]
-                )
-
-            if obj == GridObject.SUPERGUM:
-                self.logic.set_ghost_state()
-                print("Etat de Joy :", self.ghost.state)
-
-        self.ghost.engine = Engine(self.game.maze)
-        self.ghost.pacman_position = self.pacman.current_pos
-        self.ghost.pacman_direction = self.pacman.direction
-
-        if self.ghost.can_move():
-            self.ghost.move()
-            direction = self.ghost.next_move()
-
-            if direction is not None:
-                vector = direction.value
-
-                if self.ghost.engine.is_valid_position(
-                    vector,
-                    self.ghost.current_pos,
-                ):
-                    self.ghost.direction = direction
-                    self.ghost.update_entity(vector)
+        self.controller.update(self.game.maze)
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the game screen."""

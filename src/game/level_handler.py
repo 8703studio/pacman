@@ -20,7 +20,7 @@ class LevelHandler():
         return level_maze.maze
 
     def _create_list_level(self) -> list[Level]:
-        lev_list = []
+        lev_list: list[Level] = []
         level_config_key, time_key, seed_key = self.config_data
 
         key_level_list = [_ for _ in self.config_data[level_config_key]]

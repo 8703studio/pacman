@@ -47,13 +47,26 @@ class Game():
         self.score += score
 
     def lose_life(self):
+        if self.life <= 0:
+            return
+
         self.life -= 1
+
+        if self.life <= 0:
+            self.life = 0
+            self.run = False
 
     def set_life(self) -> int:
         return self.config.lives
 
     def change_level(self):
-        pass
+        next_level = self.levels.next_level()
+
+        if next_level is None:
+            self.run = False
+            return True
+
+        return False
 
     def set_ghost_state(self):
         self.weak_start = monotonic()
@@ -110,16 +123,24 @@ class Game():
 
     def check_collision(self):
         for ghost in self.ghosts.ghost_list:
+            if ghost.state == EntityState.DEAD:
+                continue
+
             if ghost.current_pos == self.pacman.current_pos:
+                print("Fantôme touché :", ghost.state, ghost.current_pos)
+
                 if ghost.state == EntityState.WEAK:
-                    ghost.state = EntityState.DEAD
+                    ghost.set_state(EntityState.DEAD)
                     self.add_score(self.point[GamePoint.GHOST])
+                    print("État après collision :", ghost.state)
                     return False
-                else:
-                    if ghost.state is not EntityState.DEAD:
-                        self.lose_life()
-                        self.pacman.reset()
-                        return True
+
+                elif ghost.state is not EntityState.DEAD:
+                    self.lose_life()
+                    self.pacman.reset()
+                    return True
+
+        return False
 
     def update(self):
         level = self.levels.current_level

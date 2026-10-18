@@ -2,8 +2,8 @@ import pygame
 import mazegenerator as maze
 
 from src.entities.entity import Entity, EntityDirection
-from src.interface.entity_renderer import EntityRenderer
-from src.interface.maze_renderer import MazeRenderer
+from src.interface.renderers.entity_renderer import EntityRenderer
+from src.interface.renderers.maze_renderer import MazeRenderer
 from src.interface.theme.theme import CLASSIC_THEME
 
 
