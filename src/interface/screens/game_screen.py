@@ -4,14 +4,19 @@ from src.interface.menu import GameScreenInterface
 from src.interface.hud import HUD
 from src.interface.renderers.entity_renderer import EntityRenderer
 from src.interface.background import draw_background
-from src.entities.ghost_interceptor import GhostInterceptor
+from src.entities import (
+    GhostHandler,
+    GhostChaser,
+    GhostGlutton,
+    GhostInterceptor,
+    GhostTactic,
+    Pacman,
+)
 from src.entities.entity import EntityDirection
-from src.entities.pacman import Pacman
 from src.engine.physics import Engine
 from src.interface.screens.pause_screen import PauseScreen
 from src.engine.input import get_direction
 from src.game.game import Game
-from src.entities import GhostHandler
 from src.interface.renderers.object_renderer import ObjectRenderer
 from src.game.gameplay_controller import GameController
 
@@ -24,19 +29,26 @@ class GameScreen:
 
         self.game = game
 
-        self.hud = HUD(
-            self.game.theme_manager.get_theme()
-        )
+        self.hud = HUD(self.game.theme_manager.get_theme())
 
-        self.entity_renderer = EntityRenderer(
-            self.game.maze_renderer
-        )
-
-        self.ghost = GhostInterceptor((0, 1))
-        self.pacman = Pacman()
+        self.entity_renderer = EntityRenderer(self.game.maze_renderer)
 
         level = self.game.level_handler.current_level
         level.start()
+
+        engine = Engine(level.grid)
+
+        self.ghost = GhostInterceptor(level.corners[0])
+        self.ghost.engine = engine
+
+        self.ghosts = [
+            self.ghost,
+            GhostChaser(engine),
+            GhostGlutton(engine),
+            # GhostTactic(),
+        ]
+
+        self.pacman = Pacman()
 
         self.pacman.start_pos = (
             len(level.grid) // 2,
@@ -44,14 +56,10 @@ class GameScreen:
         )
         self.pacman.current_pos = self.pacman.start_pos
 
-        ghost_handler = GhostHandler([self.ghost])
+        ghost_handler = GhostHandler(self.ghosts)
         ghost_handler.set_spawn_ghost(level.corners)
 
-        self.object_renderer = ObjectRenderer(
-            self.game.maze_renderer
-        )
-
-        engine = Engine(level.grid)
+        self.object_renderer = ObjectRenderer(self.game.maze_renderer)
 
         self.logic = Game(
             ghost_handler,
@@ -76,13 +84,8 @@ class GameScreen:
             return
 
         for event in events:
-            if (
-                event.type == pygame.KEYDOWN
-                and event.key == pygame.K_ESCAPE
-            ):
-                self.game.change_screen(
-                    PauseScreen(self.game, self)
-                )
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.game.change_screen(PauseScreen(self.game, self))
                 return
 
             direction = get_direction(event)
@@ -91,9 +94,7 @@ class GameScreen:
                 continue
 
             entity_direction = EntityDirection(direction)
-            self.logic.pacman.add_move_to_buffer(
-                entity_direction
-            )
+            self.logic.pacman.add_move_to_buffer(entity_direction)
 
     def update(self, delta_time: float) -> None:
         """Update the game screen."""
@@ -123,9 +124,7 @@ class GameScreen:
             self.game.maze,
         )
 
-        self.entity_renderer.maze_renderer = (
-            self.game.maze_renderer
-        )
+        self.entity_renderer.maze_renderer = self.game.maze_renderer
 
         self.hud.render(
             screen,
@@ -138,7 +137,19 @@ class GameScreen:
         self.entity_renderer.draw_ghost(
             screen,
             self.game.maze,
-            self.ghost,
+            self.ghosts[0],
+        )
+
+        self.entity_renderer.draw_gdragon(
+            screen,
+            self.game.maze,
+            self.ghosts[1],
+        )
+
+        self.entity_renderer.draw_momo(
+            screen,
+            self.game.maze,
+            self.ghosts[2],
         )
 
         self.entity_renderer.draw_pacman(

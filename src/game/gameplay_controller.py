@@ -1,6 +1,7 @@
-
 from src.engine.physics import Engine
 from src.game.game import Game
+
+# from src.entities.ghost import Ghost
 from src.entities.ghost_interceptor import GhostInterceptor
 from src.enums import GamePoint, GridObject
 from src.interface.audio_manager import AudioManager
@@ -48,9 +49,7 @@ class GameController:
             )
 
             if obj != GridObject.EMPTY:
-                self.logic.add_score(
-                    self.logic.point[GamePoint[obj.name]]
-                )
+                self.logic.add_score(self.logic.point[GamePoint[obj.name]])
 
             if obj == GridObject.GUM:
                 self.audio_manager.play_sound("pickup")
@@ -69,25 +68,34 @@ class GameController:
                     self.audio_manager.play_sound("GameOver")
             return
 
-        self.ghost.engine = Engine(maze)
-        self.ghost.pacman_position = pacman.current_pos
-        self.ghost.pacman_direction = pacman.direction
+        engine = Engine(maze)
 
-        print("État de Joy avant déplacement :", self.ghost.state)
+        for ghost in self.logic.ghosts.ghost_list:
+            if isinstance(ghost, GhostInterceptor):
+                ghost.engine = engine
+                ghost.pacman_position = pacman.current_pos
+                ghost.pacman_direction = pacman.direction
+            else:
+                ghost.target = pacman.current_pos
 
-        if self.ghost.can_move():
-            self.ghost.move()
-            direction = self.ghost.next_move()
+            if isinstance(ghost, GhostInterceptor):
+                ghost.move()
+            else:
+                if not ghost.can_move():
+                    continue
+                ghost.move()
 
-            if direction is not None:
-                vector = direction.value
+            ghost.move()
+            direction = ghost.next_move()
 
-                if self.ghost.engine.is_valid_position(
-                    vector,
-                    self.ghost.current_pos,
-                ):
-                    self.ghost.direction = direction
-                    self.ghost.update_entity(vector)
+            if direction is None:
+                continue
+
+            vector = direction.value
+
+            if engine.is_valid_position(vector, ghost.current_pos):
+                ghost.direction = direction
+                ghost.update_entity(vector)
 
         lives_before = self.logic.life
 
@@ -98,6 +106,6 @@ class GameController:
                 if not self.logic.run:
                     self.audio_manager.play_sound("GameOver")
 
-        if (self.logic.run and self.logic.levels.current_level.is_finished()):
+        if self.logic.run and self.logic.levels.current_level.is_finished():
             if self.logic.change_level():
                 self.audio_manager.play_sound("Victory")
