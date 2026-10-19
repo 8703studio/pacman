@@ -3,8 +3,9 @@ from src.game.game import Game
 
 # from src.entities.ghost import Ghost
 from src.entities.ghost_interceptor import GhostInterceptor
-from src.enums import GamePoint, GridObject
+from src.enums import GamePoint, GridObject, StateGame
 from src.interface.audio_manager import AudioManager
+from time import monotonic
 
 
 class GameController:
@@ -27,6 +28,13 @@ class GameController:
 
         if maze is None or not self.logic.run:
             return
+
+        if self.logic.gamestate == StateGame.NEW:
+            if monotonic() - self.logic.start_launch <= 3:
+                return
+            self.logic.gamestate = StateGame.RESUME
+
+            self.logic.levels.current_level.start_timer = monotonic()
 
         self.logic.update_weak_time()
         pacman = self.logic.pacman
@@ -83,7 +91,6 @@ class GameController:
             else:
                 if not ghost.can_move():
                     continue
-                ghost.move()
 
             ghost.move()
             direction = ghost.next_move()
