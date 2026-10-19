@@ -2,7 +2,7 @@
 from src.engine.physics import Engine
 from src.game.game import Game
 from src.entities.ghost_interceptor import GhostInterceptor
-from src.enums import EntityState, GamePoint, GridObject
+from src.enums import GamePoint, GridObject
 from src.interface.audio_manager import AudioManager
 
 
@@ -75,10 +75,7 @@ class GameController:
 
         print("État de Joy avant déplacement :", self.ghost.state)
 
-        if (
-            self.ghost.state != EntityState.DEAD
-            and self.ghost.can_move()
-        ):
+        if self.ghost.can_move():
             self.ghost.move()
             direction = self.ghost.next_move()
 

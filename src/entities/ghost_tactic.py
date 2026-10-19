@@ -1,8 +1,8 @@
-from .entity import Entity
+from .ghost import Ghost
 from ..enums import EntityType
 
 
-class GhostTactic(Entity):
+class GhostTactic(Ghost):
     def __init__(self):
         super().__init__()
         self.queue

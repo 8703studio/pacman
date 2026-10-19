@@ -1,7 +1,14 @@
+
 from .config import Parser, GameConfig
 from .engine import Engine
-from .entities import (Pacman, GhostTactic, GhostRandom,
-                       GhostInterceptor, GhostChaser, GhostHandler)
+from .entities import (
+    Pacman,
+    GhostTactic,
+    GhostGlutton,
+    GhostInterceptor,
+    GhostChaser,
+    GhostHandler,
+)
 from .game import Level, LevelHandler, Game
 from .enums import EntityDirection, GridObject, GamePoint, StateGame
 
@@ -12,7 +19,7 @@ __all__ = [
     "LevelHandler",
     "GhostChaser",
     "GhostInterceptor",
-    "GhostRandom",
+    "GhostGlutton",
     "GhostTactic",
     "EntityDirection",
     "Engine",
@@ -21,5 +28,5 @@ __all__ = [
     "Game",
     "GridObject",
     "StateGame",
-    "GamePoint"
+    "GamePoint",
 ]
