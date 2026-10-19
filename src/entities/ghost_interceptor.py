@@ -30,6 +30,7 @@ def get_target(
     for _ in range(3):
         if not engine.is_valid_position(direction, position):
             break
+
         position = (
             position[0] + direction[0],
             position[1] + direction[1],
@@ -56,6 +57,7 @@ def get_neighbors(
             position[0] + direction[0],
             position[1] + direction[1],
         )
+
         if engine.is_valid_position(direction, position):
             neighbors.append(next_position)
 
@@ -66,7 +68,7 @@ def get_distance_map(
     engine: Engine,
     start: tuple[int, int],
 ) -> dict[tuple[int, int], int]:
-    """Return the shortest distance from start to each reachable cell."""
+    """Return shortest distances from the starting cell."""
     waiting = deque([start])
     distances = {start: 0}
 
@@ -115,46 +117,45 @@ def get_weak_target(
     engine: Engine,
     ghost_position: tuple[int, int],
     pacman_position: tuple[int, int],
-    last_direction: Optional[EntityDirection],
     recent_positions: set[tuple[int, int]],
 ) -> Optional[tuple[int, int]]:
-    """Choose a distant neighboring cell while avoiding recent positions."""
-    neighbors = get_neighbors(engine, ghost_position)
+    """Choose a distant destination and avoid recent positions."""
+    pacman_distances = get_distance_map(engine, pacman_position)
+    ghost_distances = get_distance_map(engine, ghost_position)
 
-    if not neighbors:
-        return None
-
-    fresh_neighbors = [
-        neighbor
-        for neighbor in neighbors
-        if neighbor not in recent_positions
+    candidates = [
+        cell
+        for cell in ghost_distances
+        if cell != ghost_position
+        and cell not in recent_positions
+        and len(get_neighbors(engine, cell)) >= 2
     ]
 
-    if fresh_neighbors:
-        neighbors = fresh_neighbors
-    elif last_direction is not None and len(neighbors) > 1:
-        dy, dx = last_direction.value
-        previous = (
-            ghost_position[0] - dy,
-            ghost_position[1] - dx,
-        )
-        alternatives = [
-            neighbor
-            for neighbor in neighbors
-            if neighbor != previous
+    if not candidates:
+        candidates = [
+            cell
+            for cell in ghost_distances
+            if cell != ghost_position
+            and cell not in recent_positions
         ]
 
-        if alternatives:
-            neighbors = alternatives
+    if not candidates:
+        candidates = [
+            cell
+            for cell in ghost_distances
+            if cell != ghost_position
+        ]
 
-    distances = get_distance_map(engine, pacman_position)
-    rows = len(engine.grid)
-    columns = len(engine.grid[0]) if rows else 0
-    unreachable_distance = rows * columns + 1
+    if not candidates:
+        return None
 
     return max(
-        neighbors,
-        key=lambda cell: distances.get(cell, unreachable_distance),
+        candidates,
+        key=lambda cell: (
+            pacman_distances.get(cell, -1),
+            len(get_neighbors(engine, cell)),
+            ghost_distances[cell],
+        ),
     )
 
 
@@ -232,8 +233,9 @@ class GhostInterceptor(Entity):
     """Ghost that intercepts Pacman and handles weak/dead behavior."""
 
     def __init__(self, position: tuple[int, int]) -> None:
-        """Initialize the interceptor ghost at its starting position."""
+        """Initialize the interceptor ghost."""
         super().__init__()
+
         self.start_pos = position
         self.current_pos = position
         self.entity_type = EntityType.GHOST
@@ -245,8 +247,9 @@ class GhostInterceptor(Entity):
 
         self.direction_queue: deque[tuple[int, int]] = deque()
         self.weak_history: deque[tuple[int, int]] = deque(maxlen=8)
-        self.move_timer = 0
+        self.weak_target: Optional[tuple[int, int]] = None
 
+        self.move_timer = 0
         self.last_state = self.state
         self.dead_phase = "center"
         self.dead_center: Optional[tuple[int, int]] = None
@@ -292,21 +295,27 @@ class GhostInterceptor(Entity):
             if pacman_position is None:
                 return
 
-            if not self.weak_history or (
-                self.weak_history[-1] != self.current_pos
+            if (
+                not self.weak_history
+                or self.weak_history[-1] != self.current_pos
             ):
                 self.weak_history.append(self.current_pos)
 
-            target = get_weak_target(
-                engine,
-                self.current_pos,
-                pacman_position,
-                self.last_dir,
-                set(self.weak_history),
-            )
+            if (
+                self.weak_target is None
+                or self.current_pos == self.weak_target
+            ):
+                self.weak_target = get_weak_target(
+                    engine,
+                    self.current_pos,
+                    pacman_position,
+                    set(self.weak_history),
+                )
 
-            if target is None:
+            if self.weak_target is None:
                 return
+
+            target = self.weak_target
 
         else:
             target = self._get_dead_target()
@@ -324,10 +333,11 @@ class GhostInterceptor(Entity):
         self.direction_queue.clear()
         self.queue.clear()
         self.weak_history.clear()
+        self.weak_target = None
+        self.move_timer = 0
 
         if self.state == EntityState.WEAK:
             self.weak_history.append(self.current_pos)
-        self.move_timer = 0
 
         if self.state == EntityState.DEAD:
             self.dead_phase = "center"
@@ -361,6 +371,7 @@ class GhostInterceptor(Entity):
             self.state = EntityState.NORMAL
             self.direction_queue.clear()
             self.queue.clear()
+            self.weak_target = None
             return None
 
         if self.dead_phase == "center":
@@ -376,7 +387,11 @@ class GhostInterceptor(Entity):
         if self.engine is None:
             return
 
-        path = find_path(self.engine, self.current_pos, target)
+        path = find_path(
+            self.engine,
+            self.current_pos,
+            target,
+        )
 
         self.direction_queue.clear()
         self.direction_queue.extend(path)
@@ -387,6 +402,7 @@ class GhostInterceptor(Entity):
 
         direction = self.direction_queue.popleft()
         entity_direction = EntityDirection(direction)
+
         self.direction = entity_direction
         self.queue.append(entity_direction)
 
@@ -398,6 +414,8 @@ class GhostInterceptor(Entity):
         """Clear movement data and reset when the ghost is not dead."""
         self.direction_queue.clear()
         self.queue.clear()
+        self.weak_history.clear()
+        self.weak_target = None
         self.move_timer = 0
         self.last_dir = None
 
