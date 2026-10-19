@@ -78,21 +78,15 @@ class MenuStartScreen:
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_RIGHT:
-                    self.selected = (
-                        self.selected + 1
-                    ) % len(self.options)
+                    self.selected = (self.selected + 1) % len(self.options)
                     self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_LEFT:
-                    self.selected = (
-                        self.selected - 1
-                    ) % len(self.options)
+                    self.selected = (self.selected - 1) % len(self.options)
                     self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_RETURN:
-                    self.game.audio_manager.play_sound(
-                        "ui-confirm"
-                    )
+                    self.game.audio_manager.play_sound("ui-confirm")
                     return self.options[self.selected]
 
             elif event.type == pygame.MOUSEMOTION:
@@ -102,30 +96,20 @@ class MenuStartScreen:
 
                 else:
                     for i, rect in enumerate(self.option_rects):
-                        if rect is not None and rect.collidepoint(
-                            event.pos
-                        ):
+                        if rect is not None and rect.collidepoint(event.pos):
                             self.selected = i
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
 
                 if event.button == 1:
 
-                    if self.start_button_rect.collidepoint(
-                        event.pos
-                    ):
-                        self.game.audio_manager.play_sound(
-                            "ui-confirm"
-                        )
+                    if self.start_button_rect.collidepoint(event.pos):
+                        self.game.audio_manager.play_sound("ui-confirm")
                         return "Start Game"
 
                     for i, rect in enumerate(self.option_rects):
-                        if rect is not None and rect.collidepoint(
-                            event.pos
-                        ):
-                            self.game.audio_manager.play_sound(
-                                "ui-click"
-                            )
+                        if rect is not None and rect.collidepoint(event.pos):
+                            self.game.audio_manager.play_sound("ui-click")
                             return self.options[i]
 
         return None
@@ -140,13 +124,11 @@ class MenuStartScreen:
         font = self.small_font
 
         visible_options = [
-            option for option in self.options
-            if option != "Start Game"
+            option for option in self.options if option != "Start Game"
         ]
 
         total_width = sum(
-            font.size(option)[0]
-            for option in visible_options
+            font.size(option)[0] for option in visible_options
         ) + spacing * (len(visible_options) - 1)
 
         if total_width > screen.get_width():
@@ -160,8 +142,7 @@ class MenuStartScreen:
             )
 
             total_width = sum(
-                font.size(option)[0]
-                for option in visible_options
+                font.size(option)[0] for option in visible_options
             ) + spacing * (len(visible_options) - 1)
 
         x = (screen.get_width() - total_width) // 2
@@ -240,15 +221,11 @@ class MenuOptions:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    self.selected = (
-                        self.selected + 1
-                    ) % len(self.options)
+                    self.selected = (self.selected + 1) % len(self.options)
                     self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_UP:
-                    self.selected = (
-                        self.selected - 1
-                    ) % len(self.options)
+                    self.selected = (self.selected - 1) % len(self.options)
                     self.game.audio_manager.play_sound("ui-hover")
 
                 elif event.key == pygame.K_LEFT:
@@ -299,10 +276,11 @@ class MenuOptions:
             if self.values["Theme"] == "Classic K-POP":
                 self.values["Theme"] = "Pastel K-POP"
                 self.game.theme_manager.set_theme(SECOND_THEME)
-
             else:
                 self.values["Theme"] = "Classic K-POP"
                 self.game.theme_manager.set_theme(CLASSIC_THEME)
+
+            self.game.refresh_theme()
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the options menu."""
@@ -386,14 +364,10 @@ class MenuPause:
         for event in events:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    self.selected = (
-                        self.selected + 1
-                    ) % len(self.options)
+                    self.selected = (self.selected + 1) % len(self.options)
 
                 elif event.key == pygame.K_UP:
-                    self.selected = (
-                        self.selected - 1
-                    ) % len(self.options)
+                    self.selected = (self.selected - 1) % len(self.options)
 
                 elif event.key == pygame.K_RETURN:
                     return self.options[self.selected]

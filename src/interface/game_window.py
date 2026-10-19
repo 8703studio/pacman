@@ -19,7 +19,6 @@ class GameWindow:
     def __init__(
         self,
         width: int,
-
         height: int,
         config: GameConfig,
     ) -> None:
@@ -97,6 +96,19 @@ class GameWindow:
         """Return to the start screen."""
 
         self.current_screen = StartScreen(self)
+
+    def refresh_theme(self) -> None:
+        """Refresh components when the active theme changes."""
+        theme = self.theme_manager.get_theme()
+
+        self.hud = HUD(theme)
+        self.maze_renderer = MazeRenderer(
+            width=self.width,
+            height=self.height,
+            hud_height=self.hud_height,
+            theme=theme,
+            margin=self.margin,
+        )
 
     def draw(self) -> None:
         """Draw the current screen on the game window."""

@@ -62,7 +62,7 @@ class HUD:
             self.color,
         )
         lives_rect = lives_text.get_rect(
-            midtop=(width * 3 // 4, top_y),
+            midtop=(width * 3 // 5, top_y),
         )
         screen.blit(lives_text, lives_rect)
 

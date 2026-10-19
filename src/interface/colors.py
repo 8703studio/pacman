@@ -26,7 +26,7 @@ classic_title = pygame.Color("#FE7700")
 classic_button = pygame.Color("#D0FF00")
 classic_button_text = pygame.Color("#310835")
 
-pastel_background = pygame.Color("#FFF0F7")
+pastel_background = pygame.Color("#DDBDCC")
 pastel_text = pygame.Color("#E4E9AB")
 pastel_selected = pygame.Color("#FF79B8")
 pastel_accent = pygame.Color("#8FD8FF")
