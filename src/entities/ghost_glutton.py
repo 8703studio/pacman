@@ -17,9 +17,15 @@ class GhostGlutton(Ghost):
             EntityDirection.DOWN: EntityDirection.UP
         }
 
-    def normal_move(self):
+    def normal_move(self) -> None:
+        engine = self.engine
+        target = self.target
+
+        if engine is None or target is None:
+            return
+
         euclidean_dict = {}
-        list_direction = self.engine.get_valid_position(self.current_pos)
+        list_direction = engine.get_valid_position(self.current_pos)
 
         if self.last_dir is not None:
             if self.opposite_dir[self.last_dir] in list_direction:
@@ -32,7 +38,7 @@ class GhostGlutton(Ghost):
             dy, dx = direction.value
             cy, cx = self.current_pos
             next_case = (cy + dy, dx + cx)
-            euclidean_dict[direction] = dist(next_case, self.target)
+            euclidean_dict[direction] = dist(next_case, target)
 
         min_val = min(euclidean_dict.values())
         res = [k for k, v in euclidean_dict.items() if v == min_val]

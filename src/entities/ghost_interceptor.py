@@ -1,3 +1,4 @@
+
 from collections import deque
 from typing import Optional
 
@@ -236,6 +237,8 @@ class GhostInterceptor(Entity):
         """Initialize the interceptor ghost."""
         super().__init__()
 
+        self.speed = 0.3
+
         self.start_pos = position
         self.current_pos = position
         self.entity_type = EntityType.GHOST
@@ -249,7 +252,6 @@ class GhostInterceptor(Entity):
         self.weak_history: deque[tuple[int, int]] = deque(maxlen=8)
         self.weak_target: Optional[tuple[int, int]] = None
 
-        self.move_timer = 0
         self.last_state = self.state
         self.dead_phase = "center"
         self.dead_center: Optional[tuple[int, int]] = None
@@ -268,13 +270,6 @@ class GhostInterceptor(Entity):
             EntityState.DEAD,
         ):
             return
-
-        self.move_timer += 1
-
-        if self.move_timer < 10:
-            return
-
-        self.move_timer = 0
 
         if self.state == EntityState.NORMAL:
             pacman_position = self.pacman_position
@@ -334,7 +329,6 @@ class GhostInterceptor(Entity):
         self.queue.clear()
         self.weak_history.clear()
         self.weak_target = None
-        self.move_timer = 0
 
         if self.state == EntityState.WEAK:
             self.weak_history.append(self.current_pos)

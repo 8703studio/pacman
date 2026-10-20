@@ -1,4 +1,3 @@
-
 # Matrix of objects created from the maze.
 from ..config import GameConfig
 from ..engine import Engine
@@ -203,6 +202,7 @@ class Game:
 
     def check_collision(self) -> bool:
         for ghost in self.ghosts.ghost_list:
+
             if ghost.state == EntityState.DEAD:
                 continue
 
@@ -211,13 +211,16 @@ class Game:
 
             if ghost.state == EntityState.WEAK:
                 ghost.state = EntityState.DEAD
-                ghost.reset()
                 self.add_score(self.point[GamePoint.GHOST])
                 return False
 
             self.lose_life()
             self.pacman.reset()
-            return True
+            self.weak_start = None
+            for other in self.ghosts.ghost_list:
+                other.current_pos = other.start_pos
+                other.state = EntityState.NORMAL
+                other.reset()
 
         return False
 

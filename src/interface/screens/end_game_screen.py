@@ -12,6 +12,7 @@ class EndGameScreen:
         self,
         game: GameInterface,
         victory: bool,
+        score: int,
     ) -> None:
         """Initialize the end game screen."""
 
@@ -20,7 +21,7 @@ class EndGameScreen:
 
         theme = self.game.theme_manager.get_theme()
 
-        self.score = 12500
+        self.score = score
 
         self.font = pygame.font.Font(theme.font_path, 48)
         self.title = pygame.font.Font(theme.font_path, 70)

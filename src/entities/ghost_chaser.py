@@ -11,7 +11,8 @@ class GhostChaser(Ghost):
         self.engine = engine
 
     def normal_move(self) -> None:
-        if self.queue or self.target is None:
+        engine = self.engine
+        if engine is None or self.queue or self.target is None:
             return
 
         start = self.current_pos
@@ -23,7 +24,7 @@ class GhostChaser(Ghost):
         while waiting_list and self.target not in parents:
             current = waiting_list.popleft()
 
-            for direction in self.engine.get_valid_position(current):
+            for direction in engine.get_valid_position(current):
                 dy, dx = direction.value
                 neighbour = (current[0] + dy, current[1] + dx)
 
