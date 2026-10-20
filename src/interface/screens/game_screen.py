@@ -32,7 +32,9 @@ class GameScreen:
 
         self.game = game
 
-        self.game.level_handler = LevelHandler(self.game.config.level_data())
+        self.game.level_handler = LevelHandler(
+            self.game.config.level_data()
+        )
         self.game.maze = self.game.level_handler.current_level.grid
 
         self.hud = HUD(self.game.theme_manager.get_theme())
@@ -114,6 +116,7 @@ class GameScreen:
 
         self.game.maze = self.logic.levels.current_level.grid
         self.controller.update(self.game.maze)
+        self.game.maze = self.logic.levels.current_level.grid
 
         if not self.logic.run:
             self.game.change_screen(
@@ -142,6 +145,12 @@ class GameScreen:
         self.game.maze_renderer.draw(
             screen,
             self.game.maze,
+        )
+
+        self.object_renderer.draw(
+            screen,
+            self.game.maze,
+            self.logic.levels.current_level.grid_level,
         )
 
         self.entity_renderer.maze_renderer = self.game.maze_renderer
@@ -176,10 +185,4 @@ class GameScreen:
             screen,
             self.game.maze,
             self.pacman,
-        )
-
-        self.object_renderer.draw(
-            screen,
-            self.game.maze,
-            self.logic.levels.current_level.grid_level,
         )

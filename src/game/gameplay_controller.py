@@ -20,8 +20,9 @@ class GameController:
         self.logic = logic
         self.ghost = ghost
         self.audio_manager = audio_manager
+        self.game_over_sound_played = False
 
-    def update(self, maze) -> None:
+    def update(self, maze: list[list[int]] | None) -> None:
         """Update the game entities."""
         if maze is None or not self.logic.run:
             return
@@ -31,6 +32,7 @@ class GameController:
             self.logic.levels.current_level.start_timer = monotonic()
 
         self.logic.update_weak_time()
+        self.logic.update_speeds()
         pacman = self.logic.pacman
         pacman.move()
         direction = None
@@ -58,16 +60,22 @@ class GameController:
 
             if obj == GridObject.SUPERGUM:
                 self.logic.set_ghost_state()
-                print("SUPERGUM :", [ghost.state for ghost in self.logic.ghosts.ghost_list])
                 self.audio_manager.play_sound("powerup")
 
-        lives_before = self.logic.life
-        if self.logic.check_collision():
+            lives_before = self.logic.life
+            self.logic.check_collision()
+
             if self.logic.life < lives_before:
                 self.audio_manager.play_sound("hit")
-                if not self.logic.run:
+
+            if not self.logic.run:
+                if (
+                    self.logic.gamestate == StateGame.GAMEOVER
+                    and not self.game_over_sound_played
+                ):
                     self.audio_manager.play_sound("GameOver")
-            return
+                    self.game_over_sound_played = True
+                return
 
         engine = Engine(maze)
 
@@ -97,12 +105,20 @@ class GameController:
                 ghost.direction = direction
                 ghost.update_entity(vector)
 
-        lives_before = self.logic.life
-        if self.logic.check_collision():
+            lives_before = self.logic.life
+            self.logic.check_collision()
+
             if self.logic.life < lives_before:
                 self.audio_manager.play_sound("hit")
-                if not self.logic.run:
+
+            if not self.logic.run:
+                if (
+                    self.logic.gamestate == StateGame.GAMEOVER
+                    and not self.game_over_sound_played
+                ):
                     self.audio_manager.play_sound("GameOver")
+                    self.game_over_sound_played = True
+                return
 
         if (
             self.logic.run
@@ -110,3 +126,10 @@ class GameController:
         ):
             if self.logic.change_level():
                 self.audio_manager.play_sound("Victory")
+
+        if (
+            self.logic.gamestate == StateGame.GAMEOVER
+            and not self.game_over_sound_played
+        ):
+            self.audio_manager.play_sound("GameOver")
+            self.game_over_sound_played = True

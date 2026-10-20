@@ -9,7 +9,8 @@ class Entity(ABC):
     def __init__(self) -> None:
         self.start_pos: tuple[int, int] = (0, 0)
         self.current_pos: tuple[int, int] = self.start_pos
-        self.speed = 0
+        self.speed: float = 0
+        self.target: tuple[int, int] | None = None
         self.direction = EntityDirection.DOWN
         self.state = EntityState.NORMAL
         self.entity_type = EntityType.NULL
@@ -18,7 +19,7 @@ class Entity(ABC):
         self.last_move = monotonic()
         self.last_dir: EntityDirection | None = None
 
-    def can_move(self):
+    def can_move(self) -> bool:
         return monotonic() - self.last_move >= self.speed
 
     @abstractmethod
@@ -41,7 +42,7 @@ class Entity(ABC):
         self.queue.clear()
         self.visited.clear()
 
-    def set_state(self, state: EntityState):
+    def set_state(self, state: EntityState) -> None:
         self.state = state
 
     def get_state(self) -> EntityState:

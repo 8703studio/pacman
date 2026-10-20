@@ -1,6 +1,8 @@
 from typing import Any
 from pydantic import BaseModel, Field, model_validator
 
+MAX_SIZE = 50
+
 
 class GameConfig(BaseModel):
     highscore_filename: str = "highscore.json"
@@ -90,7 +92,7 @@ class GameConfig(BaseModel):
                     cleaned[key] = value
 
             elif key == "levels":
-                if not isinstance(value, list):
+                if not isinstance(value, list) or not value:
                     print(f"WARNING: invalid '{key}',"
                           f"using default: {default}")
                     cleaned[key] = default
@@ -112,7 +114,16 @@ class GameConfig(BaseModel):
                               f"using default: {default}")
                         cleaned[key] = default
                     else:
-                        cleaned[key] = value
+                        cleaned[key] = [
+                            {
+                                "width": min(level["width"], MAX_SIZE),
+                                "height": min(level["height"], MAX_SIZE),
+                            }
+                            for level in value
+                        ]
+                        if cleaned[key] != value:
+                            print(f"WARNING: level size limited to "
+                                  f"{MAX_SIZE}")
 
         return cleaned
 

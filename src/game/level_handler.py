@@ -18,7 +18,8 @@ class LevelHandler():
                     seed_level: int) -> list[list[int]]:
 
         level_maze = MazeGenerator((width, height), seed=seed_level)
-        return level_maze.maze
+        maze: list[list[int]] = level_maze.maze
+        return maze
 
     def _create_list_level(self) -> list[Level]:
         lev_list: list[Level] = []
@@ -36,7 +37,7 @@ class LevelHandler():
             if index == 0:
                 maze_seed = seed_level
             else:
-                maze_seed = random.randint(0, 1000000)
+                maze_seed = random.SystemRandom().randint(0, 1000000)
 
             mazegen = self._level_maze(width, height, maze_seed)
             lev_list.append(Level(mazegen, timer))

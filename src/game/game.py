@@ -31,6 +31,14 @@ class Game:
         self.start_pause: float | None = None
         self.start_launch: float | None = monotonic()
 
+    def update_speeds(self) -> None:
+        """Adjust the ghost speeds to their state."""
+        for ghost in self.ghosts.ghost_list:
+            if ghost.state == EntityState.WEAK:
+                ghost.speed = 0.4
+            else:
+                ghost.speed = 0.3
+
     def _object_point(self) -> dict[GamePoint, int]:
         dict_point: dict[GamePoint, int] = {}
         config_game = self.config.game_data()
