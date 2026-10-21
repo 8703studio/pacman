@@ -1,2 +1,422 @@
-class Menu:
-    pass
+import pygame
+
+from typing import Optional, Protocol
+
+from src.interface.theme.theme_manager import ThemeManager
+from src.interface.theme.theme import CLASSIC_THEME, SECOND_THEME
+from src.interface.renderers.maze_renderer import MazeRenderer
+from src.game.highscore import Highscore
+from src.interface.audio_manager import AudioManager
+from src.config import GameConfig
+from src.game.level_handler import LevelHandler
+
+
+class GameInterface(Protocol):
+    """Interface required by the interface screens."""
+
+    theme_manager: ThemeManager
+    running: bool
+    highscore: Highscore
+    audio_manager: AudioManager
+
+    def change_screen(self, screen: object) -> None:
+        """Change the current interface screen."""
+
+    def show_start_screen(self) -> None:
+        """Return to the start screen."""
+
+
+class GameScreenInterface(GameInterface, Protocol):
+    """Interface required by the game screen."""
+
+    maze_renderer: MazeRenderer
+    maze: Optional[list[list[int]]]
+    level_handler: LevelHandler
+    config: GameConfig
+
+
+class MenuStartScreen:
+    """Displays the main menu."""
+
+    def __init__(self, game: GameInterface) -> None:
+        """Initialize the menu."""
+
+        self.game = game
+
+        theme = self.game.theme_manager.get_theme()
+
+        self.font = pygame.font.Font(
+            theme.font_path,
+            48,
+        )
+
+        self.small_font = pygame.font.Font(
+            theme.font_path,
+            24,
+        )
+
+        self.options = [
+            "Start Game",
+            "View Highscores",
+            "Instructions",
+            "Options",
+            "Exit",
+        ]
+
+        self.selected = 0
+        self.option_rects: list[pygame.Rect | None] = []
+        self.start_button_rect = pygame.Rect(0, 0, 0, 0)
+
+    def handle_events(
+        self,
+        events: list[pygame.event.Event],
+    ) -> str | None:
+        """Handle events of main menu."""
+
+        for event in events:
+
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_RIGHT:
+                    self.selected = (self.selected + 1) % len(self.options)
+                    self.game.audio_manager.play_sound("ui-hover")
+
+                elif event.key == pygame.K_LEFT:
+                    self.selected = (self.selected - 1) % len(self.options)
+                    self.game.audio_manager.play_sound("ui-hover")
+
+                elif event.key == pygame.K_RETURN:
+                    self.game.audio_manager.play_sound("ui-confirm")
+                    return self.options[self.selected]
+
+            elif event.type == pygame.MOUSEMOTION:
+
+                if self.start_button_rect.collidepoint(event.pos):
+                    self.selected = 0
+
+                else:
+                    for i, rect in enumerate(self.option_rects):
+                        if rect is not None and rect.collidepoint(event.pos):
+                            self.selected = i
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+
+                if event.button == 1:
+
+                    if self.start_button_rect.collidepoint(event.pos):
+                        self.game.audio_manager.play_sound("ui-confirm")
+                        return "Start Game"
+
+                    for i, rect in enumerate(self.option_rects):
+                        if rect is not None and rect.collidepoint(event.pos):
+                            self.game.audio_manager.play_sound("ui-click")
+                            return self.options[i]
+
+        return None
+
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the main menu."""
+
+        self.option_rects = [None] * len(self.options)
+
+        spacing = 35
+        theme = self.game.theme_manager.get_theme()
+        font = self.small_font
+
+        visible_options = [
+            option for option in self.options if option != "Start Game"
+        ]
+
+        total_width = sum(
+            font.size(option)[0] for option in visible_options
+        ) + spacing * (len(visible_options) - 1)
+
+        if total_width > screen.get_width():
+
+            scale = screen.get_width() / total_width
+            font_size = int(24 * scale)
+
+            font = pygame.font.Font(
+                theme.font_path,
+                font_size,
+            )
+
+            total_width = sum(
+                font.size(option)[0] for option in visible_options
+            ) + spacing * (len(visible_options) - 1)
+
+        x = (screen.get_width() - total_width) // 2
+        menu_y = int(screen.get_height() * 0.69)
+
+        for i, option in enumerate(self.options):
+
+            if option == "Start Game":
+                continue
+
+            color = (
+                theme.menu_selected_color
+                if i == self.selected
+                else theme.menu_text_color
+            )
+
+            option_text = font.render(
+                option,
+                True,
+                color,
+            )
+
+            option_rect = option_text.get_rect(
+                left=x,
+                top=menu_y,
+            )
+
+            self.option_rects[i] = option_rect
+
+            screen.blit(option_text, option_rect)
+
+            x = option_rect.right + spacing
+
+
+class MenuOptions:
+    """Displays the options menu."""
+
+    def __init__(self, game: GameInterface) -> None:
+        """Initialize the menu."""
+
+        self.game = game
+
+        theme = self.game.theme_manager.get_theme()
+
+        self.font = pygame.font.Font(
+            theme.font_path,
+            44,
+        )
+
+        self.options = [
+            "Sound",
+            "Music",
+            "Theme",
+            "Back",
+        ]
+
+        self.values = {
+            "Sound": self.game.audio_manager.sound_enabled,
+            "Music": True,
+            "Theme": (
+                "Pastel K-POP"
+                if self.game.theme_manager.get_theme() == SECOND_THEME
+                else "Classic K-POP"
+            ),
+        }
+
+        self.selected = 0
+        self.option_rects: list[pygame.Rect] = []
+
+    def handle_events(
+        self,
+        events: list[pygame.event.Event],
+    ) -> str | None:
+        """Handle keyboard and mouse events."""
+
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    self.selected = (self.selected + 1) % len(self.options)
+                    self.game.audio_manager.play_sound("ui-hover")
+
+                elif event.key == pygame.K_UP:
+                    self.selected = (self.selected - 1) % len(self.options)
+                    self.game.audio_manager.play_sound("ui-hover")
+
+                elif event.key == pygame.K_LEFT:
+                    self._change_value()
+                    self.game.audio_manager.play_sound("ui-hover")
+
+                elif event.key == pygame.K_RIGHT:
+                    self._change_value()
+                    self.game.audio_manager.play_sound("ui-hover")
+
+                elif event.key == pygame.K_RETURN:
+                    if self.options[self.selected] == "Back":
+                        self.game.audio_manager.play_sound("ui-back")
+                        return "Back"
+
+            elif event.type == pygame.MOUSEMOTION:
+                for i, rect in enumerate(self.option_rects):
+                    if rect.collidepoint(event.pos):
+                        self.selected = i
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    for i, rect in enumerate(self.option_rects):
+                        if rect.collidepoint(event.pos):
+                            self.selected = i
+
+                            if self.options[i] == "Back":
+                                return "Back"
+
+                            self._change_value()
+
+        return None
+
+    def _change_value(self) -> None:
+        """Change the value of the selected option."""
+
+        option = self.options[self.selected]
+
+        if option == "Sound":
+            enabled = not self.game.audio_manager.sound_enabled
+            self.game.audio_manager.set_sound_enabled(enabled)
+            self.values["Sound"] = enabled
+
+        elif option == "Music":
+            self.values["Music"] = not self.values["Music"]
+
+        elif option == "Theme":
+            if self.values["Theme"] == "Classic K-POP":
+                self.values["Theme"] = "Pastel K-POP"
+                self.game.theme_manager.set_theme(SECOND_THEME)
+            else:
+                self.values["Theme"] = "Classic K-POP"
+                self.game.theme_manager.set_theme(CLASSIC_THEME)
+
+            self.game.refresh_theme()
+
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the options menu."""
+
+        height = screen.get_height()
+        center_x = screen.get_width() // 2
+
+        start_y = int(height * 0.28)
+        vertical_gap = int(height * 0.074)
+
+        self.option_rects = []
+
+        for i, option in enumerate(self.options):
+            theme = self.game.theme_manager.get_theme()
+
+            color = (
+                theme.menu_selected_color
+                if i == self.selected
+                else theme.menu_text_color
+            )
+
+            if option == "Sound":
+                value = "ON" if self.values["Sound"] else "OFF"
+                text = f"Sound : {value}"
+
+            elif option == "Music":
+                text = "Music : COMING SOON"
+
+            elif option == "Theme":
+                text = f"Theme : {self.values['Theme']}"
+
+            else:
+                text = option
+
+            option_text = self.font.render(
+                text,
+                True,
+                color,
+            )
+
+            option_rect = option_text.get_rect(
+                center=(
+                    center_x,
+                    start_y + i * vertical_gap,
+                )
+            )
+
+            self.option_rects.append(option_rect)
+
+            screen.blit(
+                option_text,
+                option_rect,
+            )
+
+
+class MenuPause:
+    """Displays the pause menu."""
+
+    def __init__(self, game: GameInterface) -> None:
+        self.game = game
+
+        theme = self.game.theme_manager.get_theme()
+
+        self.font = pygame.font.Font(
+            theme.font_path,
+            48,
+        )
+
+        self.options = [
+            "Resume",
+            "Return to main menu",
+        ]
+
+        self.selected = 0
+        self.option_rects: list[pygame.Rect] = []
+
+    def handle_events(
+        self,
+        events: list[pygame.event.Event],
+    ) -> str | None:
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    self.selected = (self.selected + 1) % len(self.options)
+
+                elif event.key == pygame.K_UP:
+                    self.selected = (self.selected - 1) % len(self.options)
+
+                elif event.key == pygame.K_RETURN:
+                    return self.options[self.selected]
+
+            elif event.type == pygame.MOUSEMOTION:
+                for i, rect in enumerate(self.option_rects):
+                    if rect.collidepoint(event.pos):
+                        self.selected = i
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    for i, rect in enumerate(self.option_rects):
+                        if rect.collidepoint(event.pos):
+                            return self.options[i]
+
+        return None
+
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the pause menu."""
+
+        center_y = int(screen.get_height() * 0.65)
+
+        self.option_rects = []
+
+        theme = self.game.theme_manager.get_theme()
+
+        for i, option in enumerate(self.options):
+            color = (
+                theme.menu_selected_color
+                if i == self.selected
+                else theme.menu_text_color
+            )
+
+            option_text = self.font.render(
+                option,
+                True,
+                color,
+            )
+
+            option_rect = option_text.get_rect(
+                midtop=(
+                    screen.get_width() // 2,
+                    center_y + i * 80,
+                )
+            )
+
+            self.option_rects.append(option_rect)
+
+            screen.blit(
+                option_text,
+                option_rect,
+            )

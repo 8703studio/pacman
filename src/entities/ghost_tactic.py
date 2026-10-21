@@ -21,6 +21,7 @@ class GhostTactic(Ghost):
     """
     this property find the different part of the matrix
     """
+
     @property
     def zone(self):
         matrix_y = len(self.engine.grid) - 1
@@ -37,7 +38,7 @@ class GhostTactic(Ghost):
         elif matrix_mid_y <= sy <= matrix_y:
             if matrix_mid_x <= sx <= matrix_x:
                 return (matrix_mid_y, matrix_y, matrix_mid_x, matrix_x)
-            return (matrix_mid_y, matrix_y, 0, matrix_mid_x - 1)               
+            return (matrix_mid_y, matrix_y, 0, matrix_mid_x - 1)
 
     def define_zone(self) -> None:
         min_y, max_y, min_x, max_x = self.zone
@@ -69,10 +70,11 @@ class GhostTactic(Ghost):
 
     def verifying_mode(self):
         pass
-    ### 
+
+    ###
     # verify if pacman enter the patrol zone
     # verify the distance of the ghost with the zone
-    # change patrol state and clear the queue  
+    # change patrol state and clear the queue
     ###
 
     def reset(self):

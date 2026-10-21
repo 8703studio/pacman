@@ -1,0 +1,127 @@
+import pygame
+
+from typing import Optional, Any
+
+from src.interface.theme.theme import CLASSIC_THEME
+from src.interface.hud import HUD
+from src.interface.theme.theme_manager import ThemeManager
+from src.interface.renderers.maze_renderer import MazeRenderer
+from src.interface.screens.start_screen import StartScreen
+from src.game.highscore import Highscore
+from src.interface.audio_manager import AudioManager
+from src.config import GameConfig
+from src import LevelHandler
+
+
+class GameWindow:
+    """Manages the main game window and its interface screens."""
+
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        config: GameConfig,
+    ) -> None:
+        """Initialize the game window and its interface components."""
+
+        pygame.init()
+        self.config = config
+        self.level_handler = LevelHandler(config.level_data())
+        self.audio_manager = AudioManager()
+        self.theme_manager = ThemeManager(CLASSIC_THEME)
+        self.running = True
+
+        self.width = width
+        self.height = height
+        self.clock = pygame.time.Clock()
+        self.hud = HUD(CLASSIC_THEME)
+        self.maze: Optional[list[list[int]]] = (
+            self.level_handler.current_level.grid
+        )
+        self.hud_height = 130
+        self.margin = 5
+
+        self.highscore = Highscore("highscore.json")
+        self.highscore.load_score()
+
+        self.screen = pygame.display.set_mode(
+            (width, height),
+            pygame.RESIZABLE,
+        )
+        pygame.display.set_caption("Pac-idol")
+        self.current_screen = StartScreen(self)
+        self.maze_renderer = MazeRenderer(
+            width=self.width,
+            height=self.height,
+            hud_height=self.hud_height,
+            theme=self.theme_manager.get_theme(),
+            margin=self.margin,
+        )
+
+    def handle_events(self) -> None:
+        """Handle Pygame events and pass them to the current screen."""
+
+        events = pygame.event.get()
+
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            elif event.type == pygame.VIDEORESIZE:
+                self.width = event.w
+                self.height = event.h
+                self.screen = pygame.display.get_surface()
+
+                self.maze_renderer = MazeRenderer(
+                    width=self.width,
+                    height=self.height,
+                    hud_height=self.hud_height,
+                    theme=self.theme_manager.get_theme(),
+                    margin=self.margin,
+                )
+
+        self.current_screen.events(events)
+
+    def update(self, delta_time: float) -> None:
+        """Update the current screen."""
+
+        self.current_screen.update(delta_time)
+
+    def change_screen(self, screen: Any) -> None:
+        """Change the current interface screen."""
+
+        self.current_screen = screen
+
+    def show_start_screen(self) -> None:
+        """Return to the start screen."""
+
+        self.current_screen = StartScreen(self)
+
+    def refresh_theme(self) -> None:
+        """Refresh components when the active theme changes."""
+        theme = self.theme_manager.get_theme()
+
+        self.hud = HUD(theme)
+        self.maze_renderer = MazeRenderer(
+            width=self.width,
+            height=self.height,
+            hud_height=self.hud_height,
+            theme=theme,
+            margin=self.margin,
+        )
+
+    def draw(self) -> None:
+        """Draw the current screen on the game window."""
+
+        self.current_screen.draw(self.screen)
+
+    def run(self) -> None:
+        """Run the main game loop."""
+
+        while self.running:
+            self.handle_events()
+            delta_time = self.clock.tick(60) / 1000
+            self.update(delta_time)
+            self.draw()
+            pygame.display.flip()
+        pygame.quit()

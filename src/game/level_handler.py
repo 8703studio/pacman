@@ -1,9 +1,11 @@
 from mazegenerator import MazeGenerator
 from .level import Level
+from typing import Any
+import random
 
 
 class LevelHandler():
-    def __init__(self, config_level: dict[str, int]):
+    def __init__(self, config_level: dict[str, Any]) -> None:
         self.config_data = config_level
         self.level_list = self._create_list_level()
         self.cur_level = 0
@@ -16,23 +18,28 @@ class LevelHandler():
                     seed_level: int) -> list[list[int]]:
 
         level_maze = MazeGenerator((width, height), seed=seed_level)
-        return level_maze.maze
+        maze: list[list[int]] = level_maze.maze
+        return maze
 
     def _create_list_level(self) -> list[Level]:
-        lev_list = []
+        lev_list: list[Level] = []
         level_config_key, time_key, seed_key = self.config_data
 
         key_level_list = [_ for _ in self.config_data[level_config_key]]
         timer = self.config_data[time_key]
         seed_level = self.config_data[seed_key]
 
-        for i in key_level_list:
+        for index, i in enumerate(key_level_list):
             key1, key2 = i
             width = i[key1]
             height = i[key2]
-            mazegen = self._level_maze(width, height, seed_level)
 
-            seed_level += 1
+            if index == 0:
+                maze_seed = seed_level
+            else:
+                maze_seed = random.SystemRandom().randint(0, 1000000)
+
+            mazegen = self._level_maze(width, height, maze_seed)
             lev_list.append(Level(mazegen, timer))
         return lev_list
 

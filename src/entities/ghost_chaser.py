@@ -11,7 +11,6 @@ class GhostChaser(Ghost):
         self.entity_type = EntityType.GHOST
         self.engine = engine
 
-
     def normal_move(self):
         if len(self.queue) == 0:
             self.visited.clear()
@@ -29,8 +28,9 @@ class GhostChaser(Ghost):
                     if new_neigh in self.visited:
                         continue
 
-                    if self.engine.is_valid_position(case_neigh,
-                                                     waiting_list[0]):
+                    if self.engine.is_valid_position(
+                        case_neigh, waiting_list[0]
+                    ):
                         waiting_list.append(new_neigh)
                         build_path[new_neigh] = waiting_list[0]
                         self.visited.add(new_neigh)
@@ -42,8 +42,9 @@ class GhostChaser(Ghost):
         else:
             return
 
-    def reverse_path(self, path: dict[tuple[int, int],
-                                      tuple[int, int]]) -> None:
+    def reverse_path(
+        self, path: dict[tuple[int, int], tuple[int, int]]
+    ) -> None:
         next_case: tuple[int, int] = self.target
         while next_case != self.current_pos:
             cy, cx = next_case

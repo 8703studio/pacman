@@ -1,12 +1,12 @@
 from .entity_direction import EntityDirection, EntityState, EntityType
 from .grid_object import GridObject
-from .game_enums import StateGame, GamePoint
+from .game_enums import GamePoint, StateGame
 
 __all__ = [
     "EntityDirection",
     "EntityState",
     "EntityType",
     "GridObject",
+    "GamePoint",
     "StateGame",
-    "GamePoint"
 ]

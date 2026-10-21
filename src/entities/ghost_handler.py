@@ -2,7 +2,7 @@ from .ghost import Ghost
 from ..entities import GhostTactic
 
 
-class GhostHandler():
+class GhostHandler:
     def __init__(self, ghost_list: list[Ghost]):
         self.ghost_list = ghost_list
 

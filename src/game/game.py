@@ -3,32 +3,56 @@ from ..config import GameConfig
 from ..engine import Engine
 from .level_handler import LevelHandler
 from ..entities import GhostHandler, Pacman, GhostTactic
-from ..enums import EntityState, GamePoint, GridObject, StateGame, EntityDirection
+from ..enums import (
+    EntityState,
+    GamePoint,
+    GridObject,
+    StateGame,
+    EntityDirection,
+)
 from time import monotonic
+
 # , ghost_handler, engine, level_handler, pacman, config)
 
 
-class Game():
-    def __init__(self, ghost_handler: GhostHandler, engine: Engine,
-                 level_handler: LevelHandler,
-                 pacman: Pacman, config: GameConfig) -> None:
+class Game:
+    def __init__(
+        self,
+        ghost_handler: GhostHandler,
+        engine: Engine,
+        level_handler: LevelHandler,
+        pacman: Pacman,
+        config: GameConfig,
+    ) -> None:
 
         self.config: GameConfig = config
         self.ghosts: GhostHandler = ghost_handler
         self.engine: Engine = engine
         self.levels: LevelHandler = level_handler
         self.pacman: Pacman = pacman
+
         self.score: int = 0
         self.life: int = self.set_life()
         self.point: dict[GamePoint, int] = self._object_point()
+
         self.run: bool = True
         self.weak_time: int = 8
         self.weak_start: float | None = None
+
         self.gamestate: StateGame = StateGame.NEW
         self.start_pause: float | None = None
         self.start_launch = monotonic()
+
         self.freeze: bool = False
         self.spawn_f = monotonic()
+
+    def update_speeds(self) -> None:
+        """Adjust ghost speeds according to their state."""
+        for ghost in self.ghosts.ghost_list:
+            if ghost.state == EntityState.WEAK:
+                ghost.speed = 0.4
+            else:
+                ghost.speed = 0.3
 
     def _object_point(self):
         dict_point: dict[GamePoint, int] = {}
@@ -47,10 +71,14 @@ class Game():
     def add_score(self, score: int):
         self.score += score
 
-    def lose_life(self):
+    def lose_life(self) -> None:
         self.life -= 1
-        if self.life == 0:
+
+        if self.life <= 0:
+            self.life = 0
+            self.run = False
             self.gamestate = StateGame.GAMEOVER
+            return
 
     def set_life(self) -> int:
         return self.config.lives
@@ -59,10 +87,12 @@ class Game():
         self.life = 99
 
     def cheat_freeze(self) -> None:
-        if self.freeze is False:
-            self.freeze = True
-            return
-        self.freeze = False
+        for ghost in self.ghosts.ghost_list:
+            if ghost.state == EntityState.FREEZE:
+                ghost.state = EntityState.NORMAL
+                continue
+            else:
+                ghost.state = EntityState.FREEZE
 
     def cheat_invincibility(self) -> None:
         if self.pacman.state == EntityState.NORMAL:
@@ -78,8 +108,10 @@ class Game():
         if nlevel is None:
             return
         self.engine.grid = nlevel.grid
-        self.pacman.start_pos = (len(nlevel.grid) // 2,
-                                 len(nlevel.grid[0]) // 2)
+        self.pacman.start_pos = (
+            len(nlevel.grid) // 2,
+            len(nlevel.grid[0]) // 2,
+        )
         self.pacman.reset()
         self.freeze = False
         self.pacman.state = EntityState.NORMAL
@@ -160,12 +192,13 @@ class Game():
         move = self.pacman.next_move()
 
         if move is not None:
-            if self.engine.is_valid_position(move.value,
-                                             self.pacman.current_pos):
+            if self.engine.is_valid_position(
+                move.value, self.pacman.current_pos
+            ):
                 self.pacman.update_entity(move.value)
-                obj = self.levels.current_level.consume_object(self
-                                                               .pacman.
-                                                               current_pos)
+                obj = self.levels.current_level.consume_object(
+                    self.pacman.current_pos
+                )
                 if obj == GridObject.SUPERGUM:
                     self.set_ghost_state()
 
@@ -174,35 +207,50 @@ class Game():
 
     def ghosts_movement(self) -> None:
         for ghost in self.ghosts.ghost_list:
+            print(ghost.state)
             if not ghost.can_move():
                 continue
 
             ghost.target = self.pacman.current_pos
-            ghost.move()
-            move_ghost = ghost.next_move()
+            if ghost.state == EntityState.NORMAL:
+                ghost.move()
+                move_ghost = ghost.next_move()
 
-            if move_ghost is not None:
-                if self.engine.is_valid_position(move_ghost.value,
-                                                 ghost.current_pos):
-                    ghost.update_entity(move_ghost.value)
+                if move_ghost is not None:
+                    if self.engine.is_valid_position(
+                        move_ghost.value, ghost.current_pos
+                    ):
+                        ghost.update_entity(move_ghost.value)
+            else:
+                return
 
-    def check_collision(self) -> bool | None:
+    def check_collision(self) -> bool:
+        if self.pacman.state == EntityState.INVINCIBLE:
+            return
         for ghost in self.ghosts.ghost_list:
+            if ghost.state == EntityState.DEAD:
+                continue
 
-            if ghost.current_pos == self.pacman.current_pos:
-                if ghost.state == EntityState.WEAK:
-                    ghost.state = EntityState.DEAD
-                    ghost.reset()
-                    self.add_score(self.point[GamePoint.GHOST])
-                    continue
-                else:
-                    if ghost.state is not EntityState.DEAD:
-                        if self.pacman.state == EntityState.INVINCIBLE:
-                            continue
-                        else:
-                            self.lose_life()
-                            self.pacman.reset()
-                            return True
+            if ghost.current_pos != self.pacman.current_pos:
+                continue
+
+            if ghost.state == EntityState.WEAK:
+                ghost.state = EntityState.DEAD
+                self.add_score(self.point[GamePoint.GHOST])
+                continue
+
+            self.lose_life()
+            self.pacman.reset()
+            self.weak_start = None
+
+            for other in self.ghosts.ghost_list:
+                other.state = EntityState.NORMAL
+                other.reset()
+                other.current_pos = other.start_pos
+
+            return True
+
+        return False
 
     def update(self, input_direction: EntityDirection) -> None:
         level = self.levels.current_level
@@ -217,9 +265,11 @@ class Game():
             self.gamestate = StateGame.RESUME
             level.start_timer = monotonic()
 
-        if (self.gamestate == StateGame.PAUSE or
-           self.gamestate == StateGame.VICTORY or
-           self.gamestate == StateGame.GAMEOVER):
+        if (
+            self.gamestate == StateGame.PAUSE
+            or self.gamestate == StateGame.VICTORY
+            or self.gamestate == StateGame.GAMEOVER
+        ):
             return
 
         if level.remaining_time() <= 0:
@@ -238,12 +288,10 @@ class Game():
             if self.change_level() is not None:
                 self.start_launch = monotonic()
                 self.gamestate = StateGame.NEW
-            else:
+            elif self.change_level() is None:
                 self.gamestate = StateGame.VICTORY
             return
 
-        if self.freeze is False:
-            self.ghosts_movement()
-
+        self.ghosts_movement()
         self.verify_dead_ghost()
         self.check_collision()

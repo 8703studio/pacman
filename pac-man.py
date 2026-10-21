@@ -1,28 +1,39 @@
-# from src.engine.physics import Engine
-# from src.game.level import Level, Game
-from src import (Parser, LevelHandler, GhostHandler, GhostChaser, 
-                 GhostInterceptor, GhostGlutton,
-                 GhostTactic, GameConfig, Game)
-# maze generator tuples (y, x) (column, line)
+import sys
+from pathlib import Path
+
+from src import Parser, GameConfig
+from src.interface.game_window import GameWindow
 
 
-def main():
-    parser = Parser()
-    raw_data = parser.build_config("config.json")
-    level_handler = LevelHandler(raw_data.level_data())
-    ghost_list = [
-        GhostChaser(),
-        GhostInterceptor(),
-        GhostGlutton(),
-        GhostTactic()
-    ]
+def main() -> None:
+    """Launch the game with the configuration file given as argument."""
+    if len(sys.argv) != 2:
+        print(
+            f"Usage: python3 {Path(sys.argv[0]).name} <config.json>",
+            file=sys.stderr,
+        )
+        sys.exit(2)
 
-    print(level_handler.current_level.corners)
-    ghost_handler = GhostHandler(ghost_list)
-    ghost_handler.set_spawn_ghost(level_handler.current_level.corners)
+    config_path = Path(sys.argv[1])
+    if not config_path.is_file():
+        print(
+            f"Erreur : fichier introuvable : {config_path}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
-    for level in level_handler.level_list:
-        print(level)
+    try:
+        parser = Parser()
+        raw_data = parser.build_config(str(config_path))
+        config = GameConfig(**raw_data)
+
+        game = GameWindow(800, 800, config)
+        game.run()
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        print(f"Erreur : {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

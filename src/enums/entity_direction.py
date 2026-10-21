@@ -13,6 +13,7 @@ class EntityState(Enum):
     WEAK = 2
     DEAD = 3
     INVINCIBLE = 4
+    FREEZE = 5
 
 
 class EntityType(Enum):
