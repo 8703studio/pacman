@@ -95,6 +95,18 @@ class GameScreen:
                 self.game.change_screen(PauseScreen(self.game, self))
                 return
 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_0:
+                self.game.level_handler.current_level.clear_grid()
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_1:
+                self.logic.cheat_freeze()
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_2:
+                self.logic.cheat_life()
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_3:
+                self.logic.cheat_invincibility()
+
             direction = get_direction(event)
 
             if direction is None:

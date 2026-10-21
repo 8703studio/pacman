@@ -1,4 +1,3 @@
-
 from .entity import Entity
 from abc import ABC, abstractmethod
 from ..enums import EntityDirection, EntityState
@@ -11,7 +10,7 @@ import random
 class Ghost(Entity, ABC):
     def __init__(self) -> None:
         super().__init__()
-        self.speed = 0.3
+        self.speed = 1
         self.engine: Engine | None = None
         self.target: tuple[int, int] | None = None
         self.neighboor = [
@@ -40,9 +39,7 @@ class Ghost(Entity, ABC):
         if engine is None or target is None or self.queue:
             return
 
-        valid_directions = engine.get_valid_position(
-            self.current_pos
-        )
+        valid_directions = engine.get_valid_position(self.current_pos)
         if not valid_directions:
             return
 
@@ -76,9 +73,11 @@ class Ghost(Entity, ABC):
             for direction in valid_directions
         }
         farthest = max(score.values())
-        self.queue.append(random.choice(
-            [d for d in valid_directions if score[d] == farthest]
-        ))
+        self.queue.append(
+            random.choice(
+                [d for d in valid_directions if score[d] == farthest]
+            )
+        )
 
     def dead_move(self) -> None:
         """Return to the starting position when eaten."""

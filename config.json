@@ -7,16 +7,46 @@
 	"pointperfruit": 100,
 	"pointperghost": 200,
 	"levels": [
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15},
-		{"width": 15, "height": 15}
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		},
+		{
+			"width": 15,
+			"height": 15
+		}
 	],
 	"levelsmaxtime": 90,
 	"seed": 42

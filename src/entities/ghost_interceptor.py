@@ -1,4 +1,3 @@
-
 from collections import deque
 from typing import Optional
 
@@ -9,7 +8,6 @@ from src.entities.entity import (
     EntityState,
 )
 from src.engine.physics import Engine
-
 
 DIRECTION_TO_STRING = {
     EntityDirection.UP: "up",
@@ -107,8 +105,7 @@ def get_center_target(
     return min(
         distances,
         key=lambda cell: (
-            abs(cell[0] - center[0])
-            + abs(cell[1] - center[1]),
+            abs(cell[0] - center[0]) + abs(cell[1] - center[1]),
             distances[cell],
         ),
     )
@@ -136,15 +133,12 @@ def get_weak_target(
         candidates = [
             cell
             for cell in ghost_distances
-            if cell != ghost_position
-            and cell not in recent_positions
+            if cell != ghost_position and cell not in recent_positions
         ]
 
     if not candidates:
         candidates = [
-            cell
-            for cell in ghost_distances
-            if cell != ghost_position
+            cell for cell in ghost_distances if cell != ghost_position
         ]
 
     if not candidates:
@@ -237,7 +231,7 @@ class GhostInterceptor(Entity):
         """Initialize the interceptor ghost."""
         super().__init__()
 
-        self.speed = 0.3
+        self.speed = 1
 
         self.start_pos = position
         self.current_pos = position
@@ -358,10 +352,7 @@ class GhostInterceptor(Entity):
         ):
             self.dead_phase = "spawn"
 
-        if (
-            self.dead_phase == "spawn"
-            and self.current_pos == self.start_pos
-        ):
+        if self.dead_phase == "spawn" and self.current_pos == self.start_pos:
             self.state = EntityState.NORMAL
             self.direction_queue.clear()
             self.queue.clear()
