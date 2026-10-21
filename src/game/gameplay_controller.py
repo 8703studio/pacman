@@ -119,8 +119,7 @@ class GameController:
                 return
 
         if self.logic.run and self.logic.levels.current_level.is_finished():
-            if self.logic.change_level():
-                self.audio_manager.play_sound("Victory")
+            self.logic.change_level()
 
         if (
             self.logic.levels.current_level.is_finished()
@@ -129,6 +128,7 @@ class GameController:
 
             self.logic.gamestate = StateGame.VICTORY
             self.logic.run = False
+            self.audio_manager.play_sound("Victory")
 
         if (
             self.logic.gamestate == StateGame.GAMEOVER
