@@ -39,4 +39,3 @@ class Ghost(Entity, ABC):
         super().reset()
         self.last_move = monotonic()
         self.last_dir = None
-

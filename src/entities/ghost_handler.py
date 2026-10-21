@@ -1,4 +1,5 @@
 from .ghost import Ghost
+from ..entities import GhostTactic
 
 
 class GhostHandler():
@@ -9,6 +10,8 @@ class GhostHandler():
         for ghost, pos in zip(self.ghost_list, corner_level):
             ghost.start_pos = pos
             ghost.current_pos = pos
+            if isinstance(ghost, GhostTactic):
+                ghost.define_zone()
 
     def move_ghost_list(self):
         listes = []

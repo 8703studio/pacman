@@ -1,5 +1,4 @@
-from math import dist
-from src import (GhostGlutton, Engine, Level,
+from src import (GhostChaser, Engine, Level,
                  Pacman, GridObject, EntityDirection)
 import mazegenerator as mazegen
 
@@ -63,7 +62,7 @@ if __name__ == "__main__":
     level = Level(mazegene.maze, 90)
     engine = Engine(level.grid)
     pacman = Pacman()
-    gluttony = GhostGlutton(engine)
+    chaser = GhostChaser(engine)
     pacman.start_pos = (4, 4)
     pacman.current_pos = (4, 4)
 
@@ -87,17 +86,17 @@ if __name__ == "__main__":
                 pacman.update_entity(direction.value)
         level.consume_object(pacman.current_pos)
 
-        gluttony.target = pacman.current_pos
-        gluttony.move()
-        titi = gluttony.next_move()
-        gluttony.update_entity(titi.value)
-        if pacman.current_pos == gluttony.current_pos:
+        chaser.target = pacman.current_pos
+        chaser.move()
+        titi = chaser.next_move()
+        chaser.update_entity(titi.value)
+        if pacman.current_pos == chaser.current_pos:
             print("pacman perds une vie")
             break
 
         print("======== Ghost =========")
         print()
-        print(gluttony.current_pos)
-        print("queue : ", pacman.queue)
+        print(chaser.current_pos)
+        print("queue : ", chaser.queue)
         print("pacman: ", pacman.current_pos)
-        display_level(level, engine, pacman, gluttony)
+        display_level(level, engine, pacman, chaser)
