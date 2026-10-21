@@ -69,13 +69,19 @@ class GhostTactic(Ghost):
         pass
 
     def verifying_mode(self):
-        pass
+        ###
+        # verify if pacman enter the patrol zone
+        # verify the distance of the ghost with the zone
+        # change patrol state and clear the queue
+        ###
+        ty, tx = self.target
+        min_y, max_y, min_x, max_x = self.zone
 
-    ###
-    # verify if pacman enter the patrol zone
-    # verify the distance of the ghost with the zone
-    # change patrol state and clear the queue
-    ###
+        if (min_y <= ty < max_y and min_x <= tx < max_x):
+            self.patrol_state = PatrolState.CHASE
+            return
+        
+        self.patrol_state = PatrolState.PATROL
 
     def reset(self):
         self.patrol_state = PatrolState.PATROL

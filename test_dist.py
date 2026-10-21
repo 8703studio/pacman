@@ -1,5 +1,5 @@
 from math import dist
-from src import (GhostGlutton, Engine, Level,
+from src import (GhostTactic, Engine, Level,
                  Pacman, GridObject, EntityDirection)
 import mazegenerator as mazegen
 
@@ -59,45 +59,49 @@ def display_level(level, engine, pacman, gluttony):
 
 if __name__ == "__main__":
 
-    mazegene = mazegen.MazeGenerator((5, 5))
+    mazegene = mazegen.MazeGenerator((15, 15))
     level = Level(mazegene.maze, 90)
     engine = Engine(level.grid)
     pacman = Pacman()
-    gluttony = GhostGlutton(engine)
+    tactic = GhostTactic(engine)
     pacman.start_pos = (4, 4)
     pacman.current_pos = (4, 4)
 
+    tactic.target = pacman.current_pos
 
+    print(tactic.patrol_state)
+    tactic.verifying_mode()
+    print(tactic.patrol_state)
+    pacman.current_pos = (14, 14)
+    tactic.target = pacman.current_pos
+    tactic.verifying_mode()
+    print(tactic.patrol_state)
 
+    # while not level.is_finished():
+    #     mv = input("veuillez entrez votre mouvement : ")
+    #     mv_input = input_mv(mv)
+    #     if mv_input is not None:
+    #         pacman.add_move_to_buffer(mv_input)
+    #     print("buffer  : ", pacman.input_buffer[0])
+    #     pacman.move()
 
+    #     direction = pacman.next_move()
+    #     if direction is not None:
+    #         if engine.is_valid_position(direction.value, pacman.current_pos):
+    #             pacman.update_entity(direction.value)
+    #     level.consume_object(pacman.current_pos)
 
+    #     gluttony.target = pacman.current_pos
+    #     gluttony.move()
+    #     titi = gluttony.next_move()
+    #     gluttony.update_entity(titi.value)
+    #     if pacman.current_pos == gluttony.current_pos:
+    #         print("pacman perds une vie")
+    #         break
 
-
-    while not level.is_finished():
-        mv = input("veuillez entrez votre mouvement : ")
-        mv_input = input_mv(mv)
-        if mv_input is not None:
-            pacman.add_move_to_buffer(mv_input)
-        print("buffer  : ", pacman.input_buffer[0])
-        pacman.move()
-
-        direction = pacman.next_move()
-        if direction is not None:
-            if engine.is_valid_position(direction.value, pacman.current_pos):
-                pacman.update_entity(direction.value)
-        level.consume_object(pacman.current_pos)
-
-        gluttony.target = pacman.current_pos
-        gluttony.move()
-        titi = gluttony.next_move()
-        gluttony.update_entity(titi.value)
-        if pacman.current_pos == gluttony.current_pos:
-            print("pacman perds une vie")
-            break
-
-        print("======== Ghost =========")
-        print()
-        print(gluttony.current_pos)
-        print("queue : ", pacman.queue)
-        print("pacman: ", pacman.current_pos)
-        display_level(level, engine, pacman, gluttony)
+    #     print("======== Ghost =========")
+    #     print()
+    #     print(gluttony.current_pos)
+    #     print("queue : ", pacman.queue)
+    #     print("pacman: ", pacman.current_pos)
+    #     display_level(level, engine, pacman, gluttony)
