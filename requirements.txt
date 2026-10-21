@@ -1,4 +1,4 @@
 ./vendor/mazegenerator-2.1.0-py3-none-any.whl
-pygame-ce == 2.5.0
-pydantic
+pygame-ce>=2.5.0
+pydantic>=2.0.0
 pytest

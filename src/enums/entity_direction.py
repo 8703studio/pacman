@@ -12,6 +12,7 @@ class EntityState(Enum):
     NORMAL = 1
     WEAK = 2
     DEAD = 3
+    INVINCIBLE = 4
 
 
 class EntityType(Enum):

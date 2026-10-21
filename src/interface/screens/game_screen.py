@@ -32,9 +32,7 @@ class GameScreen:
 
         self.game = game
 
-        self.game.level_handler = LevelHandler(
-            self.game.config.level_data()
-        )
+        self.game.level_handler = LevelHandler(self.game.config.level_data())
         self.game.maze = self.game.level_handler.current_level.grid
 
         self.hud = HUD(self.game.theme_manager.get_theme())
@@ -53,7 +51,7 @@ class GameScreen:
             self.ghost,
             GhostChaser(engine),
             GhostGlutton(engine),
-            # GhostTactic(),
+            GhostTactic(engine),
         ]
 
         self.pacman = Pacman()
