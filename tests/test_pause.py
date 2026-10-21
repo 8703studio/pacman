@@ -1,5 +1,5 @@
 import pygame
-from src.interface.screens import PauseScreen
+from src.interface.screens.pause_screen import PauseScreen
 
 
 class TestGame:
@@ -16,7 +16,7 @@ screen = pygame.display.set_mode((1024, 950))
 pygame.display.set_caption("Test Pause Screen")
 
 game = TestGame()
-game.current_screen = PauseScreen(game)
+game.current_screen = PauseScreen()
 
 clock = pygame.time.Clock()
 running = True

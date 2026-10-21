@@ -172,7 +172,7 @@ class NameInputScreen:
 
         self.continue_button.center = (
             width // 2,
-            int(height * 0.463),
+            int(height * 0.500),
         )
 
         pygame.draw.rect(
