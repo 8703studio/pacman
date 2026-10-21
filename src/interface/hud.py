@@ -52,7 +52,7 @@ class HUD:
             self.color,
         )
         level_rect = level_text.get_rect(
-            center=(width // 2, top_y + 16),
+            center=(width // 2, top_y + 65),
         )
         screen.blit(level_text, level_rect)
 
@@ -72,6 +72,6 @@ class HUD:
             self.color,
         )
         time_rect = time_text.get_rect(
-            topright=(width - 20, top_y),
+            topright=(width - 30, top_y),
         )
         screen.blit(time_text, time_rect)
