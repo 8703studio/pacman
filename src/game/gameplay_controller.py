@@ -51,9 +51,7 @@ class GameController:
                 pacman.current_pos
             )
             if obj != GridObject.EMPTY:
-                self.logic.add_score(
-                    self.logic.point[GamePoint[obj.name]]
-                )
+                self.logic.add_score(self.logic.point[GamePoint[obj.name]])
 
             if obj == GridObject.GUM:
                 self.audio_manager.play_sound("pickup")
@@ -120,12 +118,17 @@ class GameController:
                     self.game_over_sound_played = True
                 return
 
-        if (
-            self.logic.run
-            and self.logic.levels.current_level.is_finished()
-        ):
+        if self.logic.run and self.logic.levels.current_level.is_finished():
             if self.logic.change_level():
                 self.audio_manager.play_sound("Victory")
+
+        if (
+            self.logic.levels.current_level.is_finished()
+            and self.logic.levels.next_level() is None
+        ):
+
+            self.logic.gamestate = StateGame.VICTORY
+            self.logic.run = False
 
         if (
             self.logic.gamestate == StateGame.GAMEOVER
