@@ -179,6 +179,12 @@ class GameScreen:
             self.ghosts[2],
         )
 
+        self.entity_renderer.draw_louis(
+            screen,
+            self.game.maze,
+            self.ghosts[3],
+        )
+
         self.entity_renderer.draw_pacman(
             screen,
             self.game.maze,
