@@ -272,10 +272,7 @@ class Game:
         ):
             return
 
-        if level.remaining_time() <= 0:
-            self.run = False
-            self.gamestate = StateGame.GAMEOVER
-            return
+        
 
         self.update_weak_time()
 

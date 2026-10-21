@@ -130,6 +130,13 @@ class GameController:
             self.logic.run = False
             self.audio_manager.play_sound("Victory")
 
+        print(self.logic.gamestate)
+        if (self.logic.levels.current_level.remaining_time() <= 0 and not
+           self.logic.levels.current_level.is_finished()):
+
+            self.logic.run = False
+            self.logic.gamestate = StateGame.GAMEOVER
+
         if (
             self.logic.gamestate == StateGame.GAMEOVER
             and not self.game_over_sound_played

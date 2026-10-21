@@ -16,7 +16,7 @@ class GameConfig(BaseModel):
         default_factory=lambda:
             [{"width": 21, "height": 21} for _ in range(10)]
     )
-    levelsmaxtime: int = Field(default=90, gt=0)
+    levelsmaxtime: int = Field(default=10, gt=0)
     seed: int = 42
 
     @model_validator(mode="before")
@@ -34,7 +34,7 @@ class GameConfig(BaseModel):
                 {"width": 21, "height": 21}
                 for _ in range(10)
             ],
-            "levelsmaxtime": 90,
+            "levelsmaxtime": 10,
             "seed": 42,
         }
 
