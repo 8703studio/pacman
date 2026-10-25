@@ -44,8 +44,7 @@ class GameScreen:
 
         engine = Engine(level.grid)
 
-        self.ghost = GhostInterceptor(level.corners[0])
-        self.ghost.engine = engine
+        self.ghost = GhostInterceptor(level.corners[0], engine)
 
         self.ghosts = [
             self.ghost,
@@ -76,7 +75,6 @@ class GameScreen:
         )
         self.controller = GameController(
             self.logic,
-            self.ghost,
             self.game.audio_manager,
         )
 
@@ -125,7 +123,7 @@ class GameScreen:
             self.logic.resume_game()
 
         self.game.maze = self.logic.levels.current_level.grid
-        self.controller.update(self.game.maze)
+        self.controller.update()
         self.game.maze = self.logic.levels.current_level.grid
 
         if not self.logic.run:

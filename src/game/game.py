@@ -45,6 +45,7 @@ class Game:
 
         self.freeze: bool = False
         self.spawn_f = monotonic()
+        self.last_object = GridObject.EMPTY
 
     def update_speeds(self) -> None:
         """Adjust ghost speeds according to their state."""
@@ -76,8 +77,8 @@ class Game:
 
         if self.life <= 0:
             self.life = 0
-            self.run = False
             self.gamestate = StateGame.GAMEOVER
+            self.run = False
             return
 
     def set_life(self) -> int:
@@ -87,12 +88,8 @@ class Game:
         self.life = 99
 
     def cheat_freeze(self) -> None:
-        for ghost in self.ghosts.ghost_list:
-            if ghost.state == EntityState.FREEZE:
-                ghost.state = EntityState.NORMAL
-                continue
-            else:
-                ghost.state = EntityState.FREEZE
+        self.freeze = not self.freeze
+        print("CHEAT :", self.freeze, id(self))
 
     def cheat_invincibility(self) -> None:
         if self.pacman.state == EntityState.NORMAL:
@@ -163,11 +160,14 @@ class Game:
     def verify_dead_ghost(self) -> None:
         for ghost in self.ghosts.ghost_list:
             if ghost.state == EntityState.DEAD:
+                if ghost.current_pos == self.pacman.current_pos:
+                    continue
+
                 if ghost.current_pos == ghost.start_pos:
-                    ghost.reset()
+
                     if self.weak_start is not None:
-                        ghost.state = EntityState.WEAK
                         continue
+                    ghost.reset()
                     ghost.state = EntityState.NORMAL
 
     def update_weak_time(self) -> None:
@@ -183,8 +183,7 @@ class Game:
                     ghost.set_state(EntityState.NORMAL)
             self.weak_start = None
 
-    def pacman_movement(self, input: EntityDirection) -> None:
-        self.pacman.add_move_to_buffer(input)
+    def pacman_movement(self) -> None:
         if not self.pacman.can_move():
             return
 
@@ -199,6 +198,7 @@ class Game:
                 obj = self.levels.current_level.consume_object(
                     self.pacman.current_pos
                 )
+                self.last_object = obj
                 if obj == GridObject.SUPERGUM:
                     self.set_ghost_state()
 
@@ -206,13 +206,18 @@ class Game:
                     self.add_score(self.point[GamePoint[obj.name]])
 
     def ghosts_movement(self) -> None:
+        if self.freeze:
+            return
+
         for ghost in self.ghosts.ghost_list:
-            print(ghost.state)
             if not ghost.can_move():
                 continue
 
             ghost.target = self.pacman.current_pos
-            if ghost.state == EntityState.NORMAL:
+            if (ghost.state == EntityState.NORMAL or
+                ghost.state == EntityState.WEAK or
+               ghost.state == EntityState.DEAD):
+
                 ghost.move()
                 move_ghost = ghost.next_move()
 
@@ -222,11 +227,12 @@ class Game:
                     ):
                         ghost.update_entity(move_ghost.value)
             else:
-                return
+                continue
 
     def check_collision(self) -> bool:
         if self.pacman.state == EntityState.INVINCIBLE:
-            return
+            return False
+
         for ghost in self.ghosts.ghost_list:
             if ghost.state == EntityState.DEAD:
                 continue
@@ -235,6 +241,7 @@ class Game:
                 continue
 
             if ghost.state == EntityState.WEAK:
+                print("FANTÔME MANGÉ :", ghost.current_pos, ghost.start_pos)
                 ghost.state = EntityState.DEAD
                 self.add_score(self.point[GamePoint.GHOST])
                 continue
@@ -252,8 +259,9 @@ class Game:
 
         return False
 
-    def update(self, input_direction: EntityDirection) -> None:
+    def update(self) -> None:
         level = self.levels.current_level
+        self.last_object = GridObject.EMPTY
 
         if self.start_launch is None:
             return
@@ -272,11 +280,16 @@ class Game:
         ):
             return
 
-        
-
         self.update_weak_time()
 
-        self.pacman_movement(input_direction)
+        if (self.levels.current_level.remaining_time() <= 0
+           and not self.levels.current_level.is_finished()):
+
+            self.gamestate = StateGame.GAMEOVER
+            self.run = False
+            return
+
+        self.pacman_movement()
 
         if self.check_collision():
             return
@@ -285,8 +298,9 @@ class Game:
             if self.change_level() is not None:
                 self.start_launch = monotonic()
                 self.gamestate = StateGame.NEW
-            elif self.change_level() is None:
+            else:
                 self.gamestate = StateGame.VICTORY
+                self.run = False
             return
 
         self.ghosts_movement()
