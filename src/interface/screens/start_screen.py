@@ -181,7 +181,7 @@ class StartScreen:
 
         self.banner_rect.centerx = screen.get_width() // 2
         self.banner_rect.top = int(
-            screen.get_height() * 0.14
+            screen.get_height() * 0.22
         )
 
         # Display the best score.
@@ -210,7 +210,7 @@ class StartScreen:
 
         start_rect = start_text.get_rect(
             centerx=screen.get_width() // 2,
-            top=self.banner_rect.bottom + int(20 * scale),
+            top=self.banner_rect.bottom + int(35 * scale),
         )
 
         self.menu.start_button_rect = start_rect

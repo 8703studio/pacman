@@ -1,7 +1,5 @@
-
 from collections import deque
 from typing import Optional
-
 from ..enums import EntityType, EntityDirection, EntityState
 from ..engine import Engine
 from .ghost import Ghost
