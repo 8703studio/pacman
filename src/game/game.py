@@ -89,7 +89,6 @@ class Game:
 
     def cheat_freeze(self) -> None:
         self.freeze = not self.freeze
-        print("CHEAT :", self.freeze, id(self))
 
     def cheat_invincibility(self) -> None:
         if self.pacman.state == EntityState.NORMAL:
@@ -116,6 +115,8 @@ class Game:
 
         for ghost in self.ghosts.ghost_list:
             ghost.state = EntityState.NORMAL
+            if isinstance(ghost, GhostTactic):
+                ghost.define_zone()
             ghost.reset()
         self.weak_start = None
         return True
@@ -215,9 +216,11 @@ class Game:
                 continue
 
             ghost.target = self.pacman.current_pos
-            if (ghost.state == EntityState.NORMAL or
-                ghost.state == EntityState.WEAK or
-               ghost.state == EntityState.DEAD):
+            if (
+                ghost.state == EntityState.NORMAL
+                or ghost.state == EntityState.WEAK
+                or ghost.state == EntityState.DEAD
+            ):
 
                 ghost.move()
                 move_ghost = ghost.next_move()
@@ -243,7 +246,6 @@ class Game:
                 continue
 
             if ghost.state == EntityState.WEAK:
-                print("FANTÔME MANGÉ :", ghost.current_pos, ghost.start_pos)
                 ghost.state = EntityState.DEAD
                 self.add_score(self.point[GamePoint.GHOST])
                 continue
@@ -284,8 +286,10 @@ class Game:
 
         self.update_weak_time()
 
-        if (self.levels.current_level.remaining_time() <= 0
-           and not self.levels.current_level.is_finished()):
+        if (
+            self.levels.current_level.remaining_time() <= 0
+            and not self.levels.current_level.is_finished()
+        ):
 
             self.gamestate = StateGame.GAMEOVER
             self.run = False
