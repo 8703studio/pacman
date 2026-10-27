@@ -52,7 +52,7 @@ class Theme:
 CLASSIC_THEME = Theme(
     name="classic",
     # Game
-    background_color=colors.dark_purple,
+    background_color=colors.classic_background,
     wall_color=colors.classic_accent,
     text_color=colors.white,
     player_color=colors.yellow,
@@ -99,7 +99,7 @@ CLASSIC_THEME = Theme(
 SECOND_THEME = Theme(
     name="pastel",
     # Game
-    background_color=colors.white,
+    background_color=colors.pastel_background,
     wall_color=colors.orange,
     text_color=colors.black,
     player_color=colors.pink,

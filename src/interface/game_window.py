@@ -44,10 +44,8 @@ class GameWindow:
         self.highscore = Highscore("highscore.json")
         self.highscore.load_score()
 
-        self.screen = pygame.display.set_mode(
-            (width, height),
-            pygame.RESIZABLE,
-        )
+        self.screen = pygame.display.set_mode((width, height))
+
         pygame.display.set_caption("Pac-idol")
         self.current_screen = StartScreen(self)
         self.maze_renderer = MazeRenderer(

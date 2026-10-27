@@ -146,7 +146,7 @@ class MenuStartScreen:
             ) + spacing * (len(visible_options) - 1)
 
         x = (screen.get_width() - total_width) // 2
-        menu_y = int(screen.get_height() * 0.69)
+        menu_y = int(screen.get_height() * 0.75)
 
         for i, option in enumerate(self.options):
 

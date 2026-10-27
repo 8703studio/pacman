@@ -63,6 +63,83 @@ class StartScreen:
         """Update the main menu screen."""
         pass
 
+    def draw_maze(self, screen: pygame.Surface, scale: float) -> None:
+        """Draw a neon pixel maze around the edges of the title screen."""
+        width, height = screen.get_size()
+
+        theme = self.game.theme_manager.get_theme()
+
+        color1 = theme.accent_color
+        color2 = theme.menu_selected_color
+
+        wall = max(4, int(6 * scale))
+        unit = max(18, int(28 * scale))
+        margin = int(24 * scale)
+
+        paths = [
+            # Top-left
+            (color1, [
+                (margin, int(130 * scale)),
+                (margin, margin),
+                (int(width * 0.28), margin),
+                (int(width * 0.28), int(65 * scale)),
+            ]),
+            (color2, [
+                (int(65 * scale), int(150 * scale)),
+                (int(65 * scale), int(65 * scale)),
+                (int(width * 0.20), int(65 * scale)),
+            ]),
+            # Top-right
+            (color2, [
+                (int(width * 0.72), margin),
+                (width - margin, margin),
+                (width - margin, int(130 * scale)),
+            ]),
+            (color1, [
+                (int(width * 0.80), int(65 * scale)),
+                (width - int(65 * scale), int(65 * scale)),
+                (width - int(65 * scale), int(150 * scale)),
+            ]),
+            # Bottom-left
+            (color2, [
+                (margin, int(height * 0.72)),
+                (margin, height - margin),
+                (int(width * 0.28), height - margin),
+            ]),
+            (color1, [
+                (int(65 * scale), int(height * 0.80)),
+                (int(65 * scale), height - int(65 * scale)),
+                (int(width * 0.20), height - int(65 * scale)),
+            ]),
+            # Bottom-right
+            (color1, [
+                (int(width * 0.72), height - margin),
+                (width - margin, height - margin),
+                (width - margin, int(height * 0.72)),
+            ]),
+            (color2, [
+                (int(width * 0.80), height - int(65 * scale)),
+                (width - int(65 * scale), height - int(65 * scale)),
+                (width - int(65 * scale), int(height * 0.80)),
+            ]),
+        ]
+
+        for color, points in paths:
+            pygame.draw.lines(screen, color, False, points, wall)
+
+        # Small pixel-like blocks at the ends of some paths.
+        for x, y, color in [
+            (int(width * 0.34), margin, color1),
+            (int(width * 0.66), margin, color2),
+            (int(width * 0.34), height - margin, color2),
+            (int(width * 0.66), height - margin, color1),
+        ]:
+            pygame.draw.rect(
+                screen,
+                color,
+                (x, y, unit, wall),
+            )
+
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the main menu screen."""
 
@@ -72,10 +149,13 @@ class StartScreen:
             screen,
             theme.background_color,
             None,
-            # theme.background_image,
         )
 
+        # Scale everything according to the screen height.
         scale = screen.get_height() / 800
+
+        # Draw the neon maze around the edges.
+        self.draw_maze(screen, scale)
 
         highscore_size = max(20, int(32 * scale))
         subtitle_size = max(24, int(36 * scale))
@@ -90,6 +170,7 @@ class StartScreen:
             subtitle_size,
         )
 
+        # Position the title area.
         banner_width = int(screen.get_width() * 0.8)
         banner_height = int(screen.get_height() * 0.42)
 
@@ -100,11 +181,11 @@ class StartScreen:
 
         self.banner_rect.centerx = screen.get_width() // 2
         self.banner_rect.top = int(
-            screen.get_height() * 0.14
+            screen.get_height() * 0.22
         )
 
+        # Display the best score.
         top_scores = self.game.highscore.top_score(1)
-
         best_score = top_scores[0]["score"] if top_scores else 0
 
         highscore = highscore_font.render(
@@ -115,21 +196,12 @@ class StartScreen:
 
         highscore_rect = highscore.get_rect(
             centerx=screen.get_width() // 2,
-            top=int(30 * scale),
+            top=int(120 * scale),
         )
 
-        screen.blit(
-            highscore,
-            highscore_rect,
-        )
+        screen.blit(highscore, highscore_rect)
 
-        pygame.draw.rect(
-            screen,
-            theme.menu_text_color,
-            self.banner_rect,
-            3,
-        )
-
+        # Display START without the rectangular banner outline.
         start_text = subtitle_font.render(
             "START",
             True,
@@ -138,14 +210,11 @@ class StartScreen:
 
         start_rect = start_text.get_rect(
             centerx=screen.get_width() // 2,
-            top=self.banner_rect.bottom + int(20 * scale),
+            top=self.banner_rect.bottom + int(35 * scale),
         )
 
         self.menu.start_button_rect = start_rect
 
-        screen.blit(
-            start_text,
-            start_rect,
-        )
+        screen.blit(start_text, start_rect)
 
         self.menu.draw(screen)

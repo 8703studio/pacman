@@ -8,7 +8,6 @@ from ..enums import (
     GamePoint,
     GridObject,
     StateGame,
-    EntityDirection,
 )
 from time import monotonic
 
@@ -95,9 +94,6 @@ class Game:
             self.pacman.state = EntityState.INVINCIBLE
             return
         self.pacman.state = EntityState.NORMAL
-
-    def spawn_fruit(self):
-        pass
 
     def change_level(self) -> None | bool:
         nlevel = self.levels.next_level()
@@ -195,6 +191,7 @@ class Game:
             if self.engine.is_valid_position(
                 move.value, self.pacman.current_pos
             ):
+                self.pacman.direction = move
                 self.pacman.update_entity(move.value)
                 obj = self.levels.current_level.consume_object(
                     self.pacman.current_pos
@@ -215,9 +212,11 @@ class Game:
                 continue
 
             ghost.target = self.pacman.current_pos
-            if (ghost.state == EntityState.NORMAL or
-                ghost.state == EntityState.WEAK or
-               ghost.state == EntityState.DEAD):
+            if (
+                ghost.state == EntityState.NORMAL
+                or ghost.state == EntityState.WEAK
+                or ghost.state == EntityState.DEAD
+            ):
 
                 ghost.move()
                 move_ghost = ghost.next_move()
@@ -226,6 +225,7 @@ class Game:
                     if self.engine.is_valid_position(
                         move_ghost.value, ghost.current_pos
                     ):
+                        ghost.direction = move_ghost
                         ghost.update_entity(move_ghost.value)
             else:
                 continue
@@ -282,8 +282,10 @@ class Game:
 
         self.update_weak_time()
 
-        if (self.levels.current_level.remaining_time() <= 0
-           and not self.levels.current_level.is_finished()):
+        if (
+            self.levels.current_level.remaining_time() <= 0
+            and not self.levels.current_level.is_finished()
+        ):
 
             self.gamestate = StateGame.GAMEOVER
             self.run = False
