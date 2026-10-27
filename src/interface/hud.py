@@ -31,14 +31,16 @@ class HUD:
         )
 
     @staticmethod
-
-    @staticmethod
     def _load_icon(path: Path) -> pygame.Surface:
         """Load and resize a HUD icon."""
         image = pygame.image.load(str(path))
-        image = image.convert_alpha() if pygame.display.get_surface() else image
-        return pygame.transform.smoothscale(image, (40, 40))
 
+        if pygame.display.get_surface():
+            image = image.convert_alpha()
+        else:
+            image
+
+        return pygame.transform.smoothscale(image, (40, 40))
 
     def _draw_item(
         self,
@@ -82,7 +84,6 @@ class HUD:
             rendered_text,
             (x + icon.get_width() + 8, text_y),
         )
-
 
     def render(
         self,

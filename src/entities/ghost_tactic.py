@@ -88,7 +88,7 @@ class GhostTactic(Ghost):
 
                     if self.engine.is_valid_position(
                         case_neigh, waiting_list[0]
-                        ):
+                     ):
                         waiting_list.append(new_neigh)
                         build_path[new_neigh] = waiting_list[0]
                         self.visited.add(new_neigh)

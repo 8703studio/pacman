@@ -3,6 +3,7 @@ import pygame
 from src.interface.renderers.maze_renderer import MazeRenderer
 from src.entities.entity import Entity, EntityDirection
 from src.enums import EntityState
+from src.interface.renderers.animation import EntityAnimator
 
 
 class GhostRenderer:
@@ -15,9 +16,11 @@ class GhostRenderer:
         "louis": "src/interface/assets/ghosts/louissprite.png",
     }
 
-    def __init__(self, maze_renderer: MazeRenderer) -> None:
+    def __init__(self, maze_renderer: MazeRenderer,
+                 animation: EntityAnimator) -> None:
         """Initialize the ghost renderer."""
         self.maze_renderer = maze_renderer
+        self.animation = animation
         self.ghost_frames = {}
 
         for name, path in self.GHOST_SPRITES.items():
@@ -47,7 +50,7 @@ class GhostRenderer:
         ghost_name: str = "joy",
     ) -> None:
         """Draw a ghost using its current position and direction."""
-        y, x = entity.current_pos
+        y, x = self.animation.pos(entity)
 
         pixel_x, pixel_y = self.maze_renderer.get_cell_position(
             maze,

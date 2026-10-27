@@ -5,6 +5,7 @@ from src.entities.entity import Entity
 from src.entities.pacman import Pacman
 from src.interface.renderers.ghost_renderer import GhostRenderer
 from src.interface.renderers.pacman_renderer import PacmanRenderer
+from src.interface.renderers.animation import EntityAnimator
 
 
 class EntityRenderer:
@@ -13,8 +14,9 @@ class EntityRenderer:
     def __init__(self, maze_renderer: MazeRenderer) -> None:
         """Initialize the entity renderers."""
         self.maze_renderer = maze_renderer
-        self.ghost_renderer = GhostRenderer(maze_renderer)
-        self.pacman_renderer = PacmanRenderer(maze_renderer)
+        self.animation = EntityAnimator()
+        self.ghost_renderer = GhostRenderer(maze_renderer, self.animation)
+        self.pacman_renderer = PacmanRenderer(maze_renderer, self.animation)
 
     def _sync_maze_renderer(self) -> None:
         """Update the maze renderer used by each entity renderer."""

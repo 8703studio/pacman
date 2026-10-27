@@ -95,9 +95,6 @@ class Game:
             return
         self.pacman.state = EntityState.NORMAL
 
-    def spawn_fruit(self):
-        pass
-
     def change_level(self) -> None | bool:
         nlevel = self.levels.next_level()
         if nlevel is None:

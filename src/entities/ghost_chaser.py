@@ -52,8 +52,6 @@ class GhostChaser(Ghost):
             dir = (cy - py, cx - px)
             self.queue.appendleft(EntityDirection(dir))
             next_case = path[next_case]
-            print(next_case)
-        print(self.queue)
 
     def reset(self):
         return super().reset()
