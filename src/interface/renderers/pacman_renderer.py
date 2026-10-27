@@ -41,7 +41,6 @@ class PacmanRenderer:
     ) -> None:
         """Draw Pac-Man at its current maze position."""
         y, x = self.animation.pos(pacman)
-        print(y, x, pacman.speed)
 
         origin_x, origin_y = self.maze_renderer.get_cell_position(maze, 0, 0)
         cell_size = self.maze_renderer.get_cell_size(maze)

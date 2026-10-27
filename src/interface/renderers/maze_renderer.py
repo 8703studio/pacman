@@ -93,10 +93,10 @@ class MazeRenderer:
         x2, y2 = end
         half = width / 2
 
-        if y1 == y2:  # segment horizontal
+        if y1 == y2:
             left = min(x1, x2) - half
             rect = pygame.Rect(left, y1 - half, abs(x2 - x1) + width, width)
-        else:  # segment vertical
+        else:
             top = min(y1, y2) - half
             rect = pygame.Rect(x1 - half, top, width, abs(y2 - y1) + width)
 
@@ -116,7 +116,6 @@ class MazeRenderer:
 
         blocked_cell = NORTH | EAST | SOUTH | WEST
 
-        # Fill blocked cells with the inner highlight color.
         for y, line in enumerate(maze):
             for x, cell in enumerate(line):
                 if cell != blocked_cell:
