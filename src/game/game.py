@@ -89,7 +89,6 @@ class Game:
 
     def cheat_freeze(self) -> None:
         self.freeze = not self.freeze
-        print("CHEAT :", self.freeze, id(self))
 
     def cheat_invincibility(self) -> None:
         if self.pacman.state == EntityState.NORMAL:
@@ -116,6 +115,8 @@ class Game:
 
         for ghost in self.ghosts.ghost_list:
             ghost.state = EntityState.NORMAL
+            if isinstance(ghost, GhostTactic):
+                ghost.define_zone()
             ghost.reset()
         self.weak_start = None
         return True
@@ -241,7 +242,6 @@ class Game:
                 continue
 
             if ghost.state == EntityState.WEAK:
-                print("FANTÔME MANGÉ :", ghost.current_pos, ghost.start_pos)
                 ghost.state = EntityState.DEAD
                 self.add_score(self.point[GamePoint.GHOST])
                 continue
