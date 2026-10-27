@@ -8,7 +8,6 @@ from ..enums import (
     GamePoint,
     GridObject,
     StateGame,
-    EntityDirection,
 )
 from time import monotonic
 

@@ -233,39 +233,6 @@ class GhostInterceptor(Ghost):
 
         self._queue_direction_to(target)
 
-    # def weak_move(self) -> None:
-    #     """Run away from Pacman using the original weak-state strategy."""
-    #     self._handle_state_change()
-
-    #     engine = self.engine
-    #     pacman_position = self.target or self.pacman_position
-
-    #     if engine is None or pacman_position is None:
-    #         return
-
-    #     if not self.weak_history or self.weak_history[-1] != self.current_pos:
-    #         self.weak_history.append(self.current_pos)
-
-    #     if self.weak_target is None or self.current_pos == self.weak_target:
-    #         self.weak_target = get_weak_target(
-    #             engine,
-    #             self.current_pos,
-    #             pacman_position,
-    #             set(self.weak_history),
-    #         )
-
-    #     if self.weak_target is not None:
-    #         self._queue_direction_to(self.weak_target)
-
-    # def dead_move(self) -> None:
-    #     """Return to the maze center, then the starting position."""
-    #     self._handle_state_change()
-
-    #     target = self._get_dead_target()
-
-    #     if target is not None:
-    #         self._queue_direction_to(target)
-
     def _handle_state_change(self) -> None:
         """Clear movement data when the ghost changes state."""
         if self.state == self.last_state:
@@ -357,7 +324,6 @@ class GhostInterceptor(Ghost):
             self.last_state = self.state
             return
 
-        self.current_pos = self.start_pos
         self.state = EntityState.NORMAL
         self.last_state = self.state
         self.dead_phase = "center"
