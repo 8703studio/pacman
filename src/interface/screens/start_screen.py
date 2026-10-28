@@ -24,11 +24,14 @@ class StartScreen:
 
         self.game = game
 
-        self.banner_rect = pygame.Rect(0, 0, 0, 0)
-        # # self.banner_image = pygame.image.load(
-        #     "src/interface/assets/background/banner.png"
-        # ).convert_alpha()
-
+        self.banner_images = {
+            "classic": pygame.image.load(
+                "src/interface/assets/banners/classic.png"
+            ).convert_alpha(),
+            "pastel": pygame.image.load(
+                "src/interface/assets/banners/pastel.png"
+            ).convert_alpha(),
+        }
         self.menu = MenuStartScreen(self.game)
 
     def events(
@@ -172,41 +175,30 @@ class StartScreen:
             theme.font_path,
             subtitle_size,
         )
-
         # Position the title area.
         banner_width = int(screen.get_width() * 0.8)
         banner_height = int(screen.get_height() * 0.42)
 
-        self.banner_rect.size = (
+        self.banner_rect = pygame.Rect(
+            0,
+            int(screen.get_height() * 0.22),
             banner_width,
             banner_height,
         )
-
         self.banner_rect.centerx = screen.get_width() // 2
-        self.banner_rect.top = int(
-            screen.get_height() * 0.22
-        )
-        
+
         # Position and draw the banner image.
-        # banner_width = int(screen.get_width() * 0.8)
-        # banner_height = int(screen.get_height() * 0.42)
+        banner_image = self.banner_images.get(
+            theme.name,
+            self.banner_images["classic"],
+        )
 
-        # self.banner_rect.size = (
-        #     banner_width,
-        #     banner_height,
-        # )
+        banner = pygame.transform.scale(
+            banner_image,
+            (banner_width, banner_height),
+        )
 
-        # self.banner_rect.centerx = screen.get_width() // 2
-        # self.banner_rect.top = int(
-        #     screen.get_height() * 0.22
-        # )
-
-        # banner = pygame.transform.scale(
-        #     self.banner_image,
-        #     (banner_width, banner_height),
-        # )
-
-        # screen.blit(banner, self.banner_rect)
+        screen.blit(banner, self.banner_rect)
 
         # Display the best score.
         top_scores = self.game.highscore.top_score(1)
