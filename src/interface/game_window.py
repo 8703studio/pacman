@@ -111,6 +111,9 @@ class GameWindow:
     def draw(self) -> None:
         """Draw the current screen on the game window."""
 
+        if self.screen is None:
+            return
+
         self.current_screen.draw(self.screen)
 
     def run(self) -> None:

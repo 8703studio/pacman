@@ -71,7 +71,7 @@ class GhostRenderer:
         elif entity.direction == EntityDirection.LEFT:
             frame_idx = 4
 
-        ghost_size = max(1, int(cell_size * 0.58))
+        ghost_size = max(1, int(cell_size * 0.66))
 
         ghost_image = pygame.transform.scale(
             self.ghost_frames[ghost_name][frame_idx],
@@ -81,6 +81,12 @@ class GhostRenderer:
         if entity.state == EntityState.WEAK:
             ghost_image.fill(
                 (50, 100, 255),
+                special_flags=pygame.BLEND_RGB_MULT,
+            )
+
+        if entity.state == EntityState.DEAD:
+            ghost_image.fill(
+                (120, 120, 120),
                 special_flags=pygame.BLEND_RGB_MULT,
             )
 

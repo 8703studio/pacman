@@ -3,6 +3,7 @@ from pathlib import Path
 import config
 import interface
 
+
 def main() -> None:
     """Launch the game with the configuration file given as argument."""
     if len(sys.argv) != 2:
@@ -25,7 +26,7 @@ def main() -> None:
         raw_data = parser.build_config(str(config_path))
         data = config.GameConfig(**raw_data)
 
-        game = interface.GameWindow(800, 800, data)
+        game = interface.GameWindow(1200, 1000, data)
         game.run()
     except KeyboardInterrupt:
         pass

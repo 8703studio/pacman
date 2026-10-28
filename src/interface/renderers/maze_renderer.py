@@ -137,7 +137,7 @@ class MazeRenderer:
                     ),
                 )
 
-        wall_width = max(2, int(cell_size * 0.28))
+        wall_width = max(2, int(cell_size * 0.2))
         highlight_width = max(1, int(cell_size * 0.08))
 
         layers = (

@@ -46,8 +46,8 @@ class PacmanRenderer:
         cell_size = self.maze_renderer.get_cell_size(maze)
         pixel_x = origin_x + x * cell_size
         pixel_y = origin_y + y * cell_size
-        
-        pacman_size = int(cell_size * 0.5)
+
+        pacman_size = int(cell_size * 0.6)
         t = self.animation.progress(pacman)
 
         if t >= 1.0:

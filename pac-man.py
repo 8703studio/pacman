@@ -27,7 +27,7 @@ def main() -> None:
         raw_data = parser.build_config(str(config_path))
         config = GameConfig(**raw_data)
 
-        game = GameWindow(800, 800, config)
+        game = GameWindow(1200, 1000, config)
         game.run()
     except KeyboardInterrupt:
         pass
