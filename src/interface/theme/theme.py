@@ -101,7 +101,7 @@ SECOND_THEME = Theme(
     # Game
     background_color=colors.pastel_background,
     wall_color=colors.orange,
-    text_color=colors.black,
+    text_color=colors.white,
     player_color=colors.pink,
     ghost_colors=[
         colors.orange,
