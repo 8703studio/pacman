@@ -35,27 +35,20 @@ class InstructionsScreen:
 
         self.back_button = pygame.Rect(0, 0, 100, 60)
 
-        self.assets_path = (
-            Path(__file__).resolve().parent.parent / "assets"
-        )
+        self.assets_path = Path(__file__).resolve().parent.parent / "assets"
 
         self.instruction_images = {
             "pacgum": pygame.image.load(
-                str(
-                    self.assets_path
-                    / "game"
-                    / "hearrtspacgum.png"
-                )
+                str(self.assets_path / "game" / "hearrtspacgum.png")
             ).convert_alpha(),
             "power": pygame.image.load(
-                str(
-                    self.assets_path
-                    / "game"
-                    / "superpacgum.png"
-                )
+                str(self.assets_path / "game" / "superpacgum.png")
             ).convert_alpha(),
             "ghosts": pygame.image.load(
                 str(self.assets_path / "allghosts.png")
+            ).convert_alpha(),
+            "pacman": pygame.image.load(
+                str(self.assets_path / "pacman.png")
             ).convert_alpha(),
         }
 
@@ -75,9 +68,7 @@ class InstructionsScreen:
         ]
 
         self.lightsticks = [
-            pygame.image.load(
-                str(lightstick_dir / name)
-            ).convert_alpha()
+            pygame.image.load(str(lightstick_dir / name)).convert_alpha()
             for name in lightstick_names
         ]
 
@@ -160,8 +151,8 @@ class InstructionsScreen:
                     card_height,
                 ),
                 "MOVE",
-                "ARROW KEYS",
-                None,
+                "WITH ARROW KEYS",
+                self.instruction_images["pacman"],
             ),
             (
                 pygame.Rect(
@@ -221,9 +212,7 @@ class InstructionsScreen:
                 max_width = int(rect.width * 0.75)
                 max_height = int(rect.height * 0.48)
 
-                image_ratio = (
-                    image.get_width() / image.get_height()
-                )
+                image_ratio = image.get_width() / image.get_height()
 
                 image_width = min(
                     max_width,
@@ -241,7 +230,7 @@ class InstructionsScreen:
                 screen.blit(scaled_image, image_rect)
             else:
                 arrows = self.section_font.render(
-                    "↑ ↓ ← →",
+                    "pacman",
                     True,
                     theme.menu_text_color,
                 )
