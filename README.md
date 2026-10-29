@@ -109,20 +109,135 @@ The project aims to:
 
 ### Requirements
 
+Before installing and running the game, make sure you have:
+
+- **Python 3**
+- **pip**
+- **venv**
+- **Make**
+- The dependencies listed in `requirements.txt`
+
+The project uses a Python virtual environment named `pacmana`.
+
+### Installation & Setup
+
+Clone the repository and navigate to the project directory.
+
+Create the virtual environment and install the required dependencies:
+
+```bash
+make install
+```
+
+This command:
+1. Creates a virtual environment named `pacmana`.
+2. Installs `mypy`.
+3. Installs the dependencies from `requirements.txt`.
+
+Activate the virtual environment:
+
+```bash
+source pacmana/bin/activate
+```
+
+### Running the Game
+
+Start the game using the default configuration file (`config.json`):
+
+```bash
+make run
+```
+
+This executes:
+
+```bash
+python3 pac-man.py config.json
+```
+
+The configuration file can be modified to customize gameplay settings, including lives, scoring, maze dimensions, and level duration.
+
+### Building and Running the Package
+
+The project also supports a packaged version.
+
+Build the Python package:
+
+```bash
+make build
+```
+
+Install the package and its dependencies:
+
+```bash
+make install_packages
+```
+
+**Note:** The `install_packages` target expects `pacman-0.0.1-py3-none-any.whl` in the project root. If the wheel is generated in `dist/`, its path must be adjusted in the Makefile.
+
+Run the packaged version:
+
+```bash
+make run_pack
+```
+
+This executes:
+
+```bash
+python3 pac_man_build.py config.json
+```
+
+### Makefile Commands
+
+| Command | Description |
+|---|---|
+| `make install` | Create the virtual environment and install dependencies. |
+| `make install_packages` | Create the environment and install the Python package. |
+| `make build` | Build the Python distribution. |
+| `make run` | Launch the game with `config.json`. |
+| `make run_pack` | Launch the packaged version. |
+| `make debug` | Run the game using Python's debugger (`pdb`). |
+| `make lint` | Run Flake8 and Mypy checks. |
+| `make lint_strict` | Run Flake8 and strict Mypy checks. |
+| `make clean` | Remove the virtual environment and Python cache directories. |
+
+### Debugging
+
+Run the game with Python's built-in debugger:
+
+```bash
+make debug
+```
+
+### Code Quality
+
+Check the code using Flake8 and Mypy:
+
+```bash
+make lint
+```
+
+Run stricter type checking:
+
+```bash
+make lint_strict
+```
+
+These commands require `flake8` and `mypy` to be installed in the active environment.
+
+### Cleaning
+
+Remove the virtual environment and generated Python caches:
+
+```bash
+make clean
+```
+
+After cleaning, run `make install` again to recreate the environment.
+
+
 - Python 3 with the project's supported version (verify the version in the repository).
 - The Python dependencies used by the game include **Pygame** and **Pydantic**.
 - A valid JSON configuration file.
-
-### Installation and Execution
-
-1. Clone the repository and open its root directory.
-2. Create and activate a Python virtual environment, if desired.
-3. Install the dependencies using the dependency file or installation command provided with the repository.
-4. Start the program by passing the path to a JSON configuration file.
-
-The entry point shown in the implementation expects **one configuration-file argument** and checks that the file exists before launching the window.
-
-> **To complete before submission:** Add the repository's verified dependency installation command, actual executable/entry-point path, and exact launch command (for example, the command used with `config.json`). The supplied README does not establish those paths or commands. If a Makefile is part of the project, document its actual targets here.
 
 # Configuration
 
@@ -1383,6 +1498,4 @@ gantt
 
 ### AI Usage
 
-AI assistance (ChatGPT) was used to discuss algorithms and Python concepts, review and debug parts of the game logic, and help draft and organize the README documentation. Topics included BFS and DFS, bitmask wall representation, Manhattan distance, timers with `time.monotonic()`, entity state transitions and architecture explanations. The development team remains responsible for implementing, testing and verifying the final behavior.
-
-> Verify this AI-use summary against the team's actual usage and add or remove tasks as needed for an accurate disclosure.
+AI assistance (ChatGPT) was used to discuss algorithms and Python concepts, and help draft and organize the README documentation. Topics included BFS and DFS, bitmask wall representation, Manhattan distance, timers with `time.monotonic()`.

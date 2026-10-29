@@ -22,6 +22,7 @@ from src.game.gameplay_controller import GameController
 from src.game.level_handler import LevelHandler
 from src.enums import StateGame
 from src.interface.screens.end_game_screen import EndGameScreen
+from time import monotonic
 
 
 class GameScreen:
@@ -200,3 +201,31 @@ class GameScreen:
             self.game.maze,
             self.pacman,
         )
+
+        if self.logic.gamestate == StateGame.NEW:
+            overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 80))
+            screen.blit(overlay, (0, 0))
+
+            elapsed = monotonic() - self.logic.start_launch
+            if int(elapsed / 0.25) % 2 == 0:
+                if elapsed < 2:
+                    message = "READY"
+                else:
+                    message = "GO"
+
+                theme = self.game.theme_manager.get_theme()
+                font = pygame.font.Font(theme.font_path, 64)
+                text = font.render(
+                    message,
+                    True,
+                    theme.text_color,
+                )
+
+                text_rect = text.get_rect(
+                    center=(
+                        screen.get_width() // 2,
+                        screen.get_height() // 2,
+                    )
+                )
+                screen.blit(text, text_rect)
