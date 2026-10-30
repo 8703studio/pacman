@@ -78,6 +78,7 @@ class NameInputScreen:
                     ):
                         self._submit_name()
 
+
     def _submit_name(self) -> None:
         """Submit the player name."""
 
@@ -85,6 +86,13 @@ class NameInputScreen:
 
         if not name:
             self.error_message = "Please enter a name."
+            return
+
+        if any(
+            entry["name"].lower() == name.lower()
+            for entry in self.game.highscore.scores
+        ):
+            self.error_message = "This name is already taken."
             return
 
         if self.game.highscore.add_score(name, self.score):
@@ -95,6 +103,7 @@ class NameInputScreen:
             self.error_message = (
                 "Unable to save your score. Please try again."
             )
+
 
     def update(self, delta_time: float) -> None:
         """Update the name input screen."""
