@@ -66,18 +66,14 @@ class NameInputScreen:
 
                 else:
                     if len(self.name) < 10 and (
-                        event.unicode.isalnum()
-                        or event.unicode == " "
+                        event.unicode.isalnum() or event.unicode == " "
                     ):
                         self.name += event.unicode
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if self.continue_button.collidepoint(
-                        event.pos
-                    ):
+                    if self.continue_button.collidepoint(event.pos):
                         self._submit_name()
-
 
     def _submit_name(self) -> None:
         """Submit the player name."""
@@ -96,14 +92,9 @@ class NameInputScreen:
             return
 
         if self.game.highscore.add_score(name, self.score):
-            self.game.change_screen(
-                HighscoresScreen(self.game)
-            )
+            self.game.change_screen(HighscoresScreen(self.game))
         else:
-            self.error_message = (
-                "Unable to save your score. Please try again."
-            )
-
+            self.error_message = "Unable to save your score. Please try again."
 
     def update(self, delta_time: float) -> None:
         """Update the name input screen."""
@@ -158,9 +149,7 @@ class NameInputScreen:
             theme.menu_text_color,
         )
 
-        name_rect = name_text.get_rect(
-            center=self.input_rect.center
-        )
+        name_rect = name_text.get_rect(center=self.input_rect.center)
 
         screen.blit(name_text, name_rect)
 
