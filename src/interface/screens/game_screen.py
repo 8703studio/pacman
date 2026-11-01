@@ -41,7 +41,6 @@ class GameScreen:
         self.entity_renderer = EntityRenderer(self.game.maze_renderer)
 
         level = self.game.level_handler.current_level
-        level.start()
 
         engine = Engine(level.grid)
 

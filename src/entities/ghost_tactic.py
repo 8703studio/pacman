@@ -48,12 +48,17 @@ class GhostTactic(Ghost):
 
         while min_y <= max_y:
             while tmp <= max_x:
+                if self.engine.grid[min_y][tmp] == 15:
+                    tmp += 1
+                    continue
                 self.coord_zone.append((min_y, tmp))
                 tmp += 1
             tmp = min_x
             min_y += 1
 
     def normal_move(self):
+        self.verifying_mode()
+
         if self.patrol_target is None:
             self.patrol_target = choice(self.coord_zone)
 
@@ -70,6 +75,7 @@ class GhostTactic(Ghost):
                 self.algo_bfs(self.target)
 
     def algo_bfs(self, target: tuple[int, int]):
+        print(self.patrol_state)
         if len(self.queue) == 0:
             self.visited.clear()
             build_path = {}
