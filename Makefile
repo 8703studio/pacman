@@ -30,9 +30,9 @@ debug:
 
 clean:
 	rm -rf ${ENV_NAME}
-	find . -name "__pycache__" -exec rm -rf {} \;
-	find . -name ".mypy_cache" -exec rm -rf {} \;
-	find . -name "${FILENAME}" -exec rm -rf {} \;
+	find . -name "__pycache__" -exec rm -rf {} +
+	find . -name ".mypy_cache" -exec rm -rf {} +
+	find . -name "${FILENAME}" -exec rm -rf {} +
 
 lint:
 	flake8 . && mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs

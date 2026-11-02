@@ -18,6 +18,8 @@ dependencies = [
 "pygame-ce>=2.5.0",
 "pydantic>=2.0.0"
 ]
+[tool.flake8]
+exclude = ["pacmana"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

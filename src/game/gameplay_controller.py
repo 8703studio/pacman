@@ -16,7 +16,7 @@ class GameController:
         self.audio_manager = audio_manager
         self.game_over_sound_played = False
 
-    def consume_object_sound(self):
+    def consume_object_sound(self) -> None:
         if self.logic.last_object == GridObject.GUM:
             self.audio_manager.play_sound("pickup")
 

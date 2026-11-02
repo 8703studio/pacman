@@ -105,7 +105,6 @@ class GhostInterceptor(Ghost):
 
     def move(self) -> None:
         """Clear the old path on state change, then use Ghost.move()."""
-        print(type(self).__name__, self.state, self.current_pos, self.target, len(self.queue))
         self._handle_state_change()
         super().move()
 
@@ -157,7 +156,6 @@ class GhostInterceptor(Ghost):
             target = pacman_position
 
         self._queue_direction_to(target)
-        print("pacman", pacman_position, pacman_direction, "-> vise", target)
 
     def _handle_state_change(self) -> None:
         """Clear movement data when the ghost changes state."""

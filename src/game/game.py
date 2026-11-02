@@ -194,7 +194,7 @@ class Game:
                     ghost.set_state(EntityState.NORMAL)
 
             self.weak_start = None
-            
+
     def pacman_movement(self) -> None:
         if not self.pacman.can_move():
             return

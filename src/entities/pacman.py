@@ -4,13 +4,13 @@ from ..enums import EntityType, EntityDirection
 
 
 class Pacman(Entity):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.entity_type = EntityType.PACMAN
         self.speed = 0.4
         self.input_buffer: deque[EntityDirection] = deque()
 
-    def move(self):
+    def move(self) -> None:
         if self.queue:
             return
         if self.input_buffer:

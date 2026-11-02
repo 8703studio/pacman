@@ -75,7 +75,6 @@ class GhostTactic(Ghost):
                 self.algo_bfs(self.target)
 
     def algo_bfs(self, target: tuple[int, int]):
-        print(self.patrol_state)
         if len(self.queue) == 0:
             self.visited.clear()
             build_path = {}

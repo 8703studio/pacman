@@ -4,3 +4,4 @@ pydantic>=2.0.0
 pytest
 wheel
 build
+flake8-pyproject
