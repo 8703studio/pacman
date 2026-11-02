@@ -26,125 +26,16 @@ def get_target(
     return position
 
 
-def get_neighbors(
-    engine: Engine,
-    position: tuple[int, int],
-) -> list[tuple[int, int]]:
-    """Return accessible neighboring positions."""
-    directions = [
-        (-1, 0),
-        (0, 1),
-        (1, 0),
-        (0, -1),
-    ]
-    neighbors = []
-
-    for direction in directions:
-        if engine.is_valid_position(direction, position):
-            neighbors.append(
-                (
-                    position[0] + direction[0],
-                    position[1] + direction[1],
-                )
-            )
-
-    return neighbors
-
-
-def get_distance_map(
-    engine: Engine,
-    start: tuple[int, int],
-) -> dict[tuple[int, int], int]:
-    """Return shortest distances from the starting cell."""
-    waiting = deque([start])
-    distances = {start: 0}
-
-    while waiting:
-        current = waiting.popleft()
-
-        for neighbor in get_neighbors(engine, current):
-            if neighbor in distances:
-                continue
-
-            distances[neighbor] = distances[current] + 1
-            waiting.append(neighbor)
-
-    return distances
-
-
-def get_center_target(
-    engine: Engine,
-    start: tuple[int, int],
-) -> tuple[int, int]:
-    """Find the reachable cell closest to the maze center."""
-    distances = get_distance_map(engine, start)
-
-    if not engine.grid or not engine.grid[0]:
-        return start
-
-    center = (
-        len(engine.grid) // 2,
-        len(engine.grid[0]) // 2,
-    )
-
-    return min(
-        distances,
-        key=lambda cell: (
-            abs(cell[0] - center[0]) + abs(cell[1] - center[1]),
-            distances[cell],
-        ),
-    )
-
-
-def get_weak_target(
-    engine: Engine,
-    ghost_position: tuple[int, int],
-    pacman_position: tuple[int, int],
-    recent_positions: set[tuple[int, int]],
-) -> Optional[tuple[int, int]]:
-    """Choose a distant destination and avoid recent positions."""
-    pacman_distances = get_distance_map(engine, pacman_position)
-    ghost_distances = get_distance_map(engine, ghost_position)
-
-    candidates = [
-        cell
-        for cell in ghost_distances
-        if cell != ghost_position
-        and cell not in recent_positions
-        and len(get_neighbors(engine, cell)) >= 2
-    ]
-
-    if not candidates:
-        candidates = [
-            cell
-            for cell in ghost_distances
-            if cell != ghost_position and cell not in recent_positions
-        ]
-
-    if not candidates:
-        candidates = [
-            cell for cell in ghost_distances if cell != ghost_position
-        ]
-
-    if not candidates:
-        return None
-
-    return max(
-        candidates,
-        key=lambda cell: (
-            pacman_distances.get(cell, -1),
-            len(get_neighbors(engine, cell)),
-            ghost_distances[cell],
-        ),
-    )
-
-
 def find_path(
     engine: Engine,
     ghost_position: tuple[int, int],
     target: tuple[int, int],
+    blocked_positions: set[tuple[int, int]] | None = None,
 ) -> list[EntityDirection]:
-    """Find the shortest sequence of directions to a target."""
+    """Find the shortest path while avoiding occupied ghost positions."""
+    if blocked_positions is None:
+        blocked_positions = set()
+
     waiting = deque([ghost_position])
     came_from: dict[
         tuple[int, int],
@@ -160,6 +51,9 @@ def find_path(
         for direction in engine.get_valid_position(current):
             dy, dx = direction.value
             neighbor = (current[0] + dy, current[1] + dx)
+
+            if neighbor in blocked_positions:
+                continue
 
             if neighbor in came_from:
                 continue
@@ -201,37 +95,54 @@ class GhostInterceptor(Ghost):
         self.current_pos = position
         self.entity_type = EntityType.GHOST
         self.engine = engine
-
+        self.other_ghosts: list[Ghost] = []
         self.pacman_position: Optional[tuple[int, int]] = None
         self.pacman_direction: Optional[EntityDirection] = None
+        self.last_pacman_position: Optional[tuple[int, int]] = None
 
         self.direction_queue: deque[EntityDirection] = deque()
-        self.weak_history: deque[tuple[int, int]] = deque(maxlen=8)
-        self.weak_target: Optional[tuple[int, int]] = None
-
         self.last_state = self.state
-        self.dead_phase = "center"
-        self.dead_center: Optional[tuple[int, int]] = None
 
     def normal_move(self) -> None:
         """Intercept Pacman by targeting three cells ahead."""
         engine = self.engine
         pacman_position = self.target or self.pacman_position
-        pacman_direction = self.pacman_direction
 
         if engine is None or pacman_position is None:
             return
 
+        if (
+            self.last_pacman_position is not None
+            and pacman_position != self.last_pacman_position
+        ):
+            dy = pacman_position[0] - self.last_pacman_position[0]
+            dx = pacman_position[1] - self.last_pacman_position[1]
+
+            if abs(dy) > abs(dx):
+                step = ((dy > 0) - (dy < 0), 0)
+            elif abs(dx) > abs(dy):
+                step = (0, (dx > 0) - (dx < 0))
+            else:
+                step = None
+
+            if step is not None:
+                self.pacman_direction = EntityDirection(step)
+
+        self.last_pacman_position = pacman_position
+
+        pacman_direction = self.pacman_direction
         if pacman_direction is None:
             target = pacman_position
         else:
-            target = get_target(
-                engine,
-                pacman_position,
-                pacman_direction,
-            )
+            target = get_target(engine, pacman_position, pacman_direction)
+
+        path_to_pacman = find_path(engine, self.current_pos, pacman_position)
+
+        if path_to_pacman and len(path_to_pacman) <= 3:
+            target = pacman_position
 
         self._queue_direction_to(target)
+        print("pacman", pacman_position, pacman_direction, "-> vise", target)
 
     def _handle_state_change(self) -> None:
         """Clear movement data when the ghost changes state."""
@@ -241,49 +152,7 @@ class GhostInterceptor(Ghost):
         self.queue.clear()
         self.direction_queue.clear()
         self.visited.clear()
-        self.weak_history.clear()
-        self.weak_target = None
-
-        if self.state == EntityState.WEAK:
-            self.weak_history.append(self.current_pos)
-
-        if self.state == EntityState.DEAD:
-            self.dead_phase = "center"
-            self.dead_center = None
-
         self.last_state = self.state
-
-    def _get_dead_target(self) -> Optional[tuple[int, int]]:
-        """Return the center target, then the spawn position."""
-        if self.engine is None:
-            return None
-
-        if self.dead_center is None:
-            self.dead_center = get_center_target(
-                self.engine,
-                self.current_pos,
-            )
-
-        if (
-            self.dead_phase == "center"
-            and self.current_pos == self.dead_center
-        ):
-            self.dead_phase = "spawn"
-
-        if self.dead_phase == "spawn" and self.current_pos == self.start_pos:
-            self.queue.clear()
-            self.direction_queue.clear()
-            self.weak_target = None
-            self.state = EntityState.NORMAL
-            self.last_state = self.state
-            self.dead_phase = "center"
-            self.dead_center = None
-            return None
-
-        if self.dead_phase == "center":
-            return self.dead_center
-
-        return self.start_pos
 
     def _queue_direction_to(
         self,
@@ -293,11 +162,26 @@ class GhostInterceptor(Ghost):
         if self.engine is None:
             return
 
+        blocked_positions = {
+            ghost.current_pos
+            for ghost in self.other_ghosts
+            if ghost is not self
+            and ghost.state != EntityState.DEAD
+        }
+
         path = find_path(
             self.engine,
             self.current_pos,
             target,
+            blocked_positions,
         )
+
+        if not path and self.current_pos != target:
+            path = find_path(
+                self.engine,
+                self.current_pos,
+                target,
+            )
 
         self.queue.clear()
         self.direction_queue.clear()
@@ -307,24 +191,61 @@ class GhostInterceptor(Ghost):
 
         self.direction_queue.extend(path)
         self.queue.extend(path)
+        print(self.state, self.current_pos, target, len(self.queue))
+
+    def dead_move(self) -> None:
+        """Return to the starting position while avoiding other ghosts."""
+        if self.engine is None:
+            return
+
+        if self.current_pos == self.start_pos:
+            self.queue.clear()
+            self.direction_queue.clear()
+            self.visited.clear()
+            self.state = EntityState.NORMAL
+            self.target = None
+            self.last_state = self.state
+            return
+
+        if self.queue:
+            return
+
+        blocked_positions = {
+            ghost.current_pos
+            for ghost in self.other_ghosts
+            if ghost is not self
+            and ghost.state != EntityState.DEAD
+        }
+
+        path = find_path(
+            self.engine,
+            self.current_pos,
+            self.start_pos,
+            blocked_positions,
+        )
+
+        if not path:
+            return
+
+        self.direction_queue.extend(path)
+        self.queue.extend(path)
 
     def reset(self) -> None:
         """Reset custom movement data and preserve dead-state handling."""
+        previous_dir = self.last_dir
+        previous_move = self.last_move
         super().reset()
+        self.last_dir = previous_dir
+        self.last_move = previous_move
 
         self.direction_queue.clear()
-        self.weak_history.clear()
-        self.weak_target = None
         self.pacman_position = None
         self.pacman_direction = None
+        self.last_pacman_position = None
 
         if self.state == EntityState.DEAD:
-            self.dead_phase = "center"
-            self.dead_center = None
             self.last_state = self.state
             return
 
         self.state = EntityState.NORMAL
         self.last_state = self.state
-        self.dead_phase = "center"
-        self.dead_center = None

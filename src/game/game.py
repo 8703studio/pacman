@@ -151,7 +151,13 @@ class Game:
 
         for ghost in self.ghosts.ghost_list:
             if ghost.state != EntityState.DEAD:
+                last_dir = ghost.last_dir
+                last_move = ghost.last_move
+
                 ghost.reset()
+
+                ghost.last_dir = last_dir
+                ghost.last_move = last_move
                 ghost.set_state(EntityState.WEAK)
 
     def verify_dead_ghost(self) -> None:
@@ -163,6 +169,8 @@ class Game:
                 if ghost.current_pos == ghost.start_pos:
 
                     if self.weak_start is not None:
+                        continue
+                    if not ghost.can_move():
                         continue
                     ghost.reset()
                     ghost.state = EntityState.NORMAL
@@ -176,10 +184,17 @@ class Game:
         if elapsed >= self.weak_time:
             for ghost in self.ghosts.ghost_list:
                 if ghost.state == EntityState.WEAK:
-                    ghost.reset()
-                    ghost.set_state(EntityState.NORMAL)
-            self.weak_start = None
+                    last_dir = ghost.last_dir
+                    last_move = ghost.last_move
 
+                    ghost.reset()
+
+                    ghost.last_dir = last_dir
+                    ghost.last_move = last_move
+                    ghost.set_state(EntityState.NORMAL)
+
+            self.weak_start = None
+            
     def pacman_movement(self) -> None:
         if not self.pacman.can_move():
             return

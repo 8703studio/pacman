@@ -53,6 +53,8 @@ class GameScreen:
             GhostTactic(engine),
         ]
 
+        self.ghost.other_ghosts = self.ghosts[1:]
+
         self.pacman = Pacman()
 
         self.pacman.start_pos = (
