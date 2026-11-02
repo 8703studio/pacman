@@ -103,6 +103,21 @@ class GhostInterceptor(Ghost):
         self.direction_queue: deque[EntityDirection] = deque()
         self.last_state = self.state
 
+    def move(self) -> None:
+        """Clear the old path on state change, then use Ghost.move()."""
+        print(type(self).__name__, self.state, self.current_pos, self.target, len(self.queue))
+        self._handle_state_change()
+        super().move()
+
+    def _blocked_positions(self) -> set[tuple[int, int]]:
+        """Positions occupied by the other living ghosts."""
+        return {
+            ghost.current_pos
+            for ghost in self.other_ghosts
+            if ghost is not self
+            and ghost.state != EntityState.DEAD
+        }
+
     def normal_move(self) -> None:
         """Intercept Pacman by targeting three cells ahead."""
         engine = self.engine
@@ -162,18 +177,11 @@ class GhostInterceptor(Ghost):
         if self.engine is None:
             return
 
-        blocked_positions = {
-            ghost.current_pos
-            for ghost in self.other_ghosts
-            if ghost is not self
-            and ghost.state != EntityState.DEAD
-        }
-
         path = find_path(
             self.engine,
             self.current_pos,
             target,
-            blocked_positions,
+            self._blocked_positions(),
         )
 
         if not path and self.current_pos != target:
@@ -191,7 +199,6 @@ class GhostInterceptor(Ghost):
 
         self.direction_queue.extend(path)
         self.queue.extend(path)
-        print(self.state, self.current_pos, target, len(self.queue))
 
     def dead_move(self) -> None:
         """Return to the starting position while avoiding other ghosts."""
@@ -210,19 +217,19 @@ class GhostInterceptor(Ghost):
         if self.queue:
             return
 
-        blocked_positions = {
-            ghost.current_pos
-            for ghost in self.other_ghosts
-            if ghost is not self
-            and ghost.state != EntityState.DEAD
-        }
-
         path = find_path(
             self.engine,
             self.current_pos,
             self.start_pos,
-            blocked_positions,
+            self._blocked_positions(),
         )
+
+        if not path:
+            path = find_path(
+                self.engine,
+                self.current_pos,
+                self.start_pos,
+            )
 
         if not path:
             return
