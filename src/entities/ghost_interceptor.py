@@ -98,7 +98,6 @@ class GhostInterceptor(Ghost):
         self.other_ghosts: list[Ghost] = []
         self.pacman_position: Optional[tuple[int, int]] = None
         self.pacman_direction: Optional[EntityDirection] = None
-        self.last_pacman_position: Optional[tuple[int, int]] = None
 
         self.direction_queue: deque[EntityDirection] = deque()
         self.last_state = self.state
@@ -118,31 +117,12 @@ class GhostInterceptor(Ghost):
         }
 
     def normal_move(self) -> None:
-        """Intercept Pacman by targeting three cells ahead."""
+        """Intercept Pacman by targeting three cell ahead."""
         engine = self.engine
         pacman_position = self.target or self.pacman_position
 
         if engine is None or pacman_position is None:
             return
-
-        if (
-            self.last_pacman_position is not None
-            and pacman_position != self.last_pacman_position
-        ):
-            dy = pacman_position[0] - self.last_pacman_position[0]
-            dx = pacman_position[1] - self.last_pacman_position[1]
-
-            if abs(dy) > abs(dx):
-                step = ((dy > 0) - (dy < 0), 0)
-            elif abs(dx) > abs(dy):
-                step = (0, (dx > 0) - (dx < 0))
-            else:
-                step = None
-
-            if step is not None:
-                self.pacman_direction = EntityDirection(step)
-
-        self.last_pacman_position = pacman_position
 
         pacman_direction = self.pacman_direction
         if pacman_direction is None:
@@ -246,7 +226,6 @@ class GhostInterceptor(Ghost):
         self.direction_queue.clear()
         self.pacman_position = None
         self.pacman_direction = None
-        self.last_pacman_position = None
 
         if self.state == EntityState.DEAD:
             self.last_state = self.state

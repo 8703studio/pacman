@@ -227,6 +227,10 @@ class Game:
                 continue
 
             ghost.target = self.pacman.current_pos
+
+            if hasattr(ghost, "pacman_direction"):
+                ghost.pacman_direction = self.pacman.direction
+
             if (
                 ghost.state == EntityState.NORMAL
                 or ghost.state == EntityState.WEAK
