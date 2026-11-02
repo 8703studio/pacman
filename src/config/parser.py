@@ -1,11 +1,11 @@
 import json
 import os
-
+from typing import Any
 
 class Parser:
     """Read the configuration file and ignore its comments."""
 
-    def build_config(self, filepath: str) -> dict:
+    def build_config(self, filepath: str) -> dict[str, Any]:
         """Return the configuration read from filepath."""
         return self.load_json(filepath)
 

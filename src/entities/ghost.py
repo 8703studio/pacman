@@ -43,12 +43,6 @@ class Ghost(Entity, ABC):
         if not valid_directions:
             return
 
-        if self.last_dir is not None:
-            back = (-self.last_dir.value[0], -self.last_dir.value[1])
-            forward = [d for d in valid_directions if d.value != back]
-            if forward:
-                valid_directions = forward
-
         distances: dict[tuple[int, int], int] = {target: 0}
         waiting_list = deque([target])
 
