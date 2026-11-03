@@ -85,7 +85,7 @@ class NameInputScreen:
             return
 
         if any(
-            entry["name"].lower() == name.lower()
+            str(entry["name"]).lower() == name.lower()
             for entry in self.game.highscore.scores
         ):
             self.error_message = "This name is already taken."

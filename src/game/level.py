@@ -2,10 +2,10 @@ from ..enums import GridObject
 from time import monotonic
 
 
-class Level():
+class Level:
     def __init__(self, wall_grid: list[list[int]], time: int) -> None:
         self.timer: int = time
-        self.start_timer = None
+        self.start_timer: float | None = None
         self.grid: list[list[int]] = wall_grid
         self.corners: list[tuple[int, int]] = self._get_corners()
         self.grid_level: list[list[GridObject]] = self._create_grid_object()
@@ -19,14 +19,14 @@ class Level():
 
         return max(0, self.timer - elapsed)
 
-    def _get_corners(self) -> list[tuple]:
+    def _get_corners(self) -> list[tuple[int, int]]:
         width: int = len(self.grid[0])
         height: int = len(self.grid)
         return [
             (0, 0),
             (0, width - 1),
             (height - 1, 0),
-            (height - 1, width - 1)
+            (height - 1, width - 1),
         ]
 
     def _get_numb_elem(self) -> int:
@@ -38,15 +38,16 @@ class Level():
         return total
 
     def _create_grid_object(self) -> list[list[GridObject]]:
-        obj_grid: list[list[GridObject]] = [[GridObject.GUM if obj != 15 else
-                                             GridObject.EMPTY for obj in
-                                            row] for row in self.grid]
+        obj_grid: list[list[GridObject]] = [
+            [GridObject.GUM if obj != 15 else GridObject.EMPTY for obj in row]
+            for row in self.grid
+        ]
         for coor in self.corners:
             y, x = coor
             obj_grid[y][x] = GridObject.SUPERGUM
         return obj_grid
 
-    def consume_object(self, case: tuple) -> GridObject:
+    def consume_object(self, case: tuple[int, int]) -> GridObject:
         y, x = case
         obj = self.grid_level[y][x]
         self.grid_level[y][x] = GridObject.EMPTY
@@ -55,8 +56,9 @@ class Level():
         return obj
 
     def clear_grid(self) -> None:
-        self.grid_level = [[GridObject.EMPTY
-                            for _ in row] for row in self.grid]
+        self.grid_level = [
+            [GridObject.EMPTY for _ in row] for row in self.grid
+        ]
         self.element_numb = 0
 
     def is_finished(self) -> bool:

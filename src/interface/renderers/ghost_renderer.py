@@ -1,7 +1,8 @@
 import pygame
 
 from src.interface.renderers.maze_renderer import MazeRenderer
-from src.entities.entity import Entity, EntityDirection
+from src.entities.entity import Entity
+from src.enums import EntityDirection
 from src.enums import EntityState
 from src.interface.renderers.animation import EntityAnimator
 
@@ -16,18 +17,19 @@ class GhostRenderer:
         "louis": "src/interface/assets/ghosts/louissprite.png",
     }
 
-    def __init__(self, maze_renderer: MazeRenderer,
-                 animation: EntityAnimator) -> None:
+    def __init__(
+        self, maze_renderer: MazeRenderer, animation: EntityAnimator
+    ) -> None:
         """Initialize the ghost renderer."""
         self.maze_renderer = maze_renderer
         self.animation = animation
-        self.ghost_frames = {}
+        self.ghost_frames: dict[str, list[pygame.Surface]] = {}
 
         for name, path in self.GHOST_SPRITES.items():
             image = pygame.image.load(path).convert_alpha()
             frame_width = image.get_width() // 6
             frame_height = image.get_height()
-            frames = []
+            frames: list[pygame.Surface] = []
 
             for index in range(6):
                 frame = image.subsurface(
@@ -52,11 +54,18 @@ class GhostRenderer:
         """Draw a ghost using its current position and direction."""
         y, x = self.animation.pos(entity)
 
-        pixel_x, pixel_y = self.maze_renderer.get_cell_position(
+        cell_y, cell_x = entity.current_pos
+
+        origin_x, origin_y = self.maze_renderer.get_cell_position(
             maze,
-            x,
-            y,
+            cell_x,
+            cell_y,
         )
+
+        cell_size = self.maze_renderer.get_cell_size(maze)
+
+        pixel_x = origin_x + (x - cell_x) * cell_size
+        pixel_y = origin_y + (y - cell_y) * cell_size
 
         cell_size = self.maze_renderer.get_cell_size(maze)
 

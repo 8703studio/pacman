@@ -2,6 +2,7 @@
 from ..config import GameConfig
 from ..engine import Engine
 from .level_handler import LevelHandler
+from ..entities.entity import Entity
 from ..entities import GhostHandler, Pacman, GhostTactic
 from ..enums import (
     EntityState,
@@ -54,7 +55,7 @@ class Game:
             else:
                 ghost.speed = 0.3
 
-    def _object_point(self):
+    def _object_point(self) -> dict[GamePoint, int]:
         dict_point: dict[GamePoint, int] = {}
         config_game = self.config.game_data()
 
@@ -64,11 +65,11 @@ class Game:
         return dict_point
 
     @property
-    def spawn_pacman(self):
+    def spawn_pacman(self) -> tuple[int, int]:
         spawn = self.levels.current_level
         return (len(spawn.grid) // 2, len(spawn.grid[0]) // 2)
 
-    def add_score(self, score: int):
+    def add_score(self, score: int) -> None:
         self.score += score
 
     def lose_life(self) -> None:
@@ -99,6 +100,7 @@ class Game:
         nlevel = self.levels.next_level()
         if nlevel is None:
             return
+
         self.engine.grid = nlevel.grid
         self.pacman.start_pos = (
             len(nlevel.grid) // 2,
@@ -194,7 +196,6 @@ class Game:
                     ghost.set_state(EntityState.NORMAL)
 
             self.weak_start = None
-            
 
     def pacman_movement(self) -> None:
         if not self.pacman.can_move():
@@ -275,10 +276,7 @@ class Game:
             dy = abs(pacman_pos[1] - ghost_pos[1])
 
             if dx < 1.0 and dy < 1.0:
-                print(
-                    f"CONTACT TEST : dx={dx:.6f}, "
-                    f"dy={dy:.6f}"
-                )
+                print(f"CONTACT TEST : dx={dx:.6f}, " f"dy={dy:.6f}")
 
             if ghost.state == EntityState.WEAK:
                 ghost.state = EntityState.DEAD
@@ -298,14 +296,13 @@ class Game:
 
         return False
 
-    def _visual_position(self, entity, now: float) -> tuple[float, float]:
+    def _visual_position(
+        self, entity: Entity, now: float
+    ) -> tuple[float, float]:
         if entity.speed <= 0 or entity.last_dir is None:
             return entity.current_pos
 
-        progress = max(
-            0.0,
-            min(1.0, (now - entity.last_move) / entity.speed)
-        )
+        progress = max(0.0, min(1.0, (now - entity.last_move) / entity.speed))
 
         dy, dx = entity.last_dir.value
 

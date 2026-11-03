@@ -1,7 +1,7 @@
 import pygame
 
 
-def get_direction(event):
+def get_direction(event: pygame.event.Event) -> tuple[int, int] | None:
     if event.type != pygame.KEYDOWN:
         return None
     if event.key == pygame.K_UP:

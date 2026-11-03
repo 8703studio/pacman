@@ -7,7 +7,7 @@ class Pacman(Entity):
     def __init__(self) -> None:
         super().__init__()
         self.entity_type = EntityType.PACMAN
-        self.speed = 0.4
+        self.speed = 0.5
         self.input_buffer: deque[EntityDirection] = deque()
 
     def move(self) -> None:

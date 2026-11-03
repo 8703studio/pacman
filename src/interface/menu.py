@@ -25,6 +25,9 @@ class GameInterface(Protocol):
     def show_start_screen(self) -> None:
         """Return to the start screen."""
 
+    def refresh_theme(self) -> None:
+        """Return the interface after chaging the theme"""
+
 
 class GameScreenInterface(GameInterface, Protocol):
     """Interface required by the game screen."""

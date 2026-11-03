@@ -56,7 +56,7 @@ class GhostTactic(Ghost):
             tmp = min_x
             min_y += 1
 
-    def normal_move(self):
+    def normal_move(self) -> None:
         self.verifying_mode()
 
         if self.patrol_target is None:
@@ -93,7 +93,7 @@ class GhostTactic(Ghost):
 
                     if self.engine.is_valid_position(
                         case_neigh, waiting_list[0]
-                     ):
+                    ):
                         waiting_list.append(new_neigh)
                         build_path[new_neigh] = waiting_list[0]
                         self.visited.add(new_neigh)
@@ -105,9 +105,10 @@ class GhostTactic(Ghost):
                 return
 
     def reverse_path(
-            self, path: dict[tuple[int, int], tuple[int, int]],
-            target: tuple[int, int]
-            ) -> None:
+        self,
+        path: dict[tuple[int, int], tuple[int, int]],
+        target: tuple[int, int],
+    ) -> None:
         next_case: tuple[int, int] = target
         while next_case != self.current_pos:
             cy, cx = next_case
@@ -127,15 +128,18 @@ class GhostTactic(Ghost):
 
         total = self.manhattan_dist(max_y, min_y, max_x, min_x)
 
-        if (min_y <= ty <= max_y and min_x <= tx <= max_x
-           and self.patrol_state == PatrolState.PATROL):
+        if (
+            min_y <= ty <= max_y
+            and min_x <= tx <= max_x
+            and self.patrol_state == PatrolState.PATROL
+        ):
 
             if total == 0:
                 self.reset_path()
                 self.patrol_state = PatrolState.CHASE
             return
 
-        if (total > 4 and self.patrol_state == PatrolState.CHASE):
+        if total > 4 and self.patrol_state == PatrolState.CHASE:
             self.reset_path()
             self.patrol_target = choice(self.coord_zone)
             self.patrol_state = PatrolState.PATROL
@@ -144,23 +148,23 @@ class GhostTactic(Ghost):
         gy, gx = self.current_pos
         total = 0
 
-        if (gy > max_y):
+        if gy > max_y:
             total += gy - max_y
-        elif (gy < min_y):
+        elif gy < min_y:
             total += min_y - gy
 
-        if (gx > max_x):
+        if gx > max_x:
             total += gx - max_x
-        elif (gx < min_x):
+        elif gx < min_x:
             total += min_x - gx
 
         return total
 
-    def reset_path(self):
+    def reset_path(self) -> None:
         self.queue.clear()
         self.visited.clear()
 
-    def reset(self):
+    def reset(self) -> None:
         self.patrol_state = PatrolState.PATROL
         self.patrol_target = None
         return super().reset()

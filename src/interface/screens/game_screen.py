@@ -12,7 +12,7 @@ from src.entities import (
     GhostTactic,
     Pacman,
 )
-from src.entities.entity import EntityDirection
+from src.enums import EntityDirection
 from src.engine.physics import Engine
 from src.interface.screens.pause_screen import PauseScreen
 from src.engine.input import get_direction

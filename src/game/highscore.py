@@ -80,11 +80,7 @@ class Highscore:
         if not all(c.isalnum() or c == " " for c in name):
             return False
 
-        if (
-            not isinstance(score, int)
-            or isinstance(score, bool)
-            or score < 0
-        ):
+        if not isinstance(score, int) or isinstance(score, bool) or score < 0:
             return False
 
         previous_scores = self.scores
@@ -104,5 +100,5 @@ class Highscore:
 
         return True
 
-    def top_score(self, n=10):
+    def top_score(self, n: int = 10) -> list[dict[str, str | int]]:
         return self.scores[:n]

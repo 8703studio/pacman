@@ -1,15 +1,17 @@
 import pygame
 
 from src.interface.renderers.maze_renderer import MazeRenderer
-from src.entities.entity import EntityDirection
+from src.enums import EntityDirection
 from src.entities.pacman import Pacman
 from src.interface.renderers.animation import EntityAnimator
 
 
 class PacmanRenderer:
     """Render Pac-Man on the generated maze."""
-    def __init__(self, maze_renderer: MazeRenderer,
-                 animation: EntityAnimator) -> None:
+
+    def __init__(
+        self, maze_renderer: MazeRenderer, animation: EntityAnimator
+    ) -> None:
         """Initialize the Pac-Man renderer."""
         self.maze_renderer = maze_renderer
         self.animation = animation
@@ -20,7 +22,7 @@ class PacmanRenderer:
 
         frame_width = self.pacman_image.get_width() // 3
         frame_height = self.pacman_image.get_height()
-        self.pacman_frames = []
+        self.pacman_frames: list[pygame.Surface] = []
 
         for index in range(3):
             frame = self.pacman_image.subsurface(
