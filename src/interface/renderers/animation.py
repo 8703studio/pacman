@@ -12,7 +12,7 @@ class EntityAnimator:
         prev, last = self.prev.get(id(entity), (cur, cur))
         if cur != last:
             prev = last
-            self.start[id(entity)] = monotonic()
+            self.start[id(entity)] = entity.last_move
         self.prev[id(entity)] = (prev, cur)
         if entity.speed <= 0:
             return cur
