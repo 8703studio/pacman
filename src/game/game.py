@@ -254,12 +254,31 @@ class Game:
         if self.pacman.state == EntityState.INVINCIBLE:
             return False
 
+        now = monotonic()
+        pacman_pos = self._visual_position(self.pacman, now)
+
         for ghost in self.ghosts.ghost_list:
             if ghost.state == EntityState.DEAD:
                 continue
 
-            if ghost.current_pos != self.pacman.current_pos:
+            ghost_pos = self._visual_position(ghost, now)
+
+            collision_threshold = 0.50
+
+            dx = abs(pacman_pos[0] - ghost_pos[0])
+            dy = abs(pacman_pos[1] - ghost_pos[1])
+
+            if dx >= collision_threshold or dy >= collision_threshold:
                 continue
+
+            dx = abs(pacman_pos[0] - ghost_pos[0])
+            dy = abs(pacman_pos[1] - ghost_pos[1])
+
+            if dx < 1.0 and dy < 1.0:
+                print(
+                    f"CONTACT TEST : dx={dx:.6f}, "
+                    f"dy={dy:.6f}"
+                )
 
             if ghost.state == EntityState.WEAK:
                 ghost.state = EntityState.DEAD
@@ -278,6 +297,22 @@ class Game:
             return True
 
         return False
+
+    def _visual_position(self, entity, now: float) -> tuple[float, float]:
+        if entity.speed <= 0 or entity.last_dir is None:
+            return entity.current_pos
+
+        progress = max(
+            0.0,
+            min(1.0, (now - entity.last_move) / entity.speed)
+        )
+
+        dy, dx = entity.last_dir.value
+
+        return (
+            entity.current_pos[0] - dy * (1 - progress),
+            entity.current_pos[1] - dx * (1 - progress),
+        )
 
     def update(self) -> None:
         level = self.levels.current_level
