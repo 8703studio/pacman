@@ -99,7 +99,7 @@ class Game:
     def change_level(self) -> None | bool:
         nlevel = self.levels.next_level()
         if nlevel is None:
-            return
+            return None
 
         self.engine.grid = nlevel.grid
         self.pacman.start_pos = (

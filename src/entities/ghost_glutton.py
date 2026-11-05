@@ -45,5 +45,5 @@ class GhostGlutton(Ghost):
         self.queue.append(random.choice(res))
         return
 
-    def reset(self):
+    def reset(self) -> None:
         return super().reset()

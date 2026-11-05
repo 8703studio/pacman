@@ -16,7 +16,7 @@ class Pacman(Entity):
         if self.input_buffer:
             self.queue.append(self.input_buffer.popleft())
 
-    def add_move_to_buffer(self, direction: EntityDirection):
+    def add_move_to_buffer(self, direction: EntityDirection) -> None:
         self.input_buffer.append(direction)
 
     def reset(self) -> None:

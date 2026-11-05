@@ -21,5 +21,9 @@ dependencies = [
 [tool.flake8]
 exclude = ["pacmana"]
 
+[[tool.mypy.overrides]]
+module = ["mazegenerator"]
+follow_untyped_imports = true
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]

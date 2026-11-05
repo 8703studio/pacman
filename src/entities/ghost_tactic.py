@@ -3,6 +3,7 @@ from ..enums import EntityType, EntityDirection
 from enum import Enum
 from random import choice
 from collections import deque
+from ..engine import Engine
 
 
 class PatrolState(Enum):
@@ -11,7 +12,7 @@ class PatrolState(Enum):
 
 
 class GhostTactic(Ghost):
-    def __init__(self, engine):
+    def __init__(self, engine: Engine) -> None:
         super().__init__()
         self.engine = engine
         self.entity_type = EntityType.GHOST
@@ -24,8 +25,11 @@ class GhostTactic(Ghost):
     """
 
     @property
-    def zone(self):
-        matrix_y = len(self.engine.grid) - 1
+    def zone(self) -> tuple[int, int, int, int] | None:
+        if self.engine is None:
+            return None
+
+        matrix_y: int = len(self.engine.grid) - 1
         matrix_x = len(self.engine.grid[0]) - 1
         matrix_mid_y = len(self.engine.grid) // 2
         matrix_mid_x = len(self.engine.grid[0]) // 2
@@ -40,8 +44,12 @@ class GhostTactic(Ghost):
             if matrix_mid_x <= sx <= matrix_x:
                 return (matrix_mid_y, matrix_y, matrix_mid_x, matrix_x)
             return (matrix_mid_y, matrix_y, 0, matrix_mid_x - 1)
+        return None
 
     def define_zone(self) -> None:
+        if self.engine is None or self.zone is None:
+            return
+
         self.coord_zone.clear()
         min_y, max_y, min_x, max_x = self.zone
         tmp = min_x
@@ -58,6 +66,13 @@ class GhostTactic(Ghost):
 
     def normal_move(self) -> None:
         self.verifying_mode()
+        if self.engine is None or self.target is None or self.queue:
+            return
+
+        if not self.coord_zone:
+            self.define_zone()
+        if not self.coord_zone:
+            return
 
         if self.patrol_target is None:
             self.patrol_target = choice(self.coord_zone)
@@ -74,11 +89,13 @@ class GhostTactic(Ghost):
             if len(self.queue) == 0:
                 self.algo_bfs(self.target)
 
-    def algo_bfs(self, target: tuple[int, int]):
+    def algo_bfs(self, target: tuple[int, int]) -> None:
+        if self.engine is None or self.target is None or self.queue:
+            return
         if len(self.queue) == 0:
             self.visited.clear()
             build_path = {}
-            waiting_list = deque()
+            waiting_list: deque[tuple[int, int]] = deque()
             waiting_list.appendleft(self.current_pos)
             self.visited.add(self.current_pos)
 
@@ -123,6 +140,9 @@ class GhostTactic(Ghost):
         # verify the distance of the ghost with the zone
         # change patrol state and clear the queue
         ###
+        if (self.engine is None or self.target is None or
+           self.queue or self.zone is None):
+            return
         ty, tx = self.target
         min_y, max_y, min_x, max_x = self.zone
 
@@ -144,7 +164,9 @@ class GhostTactic(Ghost):
             self.patrol_target = choice(self.coord_zone)
             self.patrol_state = PatrolState.PATROL
 
-    def manhattan_dist(self, max_y, min_y, max_x, min_x) -> int:
+    def manhattan_dist(self, max_y: int,
+                       min_y: int, max_x: int, min_x: int) -> int:
+
         gy, gx = self.current_pos
         total = 0
 

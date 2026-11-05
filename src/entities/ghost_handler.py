@@ -13,7 +13,7 @@ class GhostHandler:
             if isinstance(ghost, GhostTactic):
                 ghost.define_zone()
 
-    def move_ghost_list(self):
+    def move_ghost_list(self) -> list[Ghost]:
         listes = []
         for ghost in self.ghost_list:
             listes.append(ghost)

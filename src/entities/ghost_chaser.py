@@ -11,11 +11,13 @@ class GhostChaser(Ghost):
         self.entity_type = EntityType.GHOST
         self.engine = engine
 
-    def normal_move(self):
+    def normal_move(self) -> None:
+        if self.engine is None or self.target is None or self.queue:
+            return
         if len(self.queue) == 0:
             self.visited.clear()
             build_path = {}
-            waiting_list = deque()
+            waiting_list: deque[tuple[int, int]] = deque()
             waiting_list.appendleft(self.current_pos)
             self.visited.add(self.current_pos)
 
@@ -45,6 +47,9 @@ class GhostChaser(Ghost):
     def reverse_path(
         self, path: dict[tuple[int, int], tuple[int, int]]
     ) -> None:
+        if self.engine is None or self.target is None or self.queue:
+            return
+
         next_case: tuple[int, int] = self.target
         while next_case != self.current_pos:
             cy, cx = next_case
@@ -53,5 +58,5 @@ class GhostChaser(Ghost):
             self.queue.appendleft(EntityDirection(dir))
             next_case = path[next_case]
 
-    def reset(self):
+    def reset(self) -> None:
         return super().reset()

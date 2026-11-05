@@ -5,3 +5,4 @@ pytest
 wheel
 build
 flake8-pyproject
+pyinstaller
